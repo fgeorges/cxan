@@ -1,0 +1,15 @@
+<package xmlns="http://cxan.org/ns/package" id="cxan-website">
+
+   <abstract>
+      The CXAN website.
+   </abstract>
+
+   <author id="fgeorges">Florent Georges</author>
+
+   <category id="webapps">Webapps</category>
+
+   <tag>cxan</tag>
+   <tag>webapp</tag>
+   <tag>xproc</tag>
+
+</package>

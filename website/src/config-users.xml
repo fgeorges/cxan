@@ -1,0 +1,8 @@
+<!--
+    Passwords are stored as clear, yes!  So be sure to adapt the file permissions
+    accordingly, and to create dedicated backups (with restrictive permissions
+    too).
+-->
+<users>
+   <user name="fgeorges" password="xxx"/>
+</users>

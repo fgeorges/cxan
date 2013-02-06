@@ -1,0 +1,264 @@
+#! /bin/bash
+
+VERSION=@@VERSION@@
+REVISION=@@REVISION@@
+
+
+###############################################################################
+##
+## Utility functions.
+## 
+
+die() {
+    echo "[**] " "$@" 1>&2;
+    echo 1>&2;
+    usage;
+    exit 1;
+}
+
+usage() {
+    echo "Usage:" 1>&2;
+    echo "  cxan [options...] command" 1>&2;
+    echo 1>&2;
+    echo "CXAN must be called with exactly one command, and optionally with zero or" 1>&2;
+    echo "more options." 1>&2;
+    echo 1>&2;
+    echo "Commands:" 1>&2;
+    echo "  help" 1>&2;
+    echo "  version" 1>&2;
+    echo "  resolve name-uri" 1>&2;
+    echo "      name-uri is the name to resolve (a package name URI)" 1>&2;
+    echo "  tag [tag...]" 1>&2;
+    echo "      tag, if any, is the name (can have several) of the tag to display" 1>&2;
+    echo "  category [cat...]" 1>&2;
+    echo "      cat, if any, is the name (can have several) of the category to display" 1>&2;
+    echo 1>&2;
+    echo "Options:" 1>&2;
+    echo "  --repo dir" 1>&2;
+    echo "      the package repository where to install new packages" 1>&2;
+    echo "  --run-repo dir" 1>&2;
+    echo "      the package repository to run Calabash (with the CXAN client itself)" 1>&2;
+    echo "  --server host" 1>&2;
+    echo "      the CXAN website to use (by default http://cxan.org/)" 1>&2;
+    echo "  --verbose" 1>&2;
+    echo "      be verbose, that is, pass through all stderr from Calabash" 1>&2;
+    echo "  --xml" 1>&2;
+    echo "      generate an XML output instead of the user-friendly text output" 1>&2;
+}
+
+# get the first option as a path and make it absolute
+absolute_path() {
+    D=`dirname "$1"`
+    B=`basename "$1"`
+    echo "`cd \"$D\" 2>/dev/null && pwd || echo \"$D\"`/$B"
+}
+
+enforce_no_param() {
+    if [[ -n "$2" ]]; then
+        die "Extra parameter to '$1' command. No parameter accepted.";
+    fi
+}
+
+enforce_one_param() {
+    if [[ -z "$2" ]]; then
+        die "No parameter to '$1' command. Exactly one parameter needed.";
+    fi
+    if [[ -n "$3" ]]; then
+        die "Extra parameter to '$1' command. Exactly one parameter accepted.";
+    fi
+}
+
+enforce_optional_param() {
+    if [[ -n "$3" ]]; then
+        die "Extra parameter to '$1' command. Only one optional parameter accepted.";
+    fi
+}
+
+enforce_at_least_one_param() {
+    if [[ -z "$2" ]]; then
+        die "No parameter to '$1' command. At least one parameter needed.";
+    fi
+}
+
+# $1 is the action name, the remainding arguments are passed through calabash
+call_action() {
+    action=$1;
+    shift;
+    if [[ -z "$XML" ]]; then
+        pipe=http://cxan.org/client/text-action.xproc
+    else
+        pipe=http://cxan.org/client/xml-action.xproc
+    fi
+    if [[ -z "$RUN_REPO" ]]; then
+        call_calabash "$@" "$pipe" action="$action";
+    else
+        call_calabash --repo "$RUN_REPO" "$@" "$pipe" action="$action";
+    fi
+}
+
+call_calabash() {
+    if [[ -z "$VERBOSE" ]]; then
+        calabash -p repo="$REPO" -p server="$SERVER" "$@" 2>/dev/null;
+    else
+        calabash -p repo="$REPO" -p server="$SERVER" "$@";
+    fi
+}
+
+
+###############################################################################
+##
+## Command functions.
+## 
+## Get the command name in $1 and extra param (if any) after.
+## 
+
+do_help() {
+    enforce_no_param "$@"
+    usage
+}
+
+do_version() {
+    enforce_no_param "$@"
+    echo "CXAN client version ${VERSION} (Subversion revision #${REVISION}).";
+}
+
+do_resolve() {
+    enforce_one_param "$@"
+    call_action resolve -p name="$2"
+}
+
+do_tag() {
+    if [[ -z "$2" ]]; then
+        call_action tag
+    else
+        call_action tag -p tags="$2 $3 $4 $5 $6 $7 $8 $9"
+    fi
+}
+
+do_category() {
+    enforce_optional_param "$@"
+    if [[ -z "$2" ]]; then
+        call_action category
+    else
+        call_action category -p category="$2"
+    fi
+}
+
+do_upload() {
+    shift # skip the command
+    id=
+    if [[ "$1" = "-id" ]]; then
+        shift # skip the -id
+        if [[ -z "$1" ]]; then
+            die "No parameter to the '-id' option.";
+        fi
+        id=$1
+        shift # skip the cxan id
+    fi
+    if [[ -z "$1" ]]; then
+        die "No XAR file given to the 'upload' command.";
+    fi
+    ## 
+    ## TODO: Shouldn't we resolve file names? ($xar and $files)
+    ## (so they are absolute, before they're passed to XProc)
+    ## 
+    xar=`absolute_path $1`
+    shift # skip the xar file
+    if test -n "$1"; then
+        files=`absolute_path $1`
+        shift # skip the first additional file
+    fi
+    # accumulate remainder options in $files, separated by newline chars
+    while test -n "$1"; do
+        files="$files
+`absolute_path $1`"
+        shift
+    done
+    if [[ -z "$files" ]]; then
+        if [[ -z "$id" ]]; then
+            call_action upload -p xar="$xar"
+        else
+            call_action upload -p xar="$xar" -p pkg-id="$id"
+        fi
+    else
+        if [[ -z "$id" ]]; then
+            call_action upload -p xar="$xar" -p files="$files"
+        else
+            call_action upload -p xar="$xar" -p files="$files" -p pkg-id="$id"
+        fi
+    fi
+}
+
+
+###############################################################################
+##
+## Main processing.
+## 
+
+## 
+## Parse the options...
+## 
+
+REPO=
+RUN_REPO=
+SERVER=http://cxan.org/
+VERBOSE=
+XML=
+
+while echo "$1" | grep -- ^-- >/dev/null 2>&1 && test "$1" != --; do
+    case "$1" in
+        # the packaging repo to use to install packages
+        --repo)
+            shift
+            REPO=$1;;
+        # the repo with the CXAN client package itself (to run Calabash)
+        --run-repo)
+            shift
+            RUN_REPO=$1;;
+        # the CXAN website to use
+        --server)
+            shift
+            SERVER=$1;;
+        # let the Calabash stderr pass through to the user
+        --verbose)
+            VERBOSE=on;;
+        # generate an XML output instead of the user-friendly text output
+        --xml)
+            XML=on;;
+        # unknown option!
+        --*)
+            die "Unknown option: '$1'";;
+    esac
+    shift;
+done
+
+## 
+## Handle the commands...
+## 
+
+if [[ -z "$1" ]]; then
+    die "No command given.";
+fi
+
+case "$1" in
+    # cxan help
+    help)
+        do_help "$@";;
+    # cxan version
+    version)
+        do_version "$@";;
+    # cxan resolve name
+    resolve)
+        do_resolve "$@";;
+    # cxan tag [tag...]
+    tag)
+        do_tag "$@";;
+    # cxan category [cat]
+    category)
+        do_category "$@";;
+    # cxan upload [-id pkg] file.xar [files...]
+    upload)
+        do_upload "$@";;
+    *)
+        die "Unsupported command: '$1'.";;
+esac

@@ -1,0 +1,47 @@
+<packages>
+   <pkg id="hc-exist">
+      <xar>/Users/fgeorges/projects/expath/http-client/exist/build/expath-http-client-exist-0.1.0.xar</xar>
+      <relative-href>pkg/expath-http-client-exist</relative-href>
+      <filename>expath-http-client-exist-0.1.0.xar</filename>
+   </pkg>
+   <pkg id="hc-saxon">
+      <xar>/Users/fgeorges/projects/expath/http-client/saxon/build/expath-http-client-saxon-0.6.0.xar</xar>
+      <relative-href>pkg/expath-http-client-saxon</relative-href>
+      <filename>expath-http-client-saxon-0.6.0.xar</filename>
+   </pkg>
+   <pkg id="hc-saxon">
+      <xar>/Users/fgeorges/projects/expath/http-client/saxon/build/expath-http-client-saxon-0.7.0.xar</xar>
+      <relative-href>pkg/expath-http-client-saxon</relative-href>
+      <filename>expath-http-client-saxon-0.7.0.xar</filename>
+   </pkg>
+   <pkg id="zip-saxon">
+      <xar>/Users/fgeorges/projects/expath/zip/saxon/build/expath-zip-saxon-0.4.0.xar</xar>
+      <relative-href>pkg/expath-zip-saxon</relative-href>
+      <filename>expath-zip-saxon-0.4.0.xar</filename>
+   </pkg>
+   <pkg id="file-saxon">
+      <xar>/Users/fgeorges/projects/expath/files/saxon/build/expath-file-saxon-0.3.0.xar</xar>
+      <relative-href>pkg/expath-file-saxon</relative-href>
+      <filename>expath-file-saxon-0.3.0.xar</filename>
+   </pkg>
+   <pkg id="google">
+      <xar>/Users/fgeorges/projects/xlibs/google-apis/dist/google-apis-0.3.0.xar</xar>
+      <relative-href>pkg/google-apis</relative-href>
+      <filename>google-apis-0.3.0.xar</filename>
+   </pkg>
+   <pkg id="xproject">
+      <xar>/Users/fgeorges/projects/expath/pkg/project/dist/expath-project-0.3.0.xar</xar>
+      <relative-href>pkg/expath-project?different-name=update</relative-href>
+      <filename>expath-project-0.3.0.xar</filename>
+   </pkg>
+   <pkg id="packager">
+      <xar>/Users/fgeorges/projects/expath/pkg/project/dist/expath-packager-0.2.0.xar</xar>
+      <relative-href>pkg/expath-project?different-name=ignore</relative-href>
+      <filename>expath-packager-0.2.0.xar</filename>
+   </pkg>
+   <pkg id="functx">
+      <xar>/Users/fgeorges/projects/xlibs/functx/pkg/functx-1.0.xar</xar>
+      <relative-href>pkg/functx</relative-href>
+      <filename>functx-1.0.xar</filename>
+   </pkg>
+</packages>

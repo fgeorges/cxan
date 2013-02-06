@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:cxan="http://cxan.org/ns/package"
+           targetNamespace="http://cxan.org/ns/package"
+           elementFormDefault="qualified">
+
+   <xs:element name="package">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element name="abstract" type="xs:string"/>
+            <xs:element name="author"   type="cxan:identified"/>
+            <xs:element name="category" type="cxan:identified" maxOccurs="unbounded"/>
+            <xs:element name="tag"      type="xs:string"       maxOccurs="unbounded"/>
+         </xs:sequence>
+         <xs:attribute name="id" type="xs:NCName"/>
+      </xs:complexType>
+   </xs:element>
+
+   <xs:complexType name="identified">
+      <xs:simpleContent>
+         <xs:extension base="xs:string">
+            <xs:attribute name="id" type="xs:NCName"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+
+</xs:schema>

@@ -1,0 +1,16 @@
+<package xmlns="http://cxan.org/ns/package" id="cxan-client">
+
+   <abstract>
+      CXAN client for the command line, written in XProc.
+   </abstract>
+
+   <author id="fgeorges">Florent Georges</author>
+
+   <category id="applications">Applications</category>
+   <category id="tools">Tools</category>
+
+   <tag>cxan</tag>
+   <tag>application</tag>
+   <tag>xproc</tag>
+
+</package>

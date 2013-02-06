@@ -1,0 +1,16 @@
+<c:param-set xmlns:c="http://www.w3.org/ns/xproc-step">
+   <c:param name="home-uri"        value="http://localhost:9070/servlex/cxan/"/>
+   <c:param name="context-root"    value="/servlex/cxan"/>
+   <!-- both dirs, so must end with a slash -->
+   <c:param name="staging-area"    value="file:/tmp/cxan-staging/"/>
+   <c:param name="files-area"      value="file:/usr/local/cxan/files/"/>
+   <!-- eXist credentials and endpoint -->
+   <c:param name="exist-user"      value="cxan"/>
+   <c:param name="exist-pwd"       value="cxan"/>
+   <c:param name="exist-rest"      value="http://localhost:7070/exist/rest/"/>
+   <!-- no Twitter credentials -->
+   <!--c:param name="user-token"   value=""/>
+   <c:param name="user-secret"     value=""/>
+   <c:param name="consumer-key"    value=""/>
+   <c:param name="consumer-secret" value=""/-->
+</c:param-set>

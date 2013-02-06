@@ -1,0 +1,8 @@
+<web:request xmlns:web="http://expath.org/ns/webapp"
+             method="get"
+             path="/">
+   <web:path>
+      <web:part>/</web:part>
+      <web:match name="page"/>
+   </web:path>
+</web:request>

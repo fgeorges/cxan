@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<x:description xmlns:x="http://www.jenitennison.com/xslt/xspec"
+               xmlns:http="http://expath.org/ns/http-client"
+               stylesheet="http://expath.org/ns/http-client.xsl">
+
+   <x:scenario label="Package list">
+      <x:call function="http:send-request">
+         <x:param>
+            <http:request href="http://localhost:9070/servlex/cxan/pkg" method="get">
+               <http:header name="Accept" value="application/xml"/>
+            </http:request>
+         </x:param>
+      </x:call>
+      <x:expect label="yo" context="*[2]">
+         <packages>
+            <pkg name="http://cxan.org/client">cxan-client</pkg>
+            <pkg name="http://cxan.org/website">cxan-website</pkg>
+            <pkg name="http://docbook.org/schemas">djkhfgv</pkg>
+            <pkg name="http://docbook.org/xml">docbook-schemas</pkg>
+            <pkg name="http://docbook.sf.net/xsl">docbook-xsl</pkg>
+            <pkg name="http://docbook.sf.net/xsl-ns">docbook-xsl-ns</pkg>
+            <pkg name="http://www.functx.com">functx</pkg>
+            <pkg name="http://fgeorges.org/lib/google/apis">google-apis</pkg>
+            <pkg name="http://docbook.org/schemas">hhh</pkg>
+            <pkg name="http://docbook.org/schemas">me</pkg>
+            <pkg name="http://docbook.org/schemas">mmjk</pkg>
+            <pkg name="http://cxan.org/website">sample</pkg>
+            <pkg name="http://cxan.org/website">sample2</pkg>
+            <pkg name="http://cxan.org/website">sample3</pkg>
+            <pkg name="http://wmata.com/lib/api">wmata-client</pkg>
+            <pkg name="http://www.jenitennison.com/xslt/xspec">xspec</pkg>
+            <pkg name="http://docbook.org/schemas">yo</pkg>
+            <pkg name="http://docbook.org/xml">yo-mum</pkg>
+            <pkg name="http://docbook.org/schemas">you</pkg>
+            <pkg name="http://expath.org/lib/zip">yozip</pkg>
+         </packages>
+      </x:expect>
+   </x:scenario>
+
+</x:description>

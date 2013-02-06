@@ -1,0 +1,93 @@
+<TODO:>
+  For now, PUT accepts a XAR (or a XAW).  It extracts the
+  expath-pkg.xml and cxan.xml out of it.  But it should accept more
+  generally any kind of file (or files) in a multipart:
+
+  HTTP/1.1 PUT /pkg/some-pkg
+
+  part 1:descriptor
+  <the expath-pkg.xml>
+
+  part 2:cxan
+  <the cxan.xml>
+
+  part 3:the file
+  <the XAR, or XAW, or full ZIP, or...>
+
+  (part 4:a second file?)
+  (...)
+  ...
+
+  Accepting a XAR or a XAW with a cxan.xml, transmitted with a single
+  part PUT, could be a special case, for convenience...
+</TODO>
+
+<TODO:>
+  For the PUT, allow a user to set a query param to disable some
+  checks.  It is legal to submit a package with another name to an
+  existing id, but by default it is an error.  The user can set a
+  query param to say either ignore that error, or update the name to
+  the new one.
+
+  HTTP/1.1 PUT /pkg/some-pkg?different-name=ignore
+  ...
+
+  HTTP/1.1 PUT /pkg/foo-bar?different-name=update
+  ...
+</TODO>
+
+
+
+/
+/cat
+/cat/category
+/cat/category/sub-cat
+/tag
+/tag/tag
+/tag/tag/2d-tag
+/pkg
+/pkg/abbrev                (latest)
+/pkg/abbrev/version
+
+/cat?page=2
+
+
+[dir]/packages/
+   abbrev__1
+
+
+
+http://cxan.org/
+http://cxan.org/cat
+http://cxan.org/cat/category
+http://cxan.org/cat/category/sub-cat
+http://cxan.org/tag
+http://cxan.org/tag/tag
+http://cxan.org/tag/tag/2d-tag
+http://cxan.org/pkg
+http://cxan.org/pkg/abbrev                (latest)
+http://cxan.org/pkg/abbrev/version
+http://cxan.org/search?q=...
+
+http://cxan.org/pkg -> PUT: update a new package/version
+
+
+DB:
+
+/db/cxan/users.xml
+<users>
+   <user id="fgeorges" password="aaa">
+      <name>Florent Georges</name>
+   </user>
+   ...
+</users>
+
+/db/cxan/packages.xml
+<packages>
+   <pkg id="my-pack">
+      <name>http://example.org/lib/my-pack</name>
+      <version id="0.1">
+         <file>my-pack/my-pack-0.1.xar</file>
+      </version>
+   </pkg>
+</packages>

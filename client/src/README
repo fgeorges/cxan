@@ -1,0 +1,7 @@
+Each pipeline in actions/ (called "an action") must be a step with no input,
+and a primary output "result", and an option "repo" (that says on which repo
+to act).  It must have a primary parameters port as well (and must defined the
+parameters it accepts).  The step type must be "client:action-{action}", and
+its file name "actions/{action}.xproc".
+
+An action must provide ... (xml + text...)

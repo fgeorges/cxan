@@ -1,0 +1,10 @@
+<project xmlns="http://expath.org/ns/project"
+         name="http://cxan.org/client"
+         abbrev="cxan-client"
+         version="0.2.0dev">
+
+   <title>CXAN client</title>
+
+   <home>http://cxan.org/</home>
+
+</project>

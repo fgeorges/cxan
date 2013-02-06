@@ -1,0 +1,5 @@
+<Context path="/cxan-sandbox">
+   <Parameter name="org.expath.servlex.repo.dir"
+              value="/home/fgeorges/cxan-sandbox-repo"
+              override="false"/>
+</Context>

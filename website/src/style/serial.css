@@ -1,0 +1,105 @@
+/* from xquery-mode */
+.xml-serial-string {
+  color: #646464;
+}
+.xml-serial-keyword {
+  color: #0000FF;
+}
+.xml-serial-variable-name {
+  color: #646464;
+}
+.xml-serial-function-name {
+  color: #FA6400;
+}
+.xml-serial-constant {
+  color: #000096;
+}
+/* "normal" tags */
+.xml-serial-open-tag {
+  color: #000096;
+}
+.xml-serial-close-tag {
+  color: #000096;
+}
+.xml-serial-tag-delimiter {
+  color: #000096;
+}
+.xml-serial-tag-slash {
+  color: #000096;
+}
+.xml-serial-element-colon {
+  color: #000096;
+}
+.xml-serial-element-local-name {
+  color: #000096;
+}
+.xml-serial-element-prefix {
+  color: #000096;
+}
+/* xsl tags */
+.xml-serial-xsl-open-tag {
+  color: #0064C8;
+}
+.xml-serial-xsl-close-tag {
+  color: #0064C8;
+}
+.xml-serial-xsl-tag-delimiter {
+  color: #0064C8;
+}
+.xml-serial-xsl-tag-slash {
+  color: #0064C8;
+}
+.xml-serial-xsl-element-colon {
+  color: #0064C8;
+}
+.xml-serial-xsl-element-local-name {
+  color: #0064C8;
+}
+.xml-serial-xsl-element-prefix {
+  color: #0064C8;
+}
+.xml-serial-text {
+  color: #000000;
+}
+.xml-serial-attribute-colon {
+  color: #F5844C;
+}
+.xml-serial-attribute-local-name {
+  color: #F5844C;
+}
+.xml-serial-attribute-prefix {
+  color: #F5844C;
+}
+.xml-serial-attribute-value {
+  color: #993300;
+}
+.xml-serial-attribute-value-delimiter {
+  color: #993300;
+}
+.xml-serial-comment-content {
+  color: #006400;
+}
+.xml-serial-comment-delimiter {
+  color: #006400;
+}
+.xml-serial-xmlns-colon {
+  color: #F5844C;
+}
+.xml-serial-xmlns-prefix {
+  color: #F5844C;
+}
+.xml-serial-xmlns-value {
+  color: #993300;
+}
+.xml-serial-xmlns-value-delimiter {
+  color: #993300;
+}
+.xml-serial-xmlns-xmlns {
+  color: #F5844C;
+}
+.xml-serial-pi-delimiter {
+  color: #8B26C9;
+}
+.xml-serial-pi-target {
+  color: #8B26C9;
+}

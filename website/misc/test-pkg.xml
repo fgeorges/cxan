@@ -1,0 +1,8 @@
+<web:request xmlns:web="http://expath.org/ns/webapp"
+             method="get"
+             path="/pkg">
+   <web:path>
+      <web:part>/</web:part>
+      <web:match name="page">pkg</web:match>
+   </web:path>
+</web:request>
