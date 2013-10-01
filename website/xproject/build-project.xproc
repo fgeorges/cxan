@@ -58,6 +58,9 @@
       <p:input port="files">
          <p:pipe step="page-xsl" port="result"/>
       </p:input>
+      <p:input port="manifest">
+         <p:empty/>
+      </p:input>
    </proj:build>
 
 </p:declare-step>
