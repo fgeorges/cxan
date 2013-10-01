@@ -8,10 +8,11 @@
    <xs:element name="package">
       <xs:complexType>
          <xs:sequence>
-            <xs:element name="abstract" type="xs:string"/>
-            <xs:element name="author"   type="cxan:identified"/>
-            <xs:element name="category" type="cxan:identified" maxOccurs="unbounded"/>
-            <xs:element name="tag"      type="xs:string"       maxOccurs="unbounded"/>
+            <xs:element name="abstract"   type="xs:string"/>
+            <xs:element name="author"     type="cxan:identified"/>
+            <xs:element name="maintainer" type="cxan:identified" minOccurs="0"/>
+            <xs:element name="category"   type="cxan:identified" maxOccurs="unbounded"/>
+            <xs:element name="tag"        type="xs:string"       maxOccurs="unbounded"/>
          </xs:sequence>
          <xs:attribute name="id" type="xs:NCName"/>
       </xs:complexType>
