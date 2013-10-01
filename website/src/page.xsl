@@ -9,12 +9,10 @@
 
    <pkg:import-uri>http://cxan.org/website/filters/page.xsl</pkg:import-uri>
 
-   <xsl:output method="xhtml"/>
-
    <xsl:param name="analytics-id" as="xs:string?" select="'UA-5463082-6'"/>
 
    <xsl:variable name="context-root" as="xs:string" select="
-       doc('config-params.xml')/c:param-set/c:param[@name eq 'context-root']/@value"/>
+       doc('../../../config-params.xml')/c:param-set/c:param[@name eq 'context-root']/@value"/>
    <!--xsl:variable name="context-root" select="''"/-->
    <!--xsl:param name="context-root" as="xs:string" required="yes"/-->
 
@@ -49,7 +47,7 @@
 
    <xsl:template match="/page">
       <web:response status="{ (@http-code, '200')[1] }" message="{ (@http-message, 'Ok')[1] }">
-         <web:body content-type="text/html">
+         <web:body content-type="text/html" method="xhtml">
             <html>
                <head>
                   <xsl:call-template name="head"/>
@@ -68,7 +66,7 @@
       </title>
       <link rel="stylesheet"    type="text/css"  href="{ $context-root }/style/cxan.css"/>
       <link rel="stylesheet"    type="text/css"  href="{ $context-root }/style/serial.css"/>
-      <link rel="shortcut icon" type="image/png" href="{ $context-root }/images/expath-icon.png"/>
+      <link rel="shortcut icon" type="image/png" href="{ $context-root }/images/icon.png"/>
    </xsl:template>
 
    <xsl:template name="body">
@@ -86,7 +84,6 @@
                <input type="submit" class="submit" value="Search"/>
             </div>
          </form>
-         <div id="headerpic"/>
          <div id="menu">
             <xsl:call-template name="menu">
                <xsl:with-param name="active" select="@menu"/>
@@ -113,13 +110,18 @@
                <xsl:text>CXAN website version </xsl:text>
                <xsl:value-of select="$version"/>
                <xsl:text> (revision #</xsl:text>
-               <xsl:value-of select="$revision"/>
-               <xsl:text>) - Hosted by </xsl:text>
+               <a href="https://github.com/fgeorges/cxan/commit/{ $revision }">
+                  <xsl:value-of select="$revision"/>
+               </a>
+               <xsl:text>)</xsl:text>
+               <br/>
+               <xsl:text>Hosted by </xsl:text>
                <a href="http://h2oconsulting.be/">H2O Consulting</a>
-               <xsl:text> - Powered by </xsl:text>
+               <br/>
+               <xsl:text>Powered by </xsl:text>
                <a href="http://expath.org/">EXPath</a>
                <xsl:text> and </xsl:text>
-               <a href="http://code.google.com/p/servlex/">Servlex</a>
+               <a href="http://servlex.net/">Servlex</a>
             </div>
          </div>
       </div>
