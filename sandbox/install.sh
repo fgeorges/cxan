@@ -37,5 +37,5 @@ xrepo --repo "$BASEDIR/repo" install \
     || die "Error installing EXPath HTTP Client for Saxon"
 
 xrepo --repo "$BASEDIR/repo" install \
-    "$BASEDIR/../website/dist/cxan-website-0.4.0dev.xaw" \
+    "$BASEDIR/../website/dist/cxan-website-0.5.0dev.xaw" \
     || die "Error installing CXAN Website"
