@@ -175,7 +175,7 @@
             <!-- call the library step -->
             <app:upload-package>
                <p:input port="parameters">
-                  <p:document href="../config-params.xml"/>
+                  <p:document href="../../../../config-params.xml"/>
                </p:input>
                <p:with-option name="pkg-id" select="$cxan-id">
                   <p:empty/>
@@ -220,7 +220,7 @@
             <!-- gotta call it twice, because XProc does not support XDM values...! -->
             <p:variable name="user"       select="web:parse-basic-auth($auth)/@username"/>
             <p:variable name="given-pwd"  select="web:parse-basic-auth($auth)/@password"/>
-            <p:variable name="config-pwd" select="doc('../config-users.xml')/users/user[@name eq $user]/@password"/>
+            <p:variable name="config-pwd" select="doc('../../../../config-users.xml')/users/user[@name eq $user]/@password"/>
             <p:choose>
                <!-- not authenticated -->
                <p:when test="not($user) or not($given-pwd) or not($config-pwd) or not($given-pwd eq $config-pwd)">

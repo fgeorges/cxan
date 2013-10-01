@@ -184,7 +184,7 @@
                   <p:pipe port="not-matched" step="request"/>
                </p:input>
                <p:input port="parameters">
-                  <p:document href="../config-params.xml"/>
+                  <p:document href="../../../../config-params.xml"/>
                </p:input>
             </app:page-pkg-put>
          </p:otherwise>

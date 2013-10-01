@@ -77,7 +77,7 @@
    <p:variable name="accept"     select="/web:request/web:header[@name eq 'accept']/@value"/>
    <p:variable name="name-param" select="/web:request/web:param[@name eq 'name']/@value"/>
    <p:variable name="base-uri"   select="/c:param-set/c:param[@name eq 'home-uri']/@value">
-      <p:document href="../config-params.xml"/>
+      <p:document href="../../../../config-params.xml"/>
    </p:variable>
 
    <app:ensure-method accepted="get"/>

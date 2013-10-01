@@ -32,7 +32,7 @@
          <p:with-param name="file" select="$file"/>
          <p:with-param name="filename" select="substring-after($file, '/')"/>
          <p:input port="parameters">
-            <p:document href="../config-params.xml"/>
+            <p:document href="../../../../config-params.xml"/>
          </p:input>
          <p:input port="source">
             <p:empty/>

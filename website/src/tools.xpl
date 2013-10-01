@@ -218,9 +218,6 @@
        The endpoint is the instance REST endpoint.  The optional 'uri' option
        is the path to be added to this endpoint.  It can start with a slash or
        not, it is anyway concatenated to the REST endpoint.
-       
-       TODO: Put config-params.xml out of the package itself.  It must not be
-       changed by the user within the repo where the cxan XAW is installed...
    -->
    <p:declare-step type="app:configure-exist-request" name="config">
       <p:input  port="source" primary="true"/>
@@ -237,7 +234,7 @@
             </p:inline>
          </p:input>
          <p:input port="parameters">
-            <p:document href="config-params.xml"/>
+            <p:document href="../../../config-params.xml"/>
          </p:input>
          <p:with-param name="path" select="
              if ( starts-with($uri, '/') ) then substring($uri, 2) else $uri"/>
