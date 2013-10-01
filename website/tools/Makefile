@@ -5,12 +5,29 @@
 # TODO: An option of wget to create intermediate dirs for output file if necessary?
 #   (instead of explicit mkdir or dirname)
 
-EXIST=/Users/fgeorges/projects/xquery/exist-trunk/eXist/
+# eXist's home dir, to find bin/backup.sh
+EXIST_DIR=/Users/fgeorges/projects/xquery/exist-trunk
 
-xproc:
-	for f in `calabash backup.xproc | egrep -v '^</?files'`; do mkdir -p `dirname files/$$f`; wget -O files/$$f "http://cxan.org/file/$$f"; done
+# CXAN
+#DOMAIN=cxan.org
+#EXIST_PORT=8020
+#FILES_DIR=/usr/local/cxan/files
+# CXAN Sandbox
+DOMAIN=test.cxan.org
+EXIST_PORT=8099
+FILES_DIR=/usr/local/cxan-sandbox/files
 
-# TODO: NPE?!? Report it!
+# eXist password - DO NOT COMMIT IN GIT!
+EXIST_PWD=xxx
+# where to backup?
+BCK_DIR=client-bck
+
 client:
-	$(EXIST)/bin/backup.sh -u admin -p "" -b /db -d client-bck \
-	    -ouri=xmldb:exist://localhost:8080/exist/xmlrpc
+	rm -rf $(BCK_DIR).OLD
+	mv $(BCK_DIR) $(BCK_DIR).OLD
+	mkdir $(BCK_DIR)
+	mkdir $(BCK_DIR)/db
+	mkdir $(BCK_DIR)/db/cxan
+	$(EXIST_DIR)/bin/backup.sh -u cxan -p $(EXIST_PWD) -b /db/cxan -d $(BCK_DIR) \
+	    -ouri=xmldb:exist://$(DOMAIN):$(EXIST_PORT)/exist/xmlrpc
+	scp -r $(DOMAIN):$(FILES_DIR) $(BCK_DIR)/files

@@ -1,6 +1,7 @@
 <c:param-set xmlns:c="http://www.w3.org/ns/xproc-step">
    <c:param name="home-uri"        value="http://localhost:9070/servlex/cxan/"/>
    <c:param name="context-root"    value="/servlex/cxan"/>
+   <c:param name="is-sandbox"      value="true"/>
    <!-- both dirs, so must end with a slash -->
    <c:param name="staging-area"    value="file:/tmp/cxan-staging/"/>
    <c:param name="files-area"      value="file:/usr/local/cxan/files/"/>
