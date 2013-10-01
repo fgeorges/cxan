@@ -136,6 +136,8 @@
          </p:input>
       </app:extract-descriptor>
       <!-- TODO: Validate the structure of the package as well. -->
+      <!-- Impose for instance a strict [0-9].[0-9].[0-9] version number?  It
+           does not make sense to have -preX or -dev versions on CXAN. -->
       <!-- ... -->
    </p:declare-step>
 
@@ -149,14 +151,26 @@
       <!-- the filename of the descriptor within the XAR file -->
       <p:option name="descriptor" required="true"/>
       <!-- extract the descriptor out of the XAR file -->
-      <pxp:unzip>
+      <pxp:unzip name="extract">
          <p:with-option name="file" select="$descriptor"/>
          <p:with-option name="href" select="$href"/>
       </pxp:unzip>
+      <!-- XProject build target adds an @xml:base to the expath-pkg.xml it
+           generates (to the root element pkg:package).  Remove it here as it
+           makes the document not valid.  TODO: Should be removed once we added
+           a way to get rid of it in XProject. -->
+      <p:delete match="/*/@xml:base" name="fix">
+        <p:input port="source">
+          <p:pipe step="extract" port="result"/>
+        </p:input>
+      </p:delete>
       <p:try>
          <p:group>
             <!-- validate -->
             <p:validate-with-xml-schema assert-valid="true">
+               <p:input port="source">
+                  <p:pipe step="fix" port="result"/>
+               </p:input>
                <p:input port="schema">
                   <p:pipe step="this" port="source"/>
                </p:input>
