@@ -20,8 +20,13 @@
                <subtitle>From beta to life</subtitle>
                <details>June 26, 2011</details>
                <para>The CXAN website has just gone in production.</para>
+               <subtitle>Tweet it!</subtitle>
+               <details>February 8, 2013</details>
+               <para>Live from @<link uri="http://twitter.com/xmlprague">xmlprague</link>, launched automatic tweeting
+                 of new uploads to CXAN: @<link uri="http://twitter.com/cxannounce">cxannounce</link> for the main CXAN
+                 site, and @<link uri="http://twitter.com/cxandbox">cxandbox</link> for the CXAN sandbox.</para>
             </page>
-            </p:inline>
+         </p:inline>
       </p:input>
    </p:identity>
 
