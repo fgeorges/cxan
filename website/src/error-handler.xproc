@@ -128,9 +128,11 @@
                                  </info>
                               </row>
                            </named-info>
-                           <code>
-                              <xsl:sequence select="ser:serialize-to-html(web:user-data)"/>
-                           </code>
+                           <xsl:if test="exists(web:user-data)">
+                              <code>
+                                 <xsl:sequence select="ser:serialize-to-html(web:user-data)"/>
+                              </code>
+                           </xsl:if>
                         </page>
                      </xsl:template>
                   </xsl:stylesheet>
