@@ -11,8 +11,6 @@
    <resource pattern="/images/.+\.jpg" media-type="image/jpg"/>
    <resource pattern="/images/.+\.png" media-type="image/png"/>
 
-   <application filters="format errors"/>
-
    <filter name="format">
       <out>
          <xslt uri="http://cxan.org/website/filters/page.xsl"/>
@@ -23,145 +21,194 @@
       <xproc uri="http://cxan.org/website/error-handler.xproc"/>
    </error>
 
-   <!--
-       The homepage.
-   -->
-   <servlet name="home">
-      <xproc uri="http://cxan.org/website/pages/home.xproc"/>
-      <url pattern="/"/>
-   </servlet>
+   <group filters="format errors">
 
-   <!--
-       The news page.
-   -->
-   <servlet name="news">
-      <xproc uri="http://cxan.org/website/pages/news.xproc"/>
-      <url pattern="/news"/>
-   </servlet>
+      <!--
+          The homepage.
+      -->
+      <servlet name="home">
+         <xproc uri="http://cxan.org/website/pages/home.xproc"/>
+         <url pattern="/"/>
+      </servlet>
 
-   <!--
-       The FAQ.
-   -->
-   <servlet name="faq">
-      <xproc uri="http://cxan.org/website/pages/faq.xproc"/>
-      <url pattern="/faq"/>
-   </servlet>
+      <!--
+          The news page.
+      -->
+      <servlet name="news">
+         <xproc uri="http://cxan.org/website/pages/news.xproc"/>
+         <url pattern="/news"/>
+      </servlet>
 
-   <!--
-       The "about" page.
-   -->
-   <servlet name="about">
-      <xproc uri="http://cxan.org/website/pages/about.xproc"/>
-      <url pattern="/about"/>
-   </servlet>
+      <!--
+          The FAQ.
+      -->
+      <servlet name="faq">
+         <xproc uri="http://cxan.org/website/pages/faq.xproc"/>
+         <url pattern="/faq"/>
+      </servlet>
 
-   <!--
-       The file download service.
-   -->
-   <servlet name="file">
-      <xproc uri="http://cxan.org/website/pages/file.xproc"/>
-      <url pattern="/file/(.+)">
-         <match group="1" name="file"/>
-      </url>
-   </servlet>
-   <servlet name="file-srv">
-      <xproc uri="http://cxan.org/website/pages/file.xproc"/>
-      <url pattern="/file"/>
-   </servlet>
+      <!--
+          The "about" page.
+      -->
+      <servlet name="about">
+         <xproc uri="http://cxan.org/website/pages/about.xproc"/>
+         <url pattern="/about"/>
+      </servlet>
 
-   <!--
-       The package list.
-   -->
-   <servlet name="pkg-list">
-      <xproc uri="http://cxan.org/website/pages/pkg-list.xproc"/>
-      <url pattern="/pkg"/>
-   </servlet>
+      <!--
+          The file download service.
+      -->
+      <servlet name="file">
+         <xproc uri="http://cxan.org/website/pages/file.xproc"/>
+         <url pattern="/file/(.+)">
+            <match group="1" name="file"/>
+         </url>
+      </servlet>
+      <servlet name="file-srv">
+         <xproc uri="http://cxan.org/website/pages/file.xproc"/>
+         <url pattern="/file"/>
+      </servlet>
 
-   <!--
-       A specific package, given its ID (an abbrev).
-   -->
-   <servlet name="pkg">
-      <xproc uri="http://cxan.org/website/pages/pkg.xproc"/>
-      <url pattern="/pkg/([^/]+)">
-         <match group="1" name="id"/>
-      </url>
-   </servlet>
+      <!--
+          The package list.
+      -->
+      <servlet name="pkg-list">
+         <xproc uri="http://cxan.org/website/pages/pkg-list.xproc"/>
+         <url pattern="/pkg"/>
+      </servlet>
 
-   <!--
-       The upload form.
-       
-       The REST-like interface uses POST to /pkg/{id}, but HTML pages must use
-       a dedicated upload target (because they cannot POST anything they want,
-       only form/data).  So this URI is both the HTML form (when GET) and the
-       upload form target (when POST).
-       
-       TODO: Maybe using XForms can solve this issue?
-   -->
-   <servlet name="upload">
-      <xproc uri="http://cxan.org/website/pages/upload.xproc"/>
-      <url pattern="/upload"/>
-   </servlet>
+      <!--
+          A specific package, given its ID (an abbrev).
+      -->
+      <servlet name="pkg">
+         <xproc uri="http://cxan.org/website/pages/pkg.xproc"/>
+         <url pattern="/pkg/([^/]+)">
+            <match group="1" name="id"/>
+         </url>
+      </servlet>
 
-   <!--
-       The author list.
-   -->
-   <servlet name="author-list">
-      <xproc uri="http://cxan.org/website/pages/author-list.xproc"/>
-      <url pattern="/author"/>
-   </servlet>
+      <!--
+          The upload form.
 
-   <!--
-       A specific author, given his/her ID (an abbrev).
-   -->
-   <servlet name="author">
-      <xproc uri="http://cxan.org/website/pages/author.xproc"/>
-      <url pattern="/author/([^/]+)">
-         <match group="1" name="author"/>
-      </url>
-   </servlet>
+          The REST-like interface uses POST to /pkg/{id}, but HTML pages must use
+          a dedicated upload target (because they cannot POST anything they want,
+          only form/data).  So this URI is both the HTML form (when GET) and the
+          upload form target (when POST).
 
-   <!--
-       The category list.
-   -->
-   <servlet name="category-list">
-      <xproc uri="http://cxan.org/website/pages/category-list.xproc"/>
-      <url pattern="/cat"/>
-   </servlet>
+          TODO: Maybe using XForms can solve this issue?
+      -->
+      <servlet name="upload">
+         <xproc uri="http://cxan.org/website/pages/upload.xproc"/>
+         <url pattern="/upload"/>
+      </servlet>
 
-   <!--
-       A specific category, given its ID.
-   -->
-   <servlet name="categories">
-      <xproc uri="http://cxan.org/website/pages/categories.xproc"/>
-      <url pattern="/cat/(.+)">
-         <match group="1" name="category"/>
-      </url>
-   </servlet>
+      <!--
+          The author list.
+      -->
+      <servlet name="author-list">
+         <xproc uri="http://cxan.org/website/pages/author-list.xproc"/>
+         <url pattern="/author"/>
+      </servlet>
 
-   <!--
-       The tag list.
-   -->
-   <servlet name="tag-list">
-      <xproc uri="http://cxan.org/website/pages/tag-list.xproc"/>
-      <url pattern="/tag"/>
-   </servlet>
+      <!--
+          A specific author, given his/her ID (an abbrev).
+      -->
+      <servlet name="author">
+         <xproc uri="http://cxan.org/website/pages/author.xproc"/>
+         <url pattern="/author/([^/]+)">
+            <match group="1" name="author"/>
+         </url>
+      </servlet>
 
-   <!--
-       A specific tag (maybe several tags, connected by a logical AND).
-   -->
-   <servlet name="tags">
-      <xproc uri="http://cxan.org/website/pages/tags.xproc"/>
-      <url pattern="/tag/(.+)">
-         <match group="1" name="tags"/>
-      </url>
-   </servlet>
+      <!--
+          The category list.
+      -->
+      <servlet name="category-list">
+         <xproc uri="http://cxan.org/website/pages/category-list.xproc"/>
+         <url pattern="/cat"/>
+      </servlet>
 
-   <!--
-       The search tool.
-   -->
-   <servlet name="search">
-      <xproc uri="http://cxan.org/website/pages/search.xproc"/>
-      <url pattern="/search"/>
-   </servlet>
+      <!--
+          A specific category, given its ID.
+      -->
+      <servlet name="categories">
+         <xproc uri="http://cxan.org/website/pages/categories.xproc"/>
+         <url pattern="/cat/(.+)">
+            <match group="1" name="category"/>
+         </url>
+      </servlet>
+
+      <!--
+          The tag list.
+      -->
+      <servlet name="tag-list">
+         <xproc uri="http://cxan.org/website/pages/tag-list.xproc"/>
+         <url pattern="/tag"/>
+      </servlet>
+
+      <!--
+          A specific tag (maybe several tags, connected by a logical AND).
+      -->
+      <servlet name="tags">
+         <xproc uri="http://cxan.org/website/pages/tags.xproc"/>
+         <url pattern="/tag/(.+)">
+            <match group="1" name="tags"/>
+         </url>
+      </servlet>
+
+      <!--
+          The search tool.
+      -->
+      <servlet name="search">
+         <xproc uri="http://cxan.org/website/pages/search.xproc"/>
+         <url pattern="/search"/>
+      </servlet>
+
+      <!--
+          Authentication filter for admin pages.
+      -->
+      <filter name="admin-auth">
+         <in>
+            <xslt uri="http://cxan.org/website/filters/admin-auth.xsl"/>
+         </in>
+      </filter>
+
+      <!--group filters="admin-auth"-->
+
+         <!--
+             The admin console.
+         -->
+         <servlet name="console">
+            <xproc uri="http://cxan.org/website/pages/admin/console.xproc"/>
+            <url pattern="/admin/"/>
+         </servlet>
+
+         <!--
+             The export tool.
+         -->
+         <servlet name="export">
+            <xproc uri="http://cxan.org/website/pages/admin/export.xproc"/>
+            <url pattern="/admin/export"/>
+         </servlet>
+
+         <!--
+             The import tool.
+         -->
+         <servlet name="import">
+            <xproc uri="http://cxan.org/website/pages/admin/import.xproc"/>
+            <url pattern="/admin/import"/>
+         </servlet>
+
+         <!--
+             The consistency check tool.
+         -->
+         <servlet name="check">
+            <xproc uri="http://cxan.org/website/pages/admin/check.xproc"/>
+            <url pattern="/admin/check"/>
+         </servlet>
+
+      <!--/group-->
+
+    </group>
 
 </webapp>
