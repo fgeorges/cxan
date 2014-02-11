@@ -2,7 +2,7 @@
         xmlns:app="http://cxan.org/ns/website"
         name="http://cxan.org/website"
         abbrev="cxan"
-        version="0.1.0">
+        version="0.6.0dev">
 
    <title>CXAN website</title>
 
