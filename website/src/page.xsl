@@ -13,20 +13,11 @@
 
    <xsl:variable name="context-root" as="xs:string" select="
        doc('../../../config-params.xml')/c:param-set/c:param[@name eq 'context-root']/@value"/>
-   <!--xsl:variable name="context-root" select="''"/-->
-   <!--xsl:param name="context-root" as="xs:string" required="yes"/-->
 
    <xsl:variable name="version"  select="'@@VERSION@@'"/>
    <xsl:variable name="revision" select="'@@REVISION@@'"/>
 
    <xsl:template match="/">
-      <!-- DEBUG: Log the page doc and the result. -->
-      <!--xsl:message>
-         INPUT: <xsl:copy-of select="."/>
-      </xsl:message>
-      <xsl:message>
-         RESULT: <xsl:apply-templates select="*"/>
-      </xsl:message-->
       <xsl:apply-templates select="*"/>
    </xsl:template>
 
@@ -48,7 +39,7 @@
    <xsl:template match="/page">
       <web:response status="{ (@http-code, '200')[1] }" message="{ (@http-message, 'Ok')[1] }">
          <web:body content-type="text/html" method="xhtml">
-            <html>
+            <html lang="en">
                <head>
                   <xsl:call-template name="head"/>
                </head>
@@ -61,68 +52,42 @@
    </xsl:template>
 
    <xsl:template name="head">
+      <meta charset="utf-8"/>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1"/>
       <title>
          <xsl:value-of select="title"/>
       </title>
-      <link rel="stylesheet"    type="text/css"  href="{ $context-root }/style/cxan.css"/>
-      <link rel="stylesheet"    type="text/css"  href="{ $context-root }/style/serial.css"/>
-      <link rel="shortcut icon" type="image/png" href="{ $context-root }/images/icon.png"/>
+      <link rel="stylesheet" type="text/css" href="{ $context-root }/style/bootstrap.css"/>
+      <link rel="stylesheet" type="text/css" href="{ $context-root }/style/cxan.css"/>
+      <link rel="stylesheet" type="text/css" href="{ $context-root }/style/serial.css"/>
    </xsl:template>
 
    <xsl:template name="body">
-      <div id="upbg"/>
-      <div id="outer">
-         <div id="header">
-            <div id="headercontent">
-               <h1>CXAN</h1>
-               <h2>(: <i>Organizing and Delivering XML Packages, Libraries and Applications</i> :)</h2>
-            </div>
+      <div id="wrap">
+         <xsl:call-template name="navbar">
+            <xsl:with-param name="active" select="@menu"/>
+         </xsl:call-template>
+         <div class="container">
+            <xsl:apply-templates select="*"/>
          </div>
-         <form method="get" action="search">
-            <div id="search">
-               <input type="text" class="text" maxlength="64" name="q" value=""/>
-               <input type="submit" class="submit" value="Search"/>
-            </div>
-         </form>
-         <div id="menu">
-            <xsl:call-template name="menu">
-               <xsl:with-param name="active" select="@menu"/>
-            </xsl:call-template>
-         </div>
-         <div id="menubottom"/>
-         <div id="content">
-            <div class="normalcontent">
-               <xsl:for-each-group select="*" group-starting-with="title|subtitle">
-                  <xsl:apply-templates select="." mode="group"/>
-               </xsl:for-each-group>
-            </div>
-         </div>
-         <div id="footer">
-            <div class="left">
-               <a href="http://validator.w3.org/check?uri=referer">
-                  <img src="{ $context-root }/images/valid-xhtml11.gif" alt="Valid XHTML 1.1" style="border: 0;"/>
-               </a>
-               <a href="http://jigsaw.w3.org/css-validator/check/referer">
-                  <img src="{ $context-root }/images/valid-css.gif" alt="Valid CSS!" style="border: 0;"/>
-               </a>
-            </div>
-            <div class="right">
+      </div>
+      <div id="footer">
+         <div class="container">
+            <p class="text-muted">
                <xsl:text>CXAN website version </xsl:text>
                <xsl:value-of select="$version"/>
                <xsl:text> (revision #</xsl:text>
                <a href="https://github.com/fgeorges/cxan/commit/{ $revision }">
                   <xsl:value-of select="$revision"/>
                </a>
-               <xsl:text>)</xsl:text>
-               <br/>
-               <xsl:text>Hosted by </xsl:text>
+               <xsl:text>) - Hosted by </xsl:text>
                <a href="http://h2oconsulting.be/">H2O Consulting</a>
-               <br/>
-               <xsl:text>Powered by </xsl:text>
+               <xsl:text> - Powered by </xsl:text>
                <a href="http://expath.org/">EXPath</a>
                <xsl:text> and </xsl:text>
                <a href="http://servlex.net/">Servlex</a>
-            </div>
+            </p>
          </div>
       </div>
       <xsl:if test="exists($analytics-id)">
@@ -141,21 +106,9 @@
       </xsl:if>
    </xsl:template>
 
-   <xsl:template match="title|subtitle" mode="group">
-      <xsl:apply-templates select="."/>
-      <div class="contentarea">
-         <xsl:apply-templates select="current-group()[position() gt 1]"/>
-      </div>
-   </xsl:template>
-
-   <xsl:template match="*" mode="group">
-      <xsl:apply-templates select="current-group()"/>
-   </xsl:template>
-
-   <xsl:template name="menu">
+   <xsl:template name="navbar">
       <xsl:param name="active" as="xs:string?"/>
       <xsl:variable name="items" as="element()+">
-         <item name="home"   href="{ $context-root }/"       title="CXAN Home">Home</item>
          <item name="news"   href="{ $context-root }/news"   title="CXAN News">News</item>
          <item name="pkg"    href="{ $context-root }/pkg"    title="Packages by name">Packages</item>
          <item name="author" href="{ $context-root }/author" title="Packages by author">Authors</item>
@@ -165,21 +118,37 @@
          <item name="about"  href="{ $context-root }/about"  title="About CXAN">About</item>
          <item name="upload" href="{ $context-root }/upload" title="Upload a new package">Upload</item>
       </xsl:variable>
-      <ul>
-         <xsl:for-each select="$items">
-            <li>
-               <xsl:if test="@name eq 'upload'">
-                  <xsl:attribute name="class" select="'right'"/>
-               </xsl:if>
-               <a href="{ @href }" title="{ @title }">
-                  <xsl:if test="$active eq @name">
-                     <xsl:attribute name="class" select="'active'"/>
-                  </xsl:if>
-                  <xsl:value-of select="."/>
-               </a>
-            </li>
-         </xsl:for-each>
-      </ul>
+      <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+         <div class="container">
+            <div class="navbar-header">
+               <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                  <span class="sr-only">Toggle navigation</span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+               </button>
+               <a class="navbar-brand" href="/">CXAN</a>
+            </div>
+            <div class="collapse navbar-collapse">
+               <ul class="nav navbar-nav">
+                  <xsl:for-each select="$items">
+                     <li>
+                        <xsl:if test="$active eq @name">
+                           <xsl:attribute name="class" select="'active'"/>
+                        </xsl:if>
+                        <!-- TODO: How to do this in the new UI? -->
+                        <xsl:if test="@name eq 'upload'">
+                           <xsl:attribute name="class" select="'right'"/>
+                        </xsl:if>
+                        <a href="{ @href }" title="{ @title }">
+                           <xsl:value-of select="."/>
+                        </a>
+                     </li>
+                  </xsl:for-each>
+               </ul>
+            </div>
+         </div>
+      </div>
    </xsl:template>
 
    <xsl:template match="*" priority="-1">
@@ -190,19 +159,31 @@
       <xsl:text>.&gt;</xsl:text>
    </xsl:template>
 
+   <xsl:template match="starter">
+      <div class="starter-template">
+         <h1>
+            <xsl:apply-templates select="title/node()"/>
+         </h1>
+         <p class="lead">
+            <xsl:for-each select="subtitle">
+               <xsl:if test="position() gt 1">
+                  <br/>
+               </xsl:if>
+               <xsl:apply-templates/>
+            </xsl:for-each>
+         </p>
+      </div>
+   </xsl:template>
+
    <xsl:template match="title">
-      <h3>
-         <strong>
-            <xsl:apply-templates/>
-         </strong>
-      </h3>
+      <h2>
+         <xsl:apply-templates/>
+      </h2>
    </xsl:template>
 
    <xsl:template match="subtitle">
       <h4>
-         <strong>
-            <xsl:apply-templates/>
-         </strong>
+         <xsl:apply-templates/>
       </h4>
    </xsl:template>
 
@@ -271,25 +252,32 @@
    </xsl:template>
 
    <xsl:template match="table">
-      <table border="1pt">
+      <table class="table table-hover">
          <xsl:if test="exists(column)">
             <thead>
-               <xsl:for-each select="column">
-                  <td>
-                     <xsl:apply-templates/>
-                  </td>
-               </xsl:for-each>
+               <tr>
+                  <xsl:for-each select="column">
+                     <th>
+                        <xsl:apply-templates/>
+                     </th>
+                  </xsl:for-each>
+               </tr>
             </thead>
          </xsl:if>
-         <xsl:for-each select="row">
-            <tr>
-               <xsl:for-each select="cell">
-                  <td>
-                     <xsl:apply-templates/>
-                  </td>
-               </xsl:for-each>
-            </tr>
-         </xsl:for-each>
+         <tbody>
+            <xsl:for-each select="row">
+               <tr>
+                  <xsl:if test="desc">
+                     <xsl:attribute name="title" select="desc"/>
+                  </xsl:if>
+                  <xsl:for-each select="cell">
+                     <td>
+                        <xsl:apply-templates/>
+                     </td>
+                  </xsl:for-each>
+               </tr>
+            </xsl:for-each>
+         </tbody>
       </table>
    </xsl:template>
 

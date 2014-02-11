@@ -30,8 +30,11 @@
                </xsl:function>
                <xsl:template name="main">
                   <page menu="home">
-                     <title>CXAN</title>
-                     <image src="images/cezanne.jpg" alt="Cezanne"/>
+                     <starter>
+                        <title>CXAN</title>
+                        <subtitle>(: <italic>Organizing and Delivering XML Packages, Libraries and Applications</italic> :)</subtitle>
+                        <subtitle>The Comprehensive XML Archive Network.</subtitle>
+                     </starter>
                      <para>CXAN stands for <italic>Comprehensive XML Archive Network</italic>. If you know
                         CTAN or CPAN, resp. for (La)TeX and Perl, then you already understood what this
                         website is all about: providing a central place to collect and organize existing
