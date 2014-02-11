@@ -35,7 +35,19 @@
                             for $pkg in doc('/db/cxan/packages.xml')/packages/pkg[name eq $name]
                             order by $pkg/@id
                             return
-                              &lt;pkg>{ string($pkg/@id) }&lt;/pkg>
+                              &lt;pkg>
+                                &lt;id>{ string($pkg/@id) }&lt;/id>
+                                {
+                                  let $ver := ( for $v in $pkg/version/@id order by $v descending return $v )[1]
+                                  let $uri := concat('/db/cxan/packages/', $pkg/@id, '/', $ver, '/cxan.xml')
+                                  let $abs := doc($uri)/cxan:package/cxan:abstract
+                                  return
+                                    if ( exists($abs) ) then
+                                      &lt;desc>{ normalize-space($abs) }&lt;/desc>
+                                    else
+                                      ()
+                                }
+                              &lt;/pkg>
                           }
                           &lt;/packages>
                      </c:data>
@@ -52,11 +64,25 @@
                <p:input port="source">
                   <p:inline>
                      <c:data>
+                        declare namespace cxan = "http://cxan.org/ns/package";
                         &lt;packages> {
                           for $pkg in doc('/db/cxan/packages.xml')/packages/pkg
                           order by $pkg/@id
                           return
-                            &lt;pkg name="{ $pkg/name }">{ string($pkg/@id) }&lt;/pkg>
+                            &lt;pkg>
+                              &lt;id>{ string($pkg/@id) }&lt;/id>
+                              &lt;name>{ string($pkg/name) }&lt;/name>
+                              {
+                                let $ver := ( for $v in $pkg/version/@id order by $v descending return $v )[1]
+                                let $uri := concat('/db/cxan/packages/', $pkg/@id, '/', $ver, '/cxan.xml')
+                                let $abs := doc($uri)/cxan:package/cxan:abstract
+                                return
+                                  if ( exists($abs) ) then
+                                    &lt;desc>{ normalize-space($abs) }&lt;/desc>
+                                  else
+                                    ()
+                              }
+                            &lt;/pkg>
                         }
                         &lt;/packages>
                      </c:data>
