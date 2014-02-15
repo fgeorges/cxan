@@ -4,7 +4,6 @@
            xmlns:app="http://cxan.org/ns/website"
            xmlns:da="http://cxan.org/ns/website/data-access"
            xmlns:edb="http://cxan.org/ns/website/exist-db"
-           xmlns="http://www.w3.org/1999/xhtml"
            exclude-inline-prefixes="c pkg"
            version="1.0"
            pkg:import-uri="http://cxan.org/ns/website/data-access.xpl">
@@ -16,7 +15,7 @@
    -->
 
    <p:declare-step type="da:list-packages">
-      <p:documentation>
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Return the packages from the database.</p>
          <p>All the packages are returned database. The returned document is of the
             following format (a list of "pkg" elements, each with mandatory "id" and "name",
@@ -46,7 +45,7 @@
    </p:declare-step>
 
    <p:declare-step type="da:packages-by-name">
-      <p:documentation>
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Return the packages from the database, with a given name.</p>
          <p>The packages with a given name are returned database. The returned
             document is of the following format (a list of "pkg" elements, each with mandatory "id"
@@ -72,7 +71,7 @@
    </p:declare-step>
 
    <p:declare-step type="da:package-details">
-      <p:documentation>
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Return details of a packages, given its CXAN ID.</p>
          <p>The details of the package, given its CXAN ID provided through the option
             "id", include its descriptor in the database package list, the package descriptor for
@@ -109,7 +108,7 @@
    -->
 
    <p:declare-step type="da:list-tags">
-      <p:documentation>
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Return the tags from the database.</p>
          <p>The tags are organized as a simple list. The returned document is of the
             following format (lexicographically ordered by tag name):</p>
@@ -130,7 +129,7 @@
    </p:declare-step>
 
    <p:declare-step type="da:packages-by-tags">
-      <p:documentation>
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Return packages matching given tags.</p>
          <p>The tags are passed through the option "tags", as a slash-separated list
             of tags (e.g. "foo/bar" means both tags "foo" and "bar"). The returned document include
@@ -165,7 +164,7 @@
    -->
 
    <p:declare-step type="da:list-categories">
-      <p:documentation>
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Return the categories tree from the database.</p>
          <p>The categories are organized as a tree. That tree is stored in the
             database. The returned document is of the following format:</p>
@@ -197,7 +196,7 @@
    </p:declare-step>
 
    <p:declare-step type="da:packages-by-category">
-      <p:documentation>
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Return packages within a specific category.</p>
          <p>The category is passed through the option "category", by using the
             category ID. The returned document is of the following format (note that categories can
@@ -233,7 +232,7 @@
    -->
 
    <p:declare-step type="da:list-authors">
-      <p:documentation>
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Return all distinct authors in the CXAN descriptors.</p>
          <p>The returned document is of the following format:</p>
          <pre><![CDATA[
@@ -253,7 +252,7 @@
    </p:declare-step>
 
    <p:declare-step type="da:packages-by-author">
-      <p:documentation>
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Return packages with a specific author.</p>
          <p>A package can have several authors. The author is passed through the
             option "author", by using the author ID. The returned document is of the following
@@ -279,7 +278,7 @@
    -->
 
    <p:declare-step type="da:package-file-by-id">
-      <p:documentation>
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Return a package XAR file from a CXAN ID.</p>
          <p>The file is returned as a document with a single element, containing the
             file location:</p>
@@ -297,7 +296,7 @@
    </p:declare-step>
 
    <p:declare-step type="da:package-file-by-name">
-      <p:documentation>
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Return a package XAR file from a package name URI.</p>
          <p>The file is returned as a document with a single element, containing the
             file location:</p>
@@ -319,7 +318,7 @@
    -->
 
    <p:declare-step type="da:suck-database">
-      <p:documentation>
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Return all documents in the CXAN collection.</p>
          <p>The returned document is of the following format:</p>
          <pre><![CDATA[
@@ -345,7 +344,7 @@
    </p:declare-step>
 
    <p:declare-step type="da:restore-backup">
-      <p:documentation>
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Restore a backup.</p>
          <p>The input port is the backup (a document as those created by
             da:suck-database). The backup document is inserted in the database into the CXAN
