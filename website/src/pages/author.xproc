@@ -3,6 +3,7 @@
             xmlns:pkg="http://expath.org/ns/pkg"
             xmlns:web="http://expath.org/ns/webapp"
             xmlns:app="http://cxan.org/ns/website"
+            xmlns:da="http://cxan.org/ns/website/data-access"
             xmlns:exist="http://exist.sourceforge.net/NS/exist"
             pkg:import-uri="http://cxan.org/website/pages/author.xproc"
             name="pipeline"
@@ -14,40 +15,16 @@
    -->
 
    <p:import href="../tools.xpl"/>
+   <p:import href="../data-access/data-access.xpl"/>
 
-   <p:variable name="id"     select="/web:request/web:path/web:match[@name eq 'author']"/>
-   <p:variable name="id-str" select="replace($id, '''', '''''')"/>
+   <p:variable name="id" select="/web:request/web:path/web:match[@name eq 'author']"/>
 
    <app:ensure-method accepted="get"/>
    <p:sink/>
 
-   <p:identity>
-      <p:input port="source">
-         <p:inline>
-            <c:data>
-               declare namespace cxan = "http://cxan.org/ns/package";
-               let $id := '<app:id/>'
-               let $pp := collection('/db/cxan/packages/')/cxan:package[cxan:author/@id = $id]
-               return (
-                 &lt;author>{ ( $pp/cxan:author[@id = $id] )[1]/string(.) }&lt;/author>,
-                 for $p in distinct-values($pp/@id)
-                 order by $p
-                 return
-                   &lt;pkg id="{ $p }"/>
-               )
-            </c:data>
-         </p:inline>
-      </p:input>
-   </p:identity>
-
-   <!-- paste the author id within the query -->
-   <p:string-replace match="app:id">
-      <!-- the *value* of this option is an XPath expression, in this case a
-           literal string, that is, the quoted string "'the-id'" -->
-      <p:with-option name="replace" select="concat('''', $id-str, '''')"/>
-   </p:string-replace>
-
-   <app:query-exist/>
+   <da:packages-by-author>
+      <p:with-option name="author" select="$id"/>
+   </da:packages-by-author>
 
    <p:xslt>
       <p:input port="stylesheet">

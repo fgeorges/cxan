@@ -3,36 +3,21 @@
             xmlns:pkg="http://expath.org/ns/pkg"
             xmlns:web="http://expath.org/ns/webapp"
             xmlns:app="http://cxan.org/ns/website"
+            xmlns:da="http://cxan.org/ns/website/data-access"
             xmlns:exist="http://exist.sourceforge.net/NS/exist"
             pkg:import-uri="http://cxan.org/website/pages/tag-list.xproc"
             name="pipeline"
             version="1.0">
 
    <p:import href="../tools.xpl"/>
+   <p:import href="../data-access/data-access.xpl"/>
 
    <p:variable name="accept" select="/web:request/web:header[@name eq 'accept']/@value"/>
 
    <app:ensure-method accepted="get"/>
    <p:sink/>
 
-   <!-- TODO: Add windowing. -->
-   <app:query-exist>
-      <p:log href="/tmp/tags.log" port="result"/>
-      <p:input port="source">
-         <p:inline>
-            <c:data>
-               declare namespace cxan = "http://cxan.org/ns/package";
-               &lt;tags> {
-                 for $t in distinct-values(collection('/db/cxan/packages/')/cxan:package/cxan:tag)
-                 order by $t
-                 return
-                   &lt;tag>{ $t }&lt;/tag>
-               }
-               &lt;/tags>
-            </c:data>
-         </p:inline>
-      </p:input>
-   </app:query-exist>
+   <da:list-tags/>
 
    <!--app:format-result>
       <!- - to pass the Accept: haeder - ->

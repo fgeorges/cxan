@@ -7,12 +7,14 @@
            xmlns:pkg="http://expath.org/ns/pkg"
            xmlns:web="http://expath.org/ns/webapp"
            xmlns:app="http://cxan.org/ns/website"
+           xmlns:edb="http://cxan.org/ns/website/exist-db"
            xmlns:cxan="http://cxan.org/ns/package"
            xmlns:exist="http://exist.sourceforge.net/NS/exist"
            pkg:import-uri="##none"
            version="1.0">
 
    <p:import href="http://xmlcalabash.com/extension/steps/library-1.0.xpl"/>
+   <p:import href="data-access/data-access.xpl"/>
 
    <!--
        Main entry point.  Get the XAR and additional files and update the website.
@@ -258,25 +260,25 @@
             <p:with-option name="pkg-version" select="$version"/>
          </app:save-and-add-file>
       </p:for-each>
-      <app:insert-doc>
+      <edb:insert-doc>
          <p:input port="source">
             <p:pipe step="record" port="source"/>
          </p:input>
          <p:with-option name="uri" select="
              concat('/db/cxan/packages/', $cxan-id, '/', $version, '/expath-pkg.xml')"/>
-      </app:insert-doc>
+      </edb:insert-doc>
       <p:try>
          <p:group>
             <pxp:unzip file="cxan.xml" name="unzip-cxan">
                <p:with-option name="href" select="$target"/>
             </pxp:unzip>
-            <app:insert-doc>
+            <edb:insert-doc>
                <p:input port="source">
                   <p:pipe step="unzip-cxan" port="result"/>
                </p:input>
                <p:with-option name="uri" select="
                    concat('/db/cxan/packages/', $cxan-id, '/', $version, '/cxan.xml')"/>
-            </app:insert-doc>
+            </edb:insert-doc>
          </p:group>
          <p:catch>
             <!-- pxp:unzip throw an error if cxan.xml does not exist: ignore -->
@@ -340,7 +342,11 @@
          <p:with-param name="file"    select="replace($path, '''', '''''')"/>
       </p:template>
       <!-- do it! -->
-      <app:query-exist/>
+      <edb:query-exist>
+         <p:input port="parameters">
+            <p:empty/>
+         </p:input>
+      </edb:query-exist>
       <!-- TODO: Check the result! -->
       <p:sink/>
    </p:declare-step>
@@ -391,9 +397,12 @@
          <p:with-param name="version" select="replace($version, '''', '''''')"/>
       </p:template>
       <!-- send the request to eXist -->
-      <app:query-exist>
+      <edb:query-exist>
          <p:log href="/tmp/yo-yo.log" port="result"/>
-      </app:query-exist>
+         <p:input port="parameters">
+            <p:empty/>
+         </p:input>
+      </edb:query-exist>
       <!-- check the result -->
       <p:choose>
          <!-- 1. if the packages.xml doc does not exist, create it (+ the pkg) -->
@@ -414,7 +423,7 @@
                <p:with-param name="id"   select="$id"/>
                <p:with-param name="name" select="$name"/>
             </p:template>
-            <app:insert-doc uri="/db/cxan/packages.xml"/>
+            <edb:insert-doc uri="/db/cxan/packages.xml"/>
          </p:when>
          <!-- 2. if the pkg does not exist, create it (w/o any version) -->
          <p:when test="empty(exist:result/pkg)">
@@ -436,7 +445,11 @@
                <p:with-param name="id"   select="$id"/>
                <p:with-param name="name" select="$name"/>
             </p:template>
-            <app:query-exist/>
+            <edb:query-exist>
+               <p:input port="parameters">
+                  <p:empty/>
+               </p:input>
+            </edb:query-exist>
             <p:sink/>
          </p:when>
          <!-- 3. if the version exists -> error -->
@@ -508,7 +521,11 @@
          <p:with-option name="replace" select="concat('''', $name-str, '''')"/>
       </p:string-replace>
       <!-- send the request to eXist -->
-      <app:query-exist/>
+      <edb:query-exist>
+         <p:input port="parameters">
+            <p:empty/>
+         </p:input>
+      </edb:query-exist>
       <!-- TODO: Check the result! -->
       <p:sink/>
    </p:declare-step>
@@ -558,9 +575,14 @@
       <!-- paste the file within the query -->
       <p:string-replace match="app:file">
          <p:with-option name="replace" select="concat('''', $file-str, '''')"/>
+<p:log port="result" href="/tmp/yo-11"/>
       </p:string-replace>
       <!-- send the request to eXist -->
-      <app:query-exist/>
+      <edb:query-exist>
+         <p:input port="parameters">
+            <p:empty/>
+         </p:input>
+      </edb:query-exist>
       <!-- TODO: Check the result! -->
       <p:sink/>
    </p:declare-step>

@@ -3,27 +3,21 @@
             xmlns:pkg="http://expath.org/ns/pkg"
             xmlns:web="http://expath.org/ns/webapp"
             xmlns:app="http://cxan.org/ns/website"
+            xmlns:da="http://cxan.org/ns/website/data-access"
             xmlns:exist="http://exist.sourceforge.net/NS/exist"
             pkg:import-uri="http://cxan.org/website/pages/category-list.xproc"
             name="pipeline"
             version="1.0">
 
    <p:import href="../tools.xpl"/>
+   <p:import href="../data-access/data-access.xpl"/>
 
    <p:variable name="accept" select="/web:request/web:header[@name eq 'accept']/@value"/>
 
    <app:ensure-method accepted="get"/>
    <p:sink/>
 
-   <app:query-exist>
-      <p:input port="source">
-         <p:inline>
-            <c:data>
-               doc('/db/cxan/categories.xml')
-            </c:data>
-         </p:inline>
-      </p:input>
-   </app:query-exist>
+   <da:list-categories/>
 
    <p:choose>
       <p:when test="$accept eq 'application/xml'">

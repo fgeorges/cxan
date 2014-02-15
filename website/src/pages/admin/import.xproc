@@ -3,6 +3,7 @@
             xmlns:pkg="http://expath.org/ns/pkg"
             xmlns:web="http://expath.org/ns/webapp"
             xmlns:app="http://cxan.org/ns/website"
+            xmlns:da="http://cxan.org/ns/website/data-access"
             pkg:import-uri="http://cxan.org/website/pages/admin/import.xproc"
             name="pipeline"
             version="1.0">
@@ -14,6 +15,7 @@
    -->
 
    <p:import href="../../tools.xpl"/>
+   <p:import href="../../data-access/data-access.xpl"/>
 
    <!--
        TODO: Adapted from app:page-upload-prepare-file in upload.xproc,
@@ -72,13 +74,8 @@
             <p:pipe step="pipeline" port="source"/>
          </p:input>
       </app:page-import-get-file>
-      <app:insert-doc uri="/db/cxan/backup.xml"/>
 
-      <app:query-exist>
-         <p:input port="source">
-            <p:data href="import.xq" content-type="text/plain"/>
-         </p:input>
-      </app:query-exist>
+      <da:restore-backup/>
 
       <p:choose>
          <p:when test="$accept eq 'application/xml'">

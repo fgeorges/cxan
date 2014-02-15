@@ -3,12 +3,14 @@
             xmlns:pkg="http://expath.org/ns/pkg"
             xmlns:web="http://expath.org/ns/webapp"
             xmlns:app="http://cxan.org/ns/website"
+            xmlns:da="http://cxan.org/ns/website/data-access"
             xmlns:exist="http://exist.sourceforge.net/NS/exist"
             pkg:import-uri="http://cxan.org/website/pages/tags.xproc"
             name="pipeline"
             version="1.0">
 
    <p:import href="../tools.xpl"/>
+   <p:import href="../data-access/data-access.xpl"/>
 
    <!--
        A specific tag (maybe several tags, connected by a logical AND).
@@ -18,55 +20,15 @@
        tags that can be used with the current tags, to have a non-empty intersection).
    -->
 
-   <p:variable name="tags"     select="/web:request/web:path/web:match[@name eq 'tags']"/>
-   <p:variable name="tags-str" select="replace($tags, '''', '''''')"/>
-   <p:variable name="accept"   select="/web:request/web:header[@name eq 'accept']/@value"/>
+   <p:variable name="tags"   select="/web:request/web:path/web:match[@name eq 'tags']"/>
+   <p:variable name="accept" select="/web:request/web:header[@name eq 'accept']/@value"/>
 
    <app:ensure-method accepted="get"/>
    <p:sink/>
 
-   <p:identity>
-      <p:input port="source">
-         <p:inline>
-            <c:data>
-               declare namespace cxan = "http://cxan.org/ns/package";
-               declare function local:match($p as element(cxan:package), $tags as xs:string+) {
-                 every $t in $tags satisfies $p[cxan:tag = $t]
-               };
-               let $tags-str := '<app:tags/>'
-               let $tags     := tokenize($tags-str, '/')
-               let $pp       := collection('/db/cxan/packages/')/cxan:package[local:match(., $tags)]
-               return
-                 &lt;tags> {
-                   for $t in $tags
-                   order by $t
-                   return
-                     &lt;tag id="{ $t }"/>,
-                   for $t in distinct-values($pp/cxan:tag)[not(. = $tags)]
-                   order by $t
-                   return
-                     &lt;subtag id="{ $t }"/>,
-                   for $p in distinct-values($pp/@id)
-                   order by $p
-                   return
-                     &lt;pkg id="{ $p }"/>
-                 }
-                 &lt;/tags>
-            </c:data>
-         </p:inline>
-      </p:input>
-   </p:identity>
-
-   <!-- paste the tags string within the query -->
-   <p:string-replace match="app:tags">
-      <!-- the *value* of this option is an XPath expression, in this case a
-           literal string, that is, the quoted string "'the-id'" -->
-      <p:with-option name="replace" select="concat('''', $tags-str, '''')"/>
-   </p:string-replace>
-
-   <app:query-exist>
-      <p:log href="/tmp/tags-1.log" port="result"/>
-   </app:query-exist>
+   <da:packages-by-tags>
+      <p:with-option name="tags" select="$tags"/>
+   </da:packages-by-tags>
 
    <p:choose>
       <p:when test="$accept eq 'application/xml'">

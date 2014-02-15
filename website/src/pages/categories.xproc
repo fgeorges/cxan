@@ -3,55 +3,26 @@
             xmlns:pkg="http://expath.org/ns/pkg"
             xmlns:web="http://expath.org/ns/webapp"
             xmlns:app="http://cxan.org/ns/website"
+            xmlns:da="http://cxan.org/ns/website/data-access"
             xmlns:exist="http://exist.sourceforge.net/NS/exist"
             pkg:import-uri="http://cxan.org/website/pages/categories.xproc"
             name="pipeline"
             version="1.0">
 
    <p:import href="../tools.xpl"/>
+   <p:import href="../data-access/data-access.xpl"/>
 
    <p:variable name="accept" select="/web:request/web:header[@name eq 'accept']/@value"/>
 
    <!-- the category id -->
-   <p:variable name="id"     select="/web:request/web:path/web:match[@name eq 'category']"/>
-   <p:variable name="id-str" select="replace($id, '''', '''''')"/>
+   <p:variable name="id" select="/web:request/web:path/web:match[@name eq 'category']"/>
 
    <app:ensure-method accepted="get"/>
    <p:sink/>
 
-   <p:identity>
-      <p:input port="source">
-         <p:inline>
-            <c:data>
-               declare namespace cxan = "http://cxan.org/ns/package";
-               declare function local:copy($cat as element(cat)) {
-                 &lt;cat> {
-                   $cat/@*
-                   ,
-                   let $pp := collection('/db/cxan/packages/')/cxan:package[cxan:category/@id eq $cat/@id]
-                   for $p in distinct-values($pp/@id)
-                   order by $p
-                   return
-                     &lt;pkg id="{ $p }"/>
-                   ,
-                   for $c in $cat/cat return local:copy($c)
-                 }
-                 &lt;/cat>
-               };
-               let $c := doc('/db/cxan/categories.xml')/categories//cat[@id eq '<app:id/>']
-               return
-                 if ( $c ) then local:copy($c) else ()
-            </c:data>
-         </p:inline>
-      </p:input>
-   </p:identity>
-
-   <!-- paste the category id within the query -->
-   <p:string-replace match="app:id">
-      <p:with-option name="replace" select="concat('''', $id-str, '''')"/>
-   </p:string-replace>
-
-   <app:query-exist/>
+   <da:packages-by-category>
+      <p:with-option name="category" select="$id"/>
+   </da:packages-by-category>
 
    <p:choose>
       <p:when test="$accept eq 'application/xml'">

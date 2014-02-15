@@ -1,0 +1,5 @@
+This directory contains the internal Data Access Layer, abstracting
+the access to the database.  The main entry points are in the library
+data-access.xpl.  The other files are internal to the Data Access
+Layer and should not be used from the outside.  No other files than
+those in this directory must access the database in any way.

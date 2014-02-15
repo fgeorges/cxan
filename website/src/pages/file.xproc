@@ -3,11 +3,13 @@
             xmlns:pkg="http://expath.org/ns/pkg"
             xmlns:web="http://expath.org/ns/webapp"
             xmlns:app="http://cxan.org/ns/website"
+            xmlns:da="http://cxan.org/ns/website/data-access"
             pkg:import-uri="http://cxan.org/website/pages/file.xproc"
             name="pipeline"
             version="1.0">
 
    <p:import href="../tools.xpl"/>
+   <p:import href="../data-access/data-access.xpl"/>
 
    <!--
        The file download service.
@@ -57,35 +59,11 @@
       <p:option name="id"      required="true"/>
       <p:option name="version" required="true"/>
       <p:output port="result" primary="true"/>
-      <p:template>
-         <p:input port="source">
-            <p:empty/>
-         </p:input>
-         <p:input port="template">
-            <p:inline>
-               <c:data>
-                  declare variable $id      := '{ $id }';
-                  declare variable $version := '{ $version }';
-                  let $p := doc('/db/cxan/packages.xml')/packages/pkg[@id eq $id]
-                  let $v :=
-                        if ( $version[.] ) then
-                          $version
-                        else
-                          (: TODO: Sort not as a string, but as a SemVer instead. :)
-                          ( for $v_ in $p/version/@id order by $v_ descending return $v_ )[1]
-                  return
-                    $p/version[@id eq $v]/file[1]
-               </c:data>
-            </p:inline>
-         </p:input>
-         <p:with-param name="id"      select="$id"/>
-         <p:with-param name="version" select="$version"/>
-      </p:template>
-      <!-- send the request to eXist -->
-      <app:query-exist>
-         <p:log href="/tmp/yo-file-id.log" port="result"/>
-      </app:query-exist>
-      <!-- TODO: Handle the case where no file is found (no package with that version). -->
+      <da:package-file-by-id>
+         <p:with-option name="id"      select="$id"/>
+         <p:with-option name="version" select="$version"/>
+      </da:package-file-by-id>
+      <!-- TODO: Handle the case where no file is found (no such package or not with that version). -->
       <!-- read the file -->
       <app:page-file-file>
          <p:with-option name="file" select="/*/file"/>
@@ -99,35 +77,11 @@
       <p:option name="name"    required="true"/>
       <p:option name="version" required="true"/>
       <p:output port="result" primary="true"/>
-      <p:template>
-         <p:input port="source">
-            <p:empty/>
-         </p:input>
-         <p:input port="template">
-            <p:inline>
-               <c:data>
-                  declare variable $name    := '{ $name }';
-                  declare variable $version := '{ $version }';
-                  let $p := doc('/db/cxan/packages.xml')/packages/pkg[name eq $name]
-                  let $v :=
-                        if ( $version[.] ) then
-                          $version
-                        else
-                          (: TODO: Sort not as a string, but as a SemVer instead. :)
-                          ( for $v_ in $p/version/@id order by $v_ descending return $v_ )[1]
-                  return
-                    $p/version[@id eq $v]/file[1]
-               </c:data>
-            </p:inline>
-         </p:input>
-         <p:with-param name="name"    select="$name"/>
-         <p:with-param name="version" select="$version"/>
-      </p:template>
-      <!-- send the request to eXist -->
-      <app:query-exist>
-         <p:log href="/tmp/yo-file-name.log" port="result"/>
-      </app:query-exist>
-      <!-- TODO: Handle the case where no file is found (no package with that version). -->
+      <da:package-file-by-name>
+         <p:with-option name="name"    select="$name"/>
+         <p:with-option name="version" select="$version"/>
+      </da:package-file-by-name>
+      <!-- TODO: Handle the case where no file is found (no such package or not with that version). -->
       <!-- read the file -->
       <app:page-file-file>
          <p:with-option name="file" select="/*/file"/>

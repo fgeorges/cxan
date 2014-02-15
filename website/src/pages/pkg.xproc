@@ -6,7 +6,7 @@
             xmlns:pkg="http://expath.org/ns/pkg"
             xmlns:web="http://expath.org/ns/webapp"
             xmlns:app="http://cxan.org/ns/website"
-            xmlns:exist="http://exist.sourceforge.net/NS/exist"
+            xmlns:da="http://cxan.org/ns/website/data-access"
             pkg:import-uri="http://cxan.org/website/pages/pkg.xproc"
             name="pipeline"
             version="1.0">
@@ -14,6 +14,7 @@
    <p:import href="http://xmlcalabash.com/extension/steps/library-1.0.xpl"/>
    <p:import href="../tools.xpl"/>
    <p:import href="../upload-lib.xpl"/>
+   <p:import href="../data-access/data-access.xpl"/>
 
    <!--
        Implementation in case of a GET.
@@ -22,64 +23,25 @@
       <p:option name="id"     required="true"/>
       <p:option name="accept" required="true"/>
       <p:output port="result" primary="true"/>
-      <!-- retrieve the pkg element from eXist, given its ID -->
-      <!-- TODO: Due to a bug in Calabash (svn r649, 0.9.28), p:template is not
-           suitable here, see my email on the XProc Dev mailing list:
-           http://xproc.markmail.org/thread/zb6ndcdphjb5y74h.  Use it when fixed. -->
-      <p:variable name="id-str" select="replace($id, '''', '''''')"/>
-      <p:identity>
-         <p:input port="source">
-            <p:inline>
-               <c:data>
-                  declare variable $id := '<app:id/>';
-                  let $p := doc('/db/cxan/packages.xml')/packages/pkg[@id eq $id]
-                  (: TODO: Sort not as a string, but as a SemVer instead. :)
-                  let $v := ( for $v_ in $p/version/@id order by $v_ descending return $v_ )[1]
-                  let $c := concat('/db/cxan/packages/', $id, '/')
-                  return
-                    &lt;package> {
-                      $p,
-                      (: Return the latest cxan.xml, but the package descriptor for every
-                         version (to describe the dependencies for each version, for
-                         instance).  But the cxan.xml info are for the entire package. :)
-                      (: TODO: This explicit loop is a work around the bug I reported at
-                         http://exist.markmail.org/thread/vqn2ojcpfxcl6syf in eXist SVN
-                         pre-1.5. :)
-                      for $v_ in $p/version/@id return
-                        doc(concat($c, $v_, '/expath-pkg.xml')),
-                      doc(concat($c, $v, '/cxan.xml'))
-                    }
-                    &lt;/package>
-               </c:data>
-            </p:inline>
-         </p:input>
-      </p:identity>
-      <!-- paste the package id within the query -->
-      <p:string-replace match="app:id">
-         <p:log href="/tmp/yo1.log" port="result"/>
-         <!-- the *value* of this option is an XPath expression, in this case a
-              literal string, that is, the quoted string "'the-id'" -->
-         <p:with-option name="replace" select="concat('''', $id-str, '''')"/>
-      </p:string-replace>
-      <!-- send the request to eXist -->
-      <app:query-exist>
-         <p:log href="/tmp/yo2.log" port="result"/>
-      </app:query-exist>
+      <!-- retrieve the pkg element from the database, given its ID -->
+      <da:package-details>
+         <p:with-option name="id" select="$id"/>
+      </da:package-details>
       <!-- format the data to a page document -->
       <p:choose>
-	 <p:when test="$accept eq 'application/xml'">
-	    <app:wrap-xml-result/>
-	 </p:when>
-	 <p:otherwise>
-	    <p:xslt name="result">
-	       <p:input port="stylesheet">
-		  <p:document href="pkg-get.xsl"/>
-	       </p:input>
-	       <p:input port="parameters">
-		  <p:empty/>
-	       </p:input>
-	    </p:xslt>
-	 </p:otherwise>
+         <p:when test="$accept eq 'application/xml'">
+            <app:wrap-xml-result/>
+         </p:when>
+         <p:otherwise>
+            <p:xslt name="result">
+               <p:input port="stylesheet">
+                  <p:document href="pkg-get.xsl"/>
+               </p:input>
+               <p:input port="parameters">
+                  <p:empty/>
+               </p:input>
+            </p:xslt>
+         </p:otherwise>
       </p:choose>
    </p:declare-step>
 

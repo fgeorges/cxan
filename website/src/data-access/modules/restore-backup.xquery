@@ -42,7 +42,7 @@ declare function local:restore($backup as xs:string) as xs:string*
 };
 
 if ( count(collection('/db/cxan')) eq 1	) then
-  <result> {
+  <result xmlns=""> {
     (: TODO: Pass the document name in param... :)
     for $s in local:restore('/db/cxan/backup.xml')
     return

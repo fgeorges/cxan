@@ -3,33 +3,19 @@
             xmlns:pkg="http://expath.org/ns/pkg"
             xmlns:web="http://expath.org/ns/webapp"
             xmlns:app="http://cxan.org/ns/website"
+            xmlns:da="http://cxan.org/ns/website/data-access"
             xmlns:exist="http://exist.sourceforge.net/NS/exist"
             pkg:import-uri="http://cxan.org/website/pages/author-list.xproc"
             name="pipeline"
             version="1.0">
 
    <p:import href="../tools.xpl"/>
+   <p:import href="../data-access/data-access.xpl"/>
 
    <app:ensure-method accepted="get"/>
    <p:sink/>
 
-   <!-- TODO: Add windowing. -->
-   <app:query-exist>
-      <p:log href="/tmp/tags.log" port="result"/>
-      <p:input port="source">
-         <p:inline>
-            <c:data>
-               declare namespace cxan = "http://cxan.org/ns/package";
-               let $authors := collection('/db/cxan/packages/')/cxan:package/cxan:author
-               for $a  in distinct-values($authors)
-               for $id in distinct-values($authors[. eq $a]/@id)
-               order by $a, $id
-               return
-                 &lt;author id="{ $id }">{ $a }&lt;/author>
-            </c:data>
-         </p:inline>
-      </p:input>
-   </app:query-exist>
+   <da:list-authors/>
 
    <p:xslt>
       <p:input port="stylesheet">
@@ -42,12 +28,12 @@
                      <xsl:apply-templates select="exist:result"/>
                   </page>
                </xsl:template>
-               <xsl:template match="exist:result[empty(author)]">
+               <xsl:template match="exist:result[empty(authors/author)]">
                   <para>There is no author at all in the DB?!?  Please report this.</para>
                </xsl:template>
-               <xsl:template match="exist:result[exists(author)]">
+               <xsl:template match="exist:result[exists(authors/author)]">
                   <list>
-                     <xsl:apply-templates select="*"/>
+                     <xsl:apply-templates select="authors/author"/>
                   </list>
                </xsl:template>
                <xsl:template match="author">
