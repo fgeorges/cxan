@@ -89,13 +89,13 @@ if [[ ! -d "${BASEDIR}" ]]; then
 fi
 
 # the Tomcat dir
-TOMCAT=${BASEDIR}/apache-tomcat-7.0.27
+TOMCAT=${BASEDIR}/apache-tomcat-7.0.50
 if [[ ! -d "${TOMCAT}" ]]; then
     die "INTERNAL ERROR: The install directory does not look to be correct?!?";
 fi
 
 # the eXist dir
-EXIST=${BASEDIR}/exist-2.0-tech-preview
+EXIST=${BASEDIR}/exist-2.1
 if [[ ! -d "${EXIST}" ]]; then
     die "INTERNAL ERROR: The install directory does not look to be correct?!?";
 fi
