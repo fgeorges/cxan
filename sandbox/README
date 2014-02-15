@@ -13,11 +13,24 @@
    cxan-sandbox/, which contains a descriptor and a Makefile to build the
    sandbox at http://test.cxan.org/ (this is another story though).
 
-     It must contain a sub-directory apache-tomcat-7.0.27/.  This directory
+     It must contain a sub-directory apache-tomcat-7.0.50/.  This directory
    itself is not added to the Subversion repository though.  Take care NOT to
-   add it yourself.  It must contain as well a subdir exist-2.0-tech-preview/
-   with eXist installed through its graphical installer (with the password
-   'admin' for admin).
+   add it yourself.  It must contain as well a subdir exist-2.1/, with eXist
+   installed through its graphical installer (with the password 'admin' for
+   admin).
+
+     TODO: Servlex has to be installed as well, maybe we should use the
+   Servlex installer then here, instead of relying on installing a specific
+   version of Tomcat.
+
+     TODO: Especially that Servlex now needs repo/.expath-web/webapps.xml to
+   be there.  And the Servlex manager webapp has to be installed manually if
+   we do not use the installer.  So for now the sandbox is broken.
+
+     TODO: Both files config-params.xml and config-users.xml have to be moved
+   (or copied) over to just outside the repo, that is in this sandbox/
+   directory.  They could actually be checked in in Git?  Ports and users have
+   to be adapted.
 
 1. Tomcat config
 
