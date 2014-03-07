@@ -4,7 +4,6 @@
            xmlns:app="http://cxan.org/ns/website"
            xmlns:edb="http://cxan.org/ns/website/exist-db"
            xmlns:exist="http://exist.sourceforge.net/NS/exist"
-           xmlns="http://www.w3.org/1999/xhtml"
            exclude-inline-prefixes="pkg exist"
            version="1.0"
            pkg:import-uri="##none">
@@ -12,7 +11,7 @@
    <p:import href="../tools.xpl"/>
 
    <p:declare-step type="edb:configure-exist-request" name="config">
-      <p:documentation>
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Get a c:request document and add the eXist credentials and endpoint
             URI.</p>
          <p>The endpoint is the instance REST endpoint. The optional 'uri' option is
@@ -25,8 +24,7 @@
       <p:template name="attrs">
          <p:input port="template">
             <p:inline>
-               <dummy xmlns=""
-                      auth-method="Basic"
+               <dummy auth-method="Basic"
                       send-authorization="true"
                       username="{ $exist-user }"
                       password="{ $exist-pwd }"
@@ -50,7 +48,7 @@
    </p:declare-step>
 
    <p:declare-step type="edb:query-exist-with" name="with">
-      <p:documentation>
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Send a query to eXist and return the payload.</p>
          <p>The query to send to eXist is in the file pointed to by the option
             "module". This option is the name of a module contained in the "data-access/modules/"
@@ -109,7 +107,7 @@
    </p:declare-step>
 
    <p:declare-step type="edb:query-exist" name="exist">
-      <p:documentation>
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Send a query to eXist and return the payload.</p>
          <p>The source port is an XQuery query, as text. It must be a valid query. The
             text value of the source is used as the query text.</p>
@@ -178,7 +176,7 @@
    </p:declare-step>
 
    <p:declare-step type="edb:insert-doc">
-      <p:documentation>
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Insert a new doc into the database.</p>
          <p>The doc is in the input port 'source'. It is inserted at the URI 'uri'. If
             a document already exists at that URI, it is replaced.</p>
