@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<t:suite xmlns:p="http://www.w3.org/ns/xproc"
+         xmlns:c="http://www.w3.org/ns/xproc-step"
+         xmlns:da="http://cxan.org/ns/website/data-access"
+         xmlns:t="http://pipx.org/ns/test">
+
+   <t:import href="../src/data-access/data-access.xpl"/>
+
+   <t:title>The data access facade module.</t:title>
+
+   <t:test code="list-pkg-001" step="da:list-packages">
+      <t:title>Simple test of succesful call.</t:title>
+      <t:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Call da:list-packages and test the result.</p>
+      </t:documentation>
+      <da:list-packages/>
+      <t:deep-equal comments="ignore" whitespaces="ignore">
+         <packages>
+            <pkg>
+               <id>expath-crypto-saxon</id>
+               <name>http://expath.org/lib/crypto</name>
+            </pkg>
+            <pkg>
+               <id>expath-http-client-saxon</id>
+               <name>http://expath.org/lib/http-client</name>
+               <desc>Implementation for Saxon of the EXPath HTTP Client module.</desc>
+            </pkg>
+            <pkg>
+               <id>fxsl</id>
+               <name>http://fxsl.sf.net/</name>
+            </pkg>
+            <pkg>
+               <id>serial</id>
+               <name>http://fgeorges.org/lib/xslt/serial</name>
+            </pkg>
+         </packages>
+      </t:deep-equal>
+   </t:test>
+
+   <t:test code="by-name-001" step="da:packages-by-name">
+      <t:title>Simple test of succesful call.</t:title>
+      <t:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Call da:packages-by-name and test the result.</p>
+      </t:documentation>
+      <da:packages-by-name>
+         <p:with-option name="name" select="'http://expath.org/lib/http-client'"/>
+      </da:packages-by-name>
+      <t:deep-equal comments="ignore" whitespaces="ignore">
+         <packages name="http://expath.org/lib/http-client">
+            <pkg>
+               <id>expath-http-client-saxon</id>
+               <desc>Implementation for Saxon of the EXPath HTTP Client module.</desc>
+            </pkg>
+         </packages>
+      </t:deep-equal>
+   </t:test>
+
+   <t:test code="details-001" step="da:package-details">
+      <t:title>Simple test of succesful call.</t:title>
+      <t:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Call da:package-details and test the result.</p>
+      </t:documentation>
+      <da:package-details id="fxsl"/>
+      <t:deep-equal comments="ignore" whitespaces="ignore">
+         <!-- TODO: How to "configure" the path below? We need to be able to
+              "ignore" it in the comparison, then add more tests specifically
+              to test them (the xml:base paths, that is they are file:,
+              absolute, etc.) -->
+         <pkg id="fxsl" xml:base="file:/Users/fgeorges/projects/expath/cxan/sandbox/git-base/master/fxsl/">
+            <name>http://fxsl.sf.net/</name>
+            <version num="1.0">
+               <file name="fxsl-1.0.xar" role="pkg"/>
+            </version>
+         </pkg>
+      </t:deep-equal>
+   </t:test>
+
+</t:suite>
