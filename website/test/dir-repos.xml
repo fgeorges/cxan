@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<t:suite xmlns:p="http://www.w3.org/ns/xproc"
+         xmlns:c="http://www.w3.org/ns/xproc-step"
+         xmlns:dir="http://cxan.org/ns/website/dir-repos"
+         xmlns:t="http://pipx.org/ns/test">
+
+   <t:import href="../src/data-access/dir-repos.xpl"/>
+
+   <t:title>The data access module "directory repositories."</t:title>
+
+   <t:test code="all-pkg-001" step="dir:get-all-packages">
+      <t:title>Simple test of succesful call.</t:title>
+      <t:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Call dir:get-all-packages and test the result.</p>
+      </t:documentation>
+      <dir:get-all-packages/>
+      <t:deep-equal comments="ignore" whitespaces="ignore">
+         <repos>
+            <!-- TODO: How to "configure" the path below? We need to be able to
+                 "ignore" it in the comparison, then add more tests specifically
+                 to test them (the xml:base paths, that is they are file:,
+                 absolute, etc.) -->
+            <repo xml:base="file:/Users/fgeorges/projects/expath/cxan/sandbox/git-base/master/packages.xml">
+               <pkg id="expath-crypto-saxon">
+                  <name>http://expath.org/lib/crypto</name>
+                  <version num="0.3.0">
+                     <file name="expath-crypto-saxon-0.3.0.xar" role="pkg"/>
+                  </version>
+               </pkg>
+               <pkg id="expath-http-client-saxon">
+                  <name>http://expath.org/lib/http-client</name>
+                  <abstract>Implementation for Saxon of the EXPath HTTP Client module.</abstract>
+                  <author id="fgeorges">Florent Georges</author>
+                  <category id="libs">Libraries</category>
+                  <category id="saxon">Saxon extensions</category>
+                  <tag>http</tag>
+                  <tag>library</tag>
+                  <tag>saxon</tag>
+                  <version num="0.11.0dev">
+                     <dependency processor="http://saxon.sf.net/he"/>
+                     <file name="expath-http-client-saxon-0.11.0dev.xar" role="pkg"/>
+                  </version>
+               </pkg>
+               <pkg id="fxsl">
+                  <name>http://fxsl.sf.net/</name>
+                  <version num="1.0">
+                     <file name="fxsl-1.0.xar" role="pkg"/>
+                  </version>
+               </pkg>
+               <pkg id="serial">
+                  <name>http://fgeorges.org/lib/xslt/serial</name>
+                  <version num="0.4.0pre2">
+                     <dependency package="http://fxsl.sf.net/"/>
+                     <file name="serial-0.4.0pre2.xar" role="pkg"/>
+                  </version>
+               </pkg>
+            </repo>
+         </repos>
+      </t:deep-equal>
+   </t:test>
+
+</t:suite>
