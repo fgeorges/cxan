@@ -98,9 +98,26 @@
       <da:packages-by-tags tags="library/saxon"/>
       <t:deep-equal comments="ignore" whitespaces="ignore">
          <tags>
-            <tag>http</tag>
-            <tag>library</tag>
-            <tag>saxon</tag>
+            <tag id="library"/>
+            <tag id="saxon"/>
+            <subtag id="http"/>
+            <pkg id="expath-http-client-saxon"/>
+         </tags>
+      </t:deep-equal>
+   </t:test>
+
+   <t:test code="tags-003" step="da:packages-by-tags">
+      <t:title>Simple test of succesful call of da:packages-by-tags.</t:title>
+      <t:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Call da:packages-by-tags and test the result.</p>
+      </t:documentation>
+      <da:packages-by-tags tags="library"/>
+      <t:deep-equal comments="ignore" whitespaces="ignore">
+         <tags>
+            <tag id="library"/>
+            <subtag id="http"/>
+            <subtag id="saxon"/>
+            <pkg id="expath-http-client-saxon"/>
          </tags>
       </t:deep-equal>
    </t:test>
