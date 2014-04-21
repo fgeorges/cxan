@@ -116,7 +116,6 @@
          <item name="tag"    href="{ $context-root }/tag"    title="Packages by tag">Tags</item>
          <item name="faq"    href="{ $context-root }/faq"    title="CXAN FAQ">FAQ</item>
          <item name="about"  href="{ $context-root }/about"  title="About CXAN">About</item>
-         <item name="upload" href="{ $context-root }/upload" title="Upload a new package">Upload</item>
       </xsl:variable>
       <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
          <div class="container">
