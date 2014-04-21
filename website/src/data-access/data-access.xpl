@@ -560,38 +560,108 @@
 
    <p:declare-step type="da:package-file-by-id">
       <p:documentation xmlns="http://www.w3.org/1999/xhtml">
-         <p>Return a package XAR file from a CXAN ID.</p>
-         <p>The file is returned as a document with a single element, containing the
-            file location:</p>
+         <p>Return a package XAR file from a CXAN ID and version number.</p>
+         <p>The file is returned as a document
+            with a single element, containing the absolute file location:</p>
          <pre><![CDATA[
-            <file>functx/functx-1.0.xar</file>
+            <file>file:/.../git-base/some-repo/functx/functx-1.0.xar</file>
          ]]></pre>
+         <p><b>TODO</b>: The option $version is
+            required, but can it be empty to explicitly say "the latest version"? Not sure there is
+            a use case, double-check this is not used...</p>
+         <p><b>TODO</b>: For now, loads the
+            entire package description list, then filters it. Create a step in the dir:* library to
+            return the one <code>pkg</code> element corresponding to this ID (would not need to
+            build the entire list in memory, and could stop iterating in all "dir repositories" as
+            soon as a package match is found).</p>
+         <p><b>TODO</b>: What to do in case no package nor no version matches?</p>
       </p:documentation>
       <p:output port="result" primary="true"/>
       <p:option name="id"      required="true"/>
       <p:option name="version" required="true"/>
-      <edb:query-exist-with module="package-file-by-id">
-         <p:with-param name="id"      select="$id"/>
-         <p:with-param name="version" select="$version"/>
-      </edb:query-exist-with>
+      <dir:get-all-packages/>
+      <p:xslt>
+         <p:with-param name="pkg-id"  select="$id"/>
+         <p:with-param name="pkg-ver" select="$version"/>
+         <p:input port="stylesheet">
+            <p:inline>
+               <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                               xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                               exclude-result-prefixes="#all"
+                               version="2.0">
+                  <xsl:param name="pkg-id"  as="xs:string"/>
+                  <xsl:param name="pkg-ver" as="xs:string"/>
+                  <xsl:template match="node()" priority="-10">
+                     <xsl:message terminate="yes">
+                        ERROR - Unknown node: <xsl:copy-of select="."/>
+                     </xsl:message>
+                  </xsl:template>
+                  <xsl:template match="/repos">
+                     <xsl:variable name="pkg"  as="element(pkg)"     select="repo/pkg[@id eq $pkg-id]"/>
+                     <xsl:variable name="ver"  as="element(version)" select="$pkg/version[@num eq $pkg-ver]"/>
+                     <xsl:variable name="file" as="element(file)"    select="$ver/file[@role eq 'pkg']"/>
+                     <xsl:variable name="path" select="concat($pkg-id, '/', $pkg-ver, '/', $file/@name)"/>
+                     <file>
+                        <xsl:value-of select="resolve-uri($path, base-uri($pkg))"/>
+                     </file>
+                  </xsl:template>
+               </xsl:stylesheet>
+            </p:inline>
+         </p:input>
+      </p:xslt>
    </p:declare-step>
 
    <p:declare-step type="da:package-file-by-name">
       <p:documentation xmlns="http://www.w3.org/1999/xhtml">
-         <p>Return a package XAR file from a package name URI.</p>
-         <p>The file is returned as a document with a single element, containing the
-            file location:</p>
+         <p>Return a package XAR file from a package name URI and version number.</p>
+         <p>The file is returned as a document
+            with a single element, containing the absolute file location:</p>
          <pre><![CDATA[
-            <file>functx/functx-1.0.xar</file>
+            <file>file:/.../git-base/some-repo/functx/functx-1.0.xar</file>
          ]]></pre>
+         <p><b>TODO</b>: The option $version is
+            required, but can it be empty to explicitly say "the latest version"? Not sure there is
+            a use case, double-check this is not used...</p>
+         <p><b>TODO</b>: For now, loads the
+            entire package description list, then filters it. Create a step in the dir:* library to
+            return the one <code>pkg</code> element corresponding to this name (would not need to
+            build the entire list in memory, and could stop iterating in all "dir repositories" as
+            soon as a package match is found).</p>
+         <p><b>TODO</b>: What to do in case no package nor no version matches?</p>
       </p:documentation>
       <p:output port="result" primary="true"/>
       <p:option name="name"    required="true"/>
       <p:option name="version" required="true"/>
-      <edb:query-exist-with module="package-file-by-name">
-         <p:with-param name="name"    select="$name"/>
-         <p:with-param name="version" select="$version"/>
-      </edb:query-exist-with>
+      <dir:get-all-packages/>
+      <p:xslt>
+         <p:with-param name="pkg-name" select="$name"/>
+         <p:with-param name="pkg-ver"  select="$version"/>
+         <p:input port="stylesheet">
+            <p:inline>
+               <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                               xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                               exclude-result-prefixes="#all"
+                               version="2.0">
+                  <xsl:param name="pkg-name" as="xs:string"/>
+                  <xsl:param name="pkg-ver"  as="xs:string"/>
+                  <xsl:template match="node()" priority="-10">
+                     <xsl:message terminate="yes">
+                        ERROR - Unknown node: <xsl:copy-of select="."/>
+                     </xsl:message>
+                  </xsl:template>
+                  <xsl:template match="/repos">
+                     <xsl:variable name="pkg"  as="element(pkg)"     select="repo/pkg[name eq $pkg-name]"/>
+                     <xsl:variable name="ver"  as="element(version)" select="$pkg/version[@num eq $pkg-ver]"/>
+                     <xsl:variable name="file" as="element(file)"    select="$ver/file[@role eq 'pkg']"/>
+                     <xsl:variable name="path" select="concat($pkg/@id, '/', $pkg-ver, '/', $file/@name)"/>
+                     <file>
+                        <xsl:value-of select="resolve-uri($path, base-uri($pkg))"/>
+                     </file>
+                  </xsl:template>
+               </xsl:stylesheet>
+            </p:inline>
+         </p:input>
+      </p:xslt>
    </p:declare-step>
 
    <!--

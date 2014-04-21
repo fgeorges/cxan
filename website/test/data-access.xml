@@ -188,4 +188,40 @@
       </t:deep-equal>
    </t:test>
 
+   <t:test code="file-001" step="da:package-file-by-id">
+      <t:title>Simple test of succesful call of da:package-file-by-id.</t:title>
+      <t:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Call da:package-file-by-id and test the result.</p>
+      </t:documentation>
+      <!-- TODO: Can $version be omitted, or left blank?  Either way, there are
+           new test cases to be created... -->
+      <da:package-file-by-id id="fxsl" version="1.0"/>
+      <t:deep-equal comments="ignore" whitespaces="ignore">
+         <!-- TODO: How to "configure" the path below? We need to be able to
+              "ignore" it in the comparison, then add more tests specifically
+              to test them (the xml:base paths, that is they are file:,
+              absolute, etc.) -->
+         <file>file:/Users/fgeorges/projects/expath/cxan/sandbox/git-base/master/fxsl/1.0/fxsl-1.0.xar</file>
+      </t:deep-equal>
+   </t:test>
+
+   <t:test code="file-002" step="da:package-file-by-name">
+      <t:title>Simple test of succesful call of da:package-file-by-name.</t:title>
+      <t:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Call da:package-file-by-name and test the result.</p>
+      </t:documentation>
+      <!-- TODO: Can $version be omitted, or left blank?  Either way, there are
+           new test cases to be created... -->
+      <da:package-file-by-name version="0.3.0">
+         <p:with-option name="name" select="'http://expath.org/lib/crypto'"/>
+      </da:package-file-by-name>
+      <t:deep-equal comments="ignore" whitespaces="ignore">
+         <!-- TODO: How to "configure" the path below? We need to be able to
+              "ignore" it in the comparison, then add more tests specifically
+              to test them (the xml:base paths, that is they are file:,
+              absolute, etc.) -->
+         <file>file:/Users/fgeorges/projects/expath/cxan/sandbox/git-base/master/expath-crypto-saxon/0.3.0/expath-crypto-saxon-0.3.0.xar</file>
+      </t:deep-equal>
+   </t:test>
+
 </t:suite>
