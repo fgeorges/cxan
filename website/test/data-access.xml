@@ -145,4 +145,20 @@
       </t:deep-equal>
    </t:test>
 
+   <t:test code="cats-002" step="da:packages-by-category">
+      <t:title>Simple test of succesful call of da:packages-by-category.</t:title>
+      <t:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Call da:packages-by-category and test the result.</p>
+      </t:documentation>
+      <da:packages-by-category category="processor"/>
+      <t:deep-equal comments="ignore" whitespaces="ignore">
+         <cat id="processor" name="Processor-specific">
+            <cat id="saxon" name="Saxon extensions">
+               <pkg id="expath-http-client-saxon"/>
+            </cat>
+            <cat id="exist" name="eXist extensions"/>
+         </cat>
+      </t:deep-equal>
+   </t:test>
+
 </t:suite>

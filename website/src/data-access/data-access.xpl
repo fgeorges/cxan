@@ -376,12 +376,69 @@
                ...
             </cat>
          ]]></pre>
+         <p>Generate an error if the category ID
+            does not exist (should maybe return something saing "empty" or an empty document
+            instead?)</p>
+         <p><b>TODO</b>: Add an option to return
+            the category content non-recursively. Or maybe never return it recursively, just mention
+            sub-categories (that the client can decide to retrieve recursively or not).</p>
+         <p><b>TODO</b>: For now, loads the
+            entire package description list, then filters it. Put in place a denormalization
+            mechanism, that would create a categories.xml file in each dir repo (first managed by
+            hand in the Git repo directly, then maybe automatically generated when updating Git
+            repos).</p>
       </p:documentation>
       <p:output port="result" primary="true"/>
       <p:option name="category" required="true"/>
-      <edb:query-exist-with module="packages-by-category">
-         <p:with-param name="category" select="$category"/>
-      </edb:query-exist-with>
+      <dir:get-all-packages name="all-pkgs"/>
+      <dir:list-categories  name="all-cats"/>
+      <p:sink/>
+      <p:xslt>
+         <p:with-param name="cat-id" select="$category"/>
+         <p:input port="source">
+            <p:pipe step="all-pkgs" port="result"/>
+            <p:pipe step="all-cats" port="result"/>
+         </p:input>
+         <p:input port="stylesheet">
+            <p:inline>
+               <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                               xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                               exclude-result-prefixes="#all"
+                               version="2.0">
+                  <xsl:param name="cat-id" as="xs:string"/>
+                  <!-- TODO: Check there is nothing in collection()[3]... -->
+                  <xsl:variable name="all-pkgs" as="element(pkg)+"       select="collection()[1]/repos/repo/pkg"/>
+                  <xsl:variable name="all-cats" as="element(categories)" select="collection()[2]/categories"/>
+                  <xsl:template match="node()" priority="-10">
+                     <xsl:message terminate="yes">
+                        ERROR - Unknown node: <xsl:copy-of select="."/>
+                     </xsl:message>
+                  </xsl:template>
+                  <xsl:template match="/repos">
+                     <xsl:variable name="category" as="element(cat)?" select="$all-cats//cat[@id eq $cat-id]"/>
+                     <xsl:apply-templates select="$category"/>
+                  </xsl:template>
+                  <xsl:template match="cat">
+                     <!-- shallow copy -->
+                     <xsl:copy>
+                        <xsl:copy-of select="@*"/>
+                        <!-- this category ID -->
+                        <xsl:variable name="id"   select="@id"/>
+                        <!-- the packages in this category -->
+                        <xsl:variable name="pkgs" select="$all-pkgs[category/@id = $id]"/>
+                        <!-- for each distinct of them, create a "pkg" element -->
+                        <xsl:for-each select="distinct-values($pkgs/@id)">
+                           <xsl:sort select="."/>
+                           <pkg id="{ . }"/>
+                        </xsl:for-each>
+                        <!-- recurse categories -->
+                        <xsl:apply-templates select="cat"/>
+                     </xsl:copy>
+                  </xsl:template>
+               </xsl:stylesheet>
+            </p:inline>
+         </p:input>
+      </p:xslt>
    </p:declare-step>
 
    <!--
