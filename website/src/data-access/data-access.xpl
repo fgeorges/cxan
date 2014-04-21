@@ -4,11 +4,13 @@
            xmlns:app="http://cxan.org/ns/website"
            xmlns:da="http://cxan.org/ns/website/data-access"
            xmlns:edb="http://cxan.org/ns/website/exist-db"
+           xmlns:dir="http://cxan.org/ns/website/dir-repos"
            exclude-inline-prefixes="c pkg"
            version="1.0"
            pkg:import-uri="http://cxan.org/ns/website/data-access.xpl">
 
    <p:import href="exist-db.xpl"/>
+   <p:import href="dir-repos.xpl"/>
 
    <!--
       Packages.
@@ -37,11 +39,39 @@
          <p><b>TODO</b>: Add support for windowing.</p>
       </p:documentation>
       <p:output port="result" primary="true"/>
-      <edb:query-exist-with module="list-packages">
-         <p:input port="parameters">
-            <p:empty/>
-         </p:input>
-      </edb:query-exist-with>
+      <dir:get-all-packages/>
+      <p:unwrap match="/repos/repo"/>
+      <p:rename match="/repos" new-name="packages"/>
+      <p:viewport match="/packages/pkg">
+         <p:xslt>
+            <p:input port="stylesheet">
+               <p:inline>
+                  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                                  exclude-result-prefixes="#all"
+                                  version="2.0">
+                     <xsl:template match="/*">
+                        <xsl:copy>
+                           <id>
+                              <xsl:value-of select="@id"/>
+                           </id>
+                           <name>
+                              <xsl:value-of select="name"/>
+                           </name>
+                           <xsl:if test="exists(abstract)">
+                              <desc>
+                                 <xsl:value-of select="abstract"/>
+                              </desc>
+                           </xsl:if>
+                        </xsl:copy>
+                     </xsl:template>
+                  </xsl:stylesheet>
+               </p:inline>
+            </p:input>
+            <p:input port="parameters">
+               <p:empty/>
+            </p:input>
+         </p:xslt>
+      </p:viewport>
    </p:declare-step>
 
    <p:declare-step type="da:packages-by-name">
@@ -62,45 +92,94 @@
                ...
             </packages>
          ]]></pre>
+         <p><b>TODO</b>: For now, loads the full
+            package list, then filters it. Might be implemented more efficiently.</p>
       </p:documentation>
       <p:output port="result" primary="true"/>
       <p:option name="name" required="true"/>
-      <edb:query-exist-with module="packages-by-name">
+      <da:list-packages/>
+      <p:xslt>
          <p:with-param name="name" select="$name"/>
-      </edb:query-exist-with>
+         <p:input port="stylesheet">
+            <p:inline>
+               <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                               xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                               version="2.0">
+                  <xsl:param name="name" as="xs:string"/>
+                  <xsl:template match="/*">
+                     <xsl:copy>
+                        <xsl:attribute name="name" select="$name"/>
+                        <xsl:apply-templates select="pkg[name eq $name]"/>
+                     </xsl:copy>
+                  </xsl:template>
+                  <xsl:template match="pkg">
+                     <xsl:copy>
+                        <xsl:copy-of select="* except name"/>
+                     </xsl:copy>
+                  </xsl:template>
+               </xsl:stylesheet>
+            </p:inline>
+         </p:input>
+      </p:xslt>
    </p:declare-step>
 
    <p:declare-step type="da:package-details">
       <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Return details of a packages, given its CXAN ID.</p>
-         <p>The details of the package, given its CXAN ID provided through the option
-            "id", include its descriptor in the database package list, the package descriptor for
-            each version in the database, and the CXAN descriptor for the last version:</p>
+         <p>The details of the package, given its
+            CXAN ID provided through the option "id", include information from its package
+            descriptor and from the CXAN descriptor (as they appear in packages.xml in the directory
+            repos):</p>
          <pre><![CDATA[
-            <package>
-               <pkg id="functx">
-                  <name>http://www.functx.com</name>
-                  <version id="1.0">
-                     <file>functx/functx-1.0.xar</file>
-                     ...
-                  </version>
-               </pkg>
-               <package xmlns="http://expath.org/ns/pkg" ...>
-                  ... the initial expath-pkg.xml descriptor ...
-                  ... one for each version in the system ...
-               </package>
+            <pkg id="expath-http-client-saxon" xml:base="...">
+               <name>http://expath.org/lib/http-client</name>
+               <abstract>Implementation for Saxon of the EXPath HTTP Client module.</abstract>
+               <author id="fgeorges">Florent Georges</author>
+               <category id="libs">Libraries</category>
+               <category id="saxon">Saxon extensions</category>
+               <tag>http</tag>
+               <tag>library</tag>
+               <tag>saxon</tag>
+               <version num="0.11.0dev">
+                  <dependency processor="http://saxon.sf.net/he"/>
+                  <file name="expath-http-client-saxon-0.11.0dev.xar" role="pkg"/>
+               </version>
+               <version num="0.10.0">
+                  <dependency processor="http://saxon.sf.net/he"/>
+                  <file name="expath-http-client-saxon-0.11.0.xar" role="pkg"/>
+                  <file name="expath-http-client-saxon-0.11.0.zip"/>
+               </version>
                ...
-               <package xmlns="http://cxan.org/ns/package" id="functx">
-                  ... the cxan.xml descriptor for the latest version ...
-               </package>
-            </package>
+            </pkg>
          ]]></pre>
+         <p><b>TODO</b>: For now, loads the full
+            package list, then filters it. Might be implemented more efficiently.</p>
       </p:documentation>
       <p:output port="result" primary="true"/>
       <p:option name="id" required="true"/>
-      <edb:query-exist-with module="package-details">
+      <dir:get-all-packages/>
+      <p:xslt>
          <p:with-param name="id" select="$id"/>
-      </edb:query-exist-with>
+         <p:input port="stylesheet">
+            <p:inline>
+               <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                               xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                               version="2.0">
+                  <xsl:param name="id" as="xs:string"/>
+                  <xsl:template match="/repos">
+                     <xsl:apply-templates select="repo/pkg[@id eq $id]"/>
+                  </xsl:template>
+                  <xsl:template match="pkg">
+                     <xsl:copy>
+                        <xsl:copy-of select="@*"/>
+                        <xsl:attribute name="xml:base" select="resolve-uri(concat(@id, '/'), base-uri(..))"/>
+                        <xsl:copy-of select="node()"/>
+                     </xsl:copy>
+                  </xsl:template>
+               </xsl:stylesheet>
+            </p:inline>
+         </p:input>
+      </p:xslt>
    </p:declare-step>
 
    <!--
@@ -119,6 +198,8 @@
                ...
             </tags>
          ]]></pre>
+         <p><b>TODO</b>: For now, loads the full
+            package list, then filters it. Might be implemented more efficiently.</p>
       </p:documentation>
       <p:output port="result" primary="true"/>
       <edb:query-exist-with module="list-tags">
