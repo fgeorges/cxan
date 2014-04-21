@@ -56,4 +56,4 @@ clean:
 	rm -f $(REPORTS)/dir-repos-report.xml
 	rm -f $(REPORTS)/dir-repos.xproc
 
-.PHONY: clean
+.PHONY: all clean
