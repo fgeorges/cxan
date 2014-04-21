@@ -510,12 +510,48 @@
                ...
             </packages-by-author>
          ]]></pre>
+         <p><b>TODO</b>: For now, loads the
+            entire package description list, then filters it. Put in place a denormalization
+            mechanism, that would create a authors.xml file in each dir repo (first managed by hand
+            in the Git repo directly, then maybe automatically generated when updating Git
+            repos).</p>
       </p:documentation>
       <p:output port="result" primary="true"/>
       <p:option name="author" required="true"/>
-      <edb:query-exist-with module="packages-by-author">
-         <p:with-param name="author" select="$author"/>
-      </edb:query-exist-with>
+      <dir:get-all-packages/>
+      <p:xslt>
+         <p:with-param name="auth-id" select="$author"/>
+         <p:input port="stylesheet">
+            <p:inline>
+               <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                               xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                               exclude-result-prefixes="#all"
+                               version="2.0">
+                  <xsl:param name="auth-id" as="xs:string"/>
+                  <xsl:template match="node()" priority="-10">
+                     <xsl:message terminate="yes">
+                        ERROR - Unknown node: <xsl:copy-of select="."/>
+                     </xsl:message>
+                  </xsl:template>
+                  <xsl:template match="/repos">
+                     <packages-by-author>
+                        <xsl:variable name="pkgs" as="element(pkg)*" select="repo/pkg[author/@id = $auth-id]"/>
+                        <xsl:apply-templates select="$pkgs[1]/author[@id eq $auth-id]"/>
+                        <xsl:for-each select="distinct-values($pkgs/@id)">
+                           <xsl:sort select="."/>
+                           <pkg id="{ . }"/>
+                        </xsl:for-each>
+                     </packages-by-author>
+                  </xsl:template>
+                  <xsl:template match="author">
+                     <xsl:copy>
+                        <xsl:value-of select="."/>
+                     </xsl:copy>
+                  </xsl:template>
+               </xsl:stylesheet>
+            </p:inline>
+         </p:input>
+      </p:xslt>
    </p:declare-step>
 
    <!--

@@ -174,4 +174,18 @@
       </t:deep-equal>
    </t:test>
 
+   <t:test code="authors-002" step="da:packages-by-author">
+      <t:title>Simple test of succesful call of da:packages-by-author.</t:title>
+      <t:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Call da:packages-by-author and test the result.</p>
+      </t:documentation>
+      <da:packages-by-author author="fgeorges"/>
+      <t:deep-equal comments="ignore" whitespaces="ignore">
+         <packages-by-author>
+            <author>Florent Georges</author>
+            <pkg id="expath-http-client-saxon"/>
+         </packages-by-author>
+      </t:deep-equal>
+   </t:test>
+
 </t:suite>
