@@ -199,8 +199,9 @@
             </tags>
          ]]></pre>
          <p><b>TODO</b>: For now, loads the
-            entire package description list, then filters it. Might be implemented more
-            efficiently.</p>
+            entire package description list, then filters it. Put in place a denormalization
+            mechanism, that would create a tags.xml file in each dir repo (first managed by hand in
+            the Git repo directly, then maybe automatically generated when updating Git repos).</p>
       </p:documentation>
       <p:output port="result" primary="true"/>
       <dir:get-all-packages/>
