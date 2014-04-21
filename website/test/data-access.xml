@@ -122,4 +122,27 @@
       </t:deep-equal>
    </t:test>
 
+   <t:test code="cats-001" step="da:list-categories">
+      <t:title>Simple test of succesful call of da:list-categories.</t:title>
+      <t:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Call da:list-categories and test the result.</p>
+      </t:documentation>
+      <da:list-categories/>
+      <t:deep-equal comments="ignore" whitespaces="ignore">
+         <categories>
+            <cat id="applications" name="Applications"/>
+            <cat id="doctypes" name="Document types"/>
+            <cat id="libs" name="Libraries"/>
+            <cat id="pkg" name="Packaging"/>
+            <cat id="tools" name="Tools"/>
+            <cat id="web-api" name="Web APIs"/>
+            <cat id="webapps" name="Webapps"/>
+            <cat id="processor" name="Processor-specific">
+               <cat id="saxon" name="Saxon extensions"/>
+               <cat id="exist" name="eXist extensions"/>
+            </cat>
+         </categories>
+      </t:deep-equal>
+   </t:test>
+
 </t:suite>

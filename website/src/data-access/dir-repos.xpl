@@ -60,6 +60,10 @@
    </p:declare-step>
 
    <p:declare-step type="dir:get-all-packages-impl">
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Implementation step for dir:get-all-packages.</p>
+         <p>The step dir:get-all-packages simply pass the config parameters.</p>
+      </p:documentation>
       <p:input  port="parameters" primary="true" kind="parameter"/>
       <p:output port="result"     primary="true"/>
       <pipx:parameter param-name="git-base" required="true"/>
@@ -81,6 +85,46 @@
          <p:delete match="/c:directory/@*"/>
          <p:rename match="/c:directory" new-name="repos"/>
       </p:group>
+   </p:declare-step>
+
+   <p:declare-step type="dir:list-categories">
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Returns the category hierarchy known
+            by the system. The hierarchy is stored in the file <code>categories.xml</code> in the
+            directory pointed to by the config parameter <code>git-base</code>. It looks like:</p>
+         <pre><![CDATA[
+            <categories>
+               <cat id="doctypes" name="Document types"/>
+               <cat id="processor" name="Processor-specific">
+                  <cat id="saxon" name="Saxon extensions"/>
+                  <cat id="exist" name="eXist extensions"/>
+                  ...
+               </cat>
+               ...
+            </categories>
+         ]]></pre>
+      </p:documentation>
+      <p:output port="result" primary="true"/>
+      <dir:list-categories-impl>
+         <p:input port="parameters">
+            <!-- TODO: Which one? -->
+            <!--p:document href="../../../../config-params.xml"/-->
+            <p:document href="../config-params.xml"/>
+         </p:input>
+      </dir:list-categories-impl>
+   </p:declare-step>
+
+   <p:declare-step type="dir:list-categories-impl">
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Implementation step for dir:list-categories.</p>
+         <p>The step dir:list-categories simply pass the config parameters.</p>
+      </p:documentation>
+      <p:input  port="parameters" primary="true" kind="parameter"/>
+      <p:output port="result"     primary="true"/>
+      <pipx:parameter param-name="git-base" required="true"/>
+      <p:load>
+         <p:with-option name="href" select="resolve-uri('categories.xml', string(/param))"/>
+      </p:load>
    </p:declare-step>
 
 </p:library>

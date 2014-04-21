@@ -342,20 +342,14 @@
                ...
             </categories>
          ]]></pre>
+         <p><b>TODO</b>: For now, loads the
+            entire package description list, then filters it. Put in place a denormalization
+            mechanism, that would create a categories.xml file in each dir repo (first managed by
+            hand in the Git repo directly, then maybe automatically generated when updating Git
+            repos).</p>
       </p:documentation>
       <p:output port="result" primary="true"/>
-      <edb:query-exist>
-         <p:input port="source">
-            <p:inline>
-               <c:data>
-                  doc('/db/cxan/categories.xml')
-               </c:data>
-            </p:inline>
-         </p:input>
-         <p:input port="parameters">
-            <p:empty/>
-         </p:input>
-      </edb:query-exist>
+      <dir:list-categories/>
    </p:declare-step>
 
    <p:declare-step type="da:packages-by-category">
