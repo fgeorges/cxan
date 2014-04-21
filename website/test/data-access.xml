@@ -90,4 +90,19 @@
       </t:deep-equal>
    </t:test>
 
+   <t:test code="tags-002" step="da:packages-by-tags">
+      <t:title>Simple test of succesful call of da:packages-by-tags.</t:title>
+      <t:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Call da:packages-by-tags and test the result.</p>
+      </t:documentation>
+      <da:packages-by-tags tags="library/saxon"/>
+      <t:deep-equal comments="ignore" whitespaces="ignore">
+         <tags>
+            <tag>http</tag>
+            <tag>library</tag>
+            <tag>saxon</tag>
+         </tags>
+      </t:deep-equal>
+   </t:test>
+
 </t:suite>

@@ -249,16 +249,52 @@
                <pkg id="functx"/>
                <pkg id="pipx"/>
                ...
-            </cat>
+            </tags>
          ]]></pre>
          <p>Each set of elements (that is, all "tag", then all "subtag", then all
             "pkg") are sorted lexicographically by their ID.</p>
+         <p><b>TODO</b>: For now, loads the
+            entire package description list, then filters it. Put in place a denormalization
+            mechanism, that would create a tags.xml file in each dir repo (first managed by hand in
+            the Git repo directly, then maybe automatically generated when updating Git repos).</p>
       </p:documentation>
       <p:output port="result" primary="true"/>
       <p:option name="tags" required="true"/>
-      <edb:query-exist-with module="packages-by-tags">
-         <p:with-param name="tags" select="$tags"/>
-      </edb:query-exist-with>
+      <dir:get-all-packages/>
+      <p:xslt>
+         <p:with-param name="tags-str" select="$tags"/>
+         <p:input port="stylesheet">
+            <p:inline>
+               <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                               xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                               exclude-result-prefixes="#all"
+                               version="2.0">
+                  <xsl:param name="tags-str" as="xs:string"/>
+                  <xsl:variable name="tags"  as="xs:string+"    select="tokenize($tags-str, '/')"/>
+                  <xsl:variable name="pkgs"  as="element(pkg)*" select="/repos/repo/pkg[every $t in $tags satisfies $t = tag]"/>
+                  <xsl:template match="/repos">
+                     <tags>
+                        <xsl:for-each select="$tags">
+                           <xsl:sort select="."/>
+                           <tag id="{ . }"/>
+                        </xsl:for-each>
+                        <xsl:for-each select="distinct-values($pkgs/tag)[not(. = $tags)]">
+                           <xsl:sort select="."/>
+                           <subtag id="{ . }"/>
+                        </xsl:for-each>
+                        <xsl:for-each select="distinct-values($pkgs/@id)">
+                           <xsl:sort select="."/>
+                           <pkg id="{ . }"/>
+                        </xsl:for-each>
+                     </tags>
+                  </xsl:template>
+               </xsl:stylesheet>
+            </p:inline>
+         </p:input>
+         <p:input port="parameters">
+            <p:empty/>
+         </p:input>
+      </p:xslt>
    </p:declare-step>
 
    <!--
