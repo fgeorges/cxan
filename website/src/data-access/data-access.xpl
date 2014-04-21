@@ -49,7 +49,12 @@
                   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                                   exclude-result-prefixes="#all"
                                   version="2.0">
-                     <xsl:template match="/*">
+                     <xsl:template match="node()" priority="-10">
+                        <xsl:message terminate="yes">
+                           ERROR - Unknown node: <xsl:copy-of select="."/>
+                        </xsl:message>
+                     </xsl:template>
+                     <xsl:template match="/pkg">
                         <xsl:copy>
                            <id>
                               <xsl:value-of select="@id"/>
@@ -106,7 +111,12 @@
                                xmlns:xs="http://www.w3.org/2001/XMLSchema"
                                version="2.0">
                   <xsl:param name="name" as="xs:string"/>
-                  <xsl:template match="/*">
+                  <xsl:template match="node()" priority="-10">
+                     <xsl:message terminate="yes">
+                        ERROR - Unknown node: <xsl:copy-of select="."/>
+                     </xsl:message>
+                  </xsl:template>
+                  <xsl:template match="/packages">
                      <xsl:copy>
                         <xsl:attribute name="name" select="$name"/>
                         <xsl:apply-templates select="pkg[name eq $name]"/>
@@ -166,6 +176,11 @@
                                xmlns:xs="http://www.w3.org/2001/XMLSchema"
                                version="2.0">
                   <xsl:param name="id" as="xs:string"/>
+                  <xsl:template match="node()" priority="-10">
+                     <xsl:message terminate="yes">
+                        ERROR - Unknown node: <xsl:copy-of select="."/>
+                     </xsl:message>
+                  </xsl:template>
                   <xsl:template match="/repos">
                      <xsl:apply-templates select="repo/pkg[@id eq $id]"/>
                   </xsl:template>
@@ -211,6 +226,11 @@
                <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                                exclude-result-prefixes="#all"
                                version="2.0">
+                  <xsl:template match="node()" priority="-10">
+                     <xsl:message terminate="yes">
+                        ERROR - Unknown node: <xsl:copy-of select="."/>
+                     </xsl:message>
+                  </xsl:template>
                   <xsl:template match="/repos">
                      <tags>
                         <xsl:for-each select="distinct-values(repo/pkg/tag)">
@@ -272,6 +292,11 @@
                   <xsl:param name="tags-str" as="xs:string"/>
                   <xsl:variable name="tags"  as="xs:string+"    select="tokenize($tags-str, '/')"/>
                   <xsl:variable name="pkgs"  as="element(pkg)*" select="/repos/repo/pkg[every $t in $tags satisfies $t = tag]"/>
+                  <xsl:template match="node()" priority="-10">
+                     <xsl:message terminate="yes">
+                        ERROR - Unknown node: <xsl:copy-of select="."/>
+                     </xsl:message>
+                  </xsl:template>
                   <xsl:template match="/repos">
                      <tags>
                         <xsl:for-each select="$tags">
