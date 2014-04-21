@@ -198,15 +198,35 @@
                ...
             </tags>
          ]]></pre>
-         <p><b>TODO</b>: For now, loads the full
-            package list, then filters it. Might be implemented more efficiently.</p>
+         <p><b>TODO</b>: For now, loads the
+            entire package description list, then filters it. Might be implemented more
+            efficiently.</p>
       </p:documentation>
       <p:output port="result" primary="true"/>
-      <edb:query-exist-with module="list-tags">
+      <dir:get-all-packages/>
+      <p:xslt>
+         <p:input port="stylesheet">
+            <p:inline>
+               <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                               exclude-result-prefixes="#all"
+                               version="2.0">
+                  <xsl:template match="/repos">
+                     <tags>
+                        <xsl:for-each select="distinct-values(repo/pkg/tag)">
+                           <xsl:sort select="."/>
+                           <tag>
+                              <xsl:value-of select="."/>
+                           </tag>
+                        </xsl:for-each>
+                     </tags>
+                  </xsl:template>
+               </xsl:stylesheet>
+            </p:inline>
+         </p:input>
          <p:input port="parameters">
             <p:empty/>
          </p:input>
-      </edb:query-exist-with>
+      </p:xslt>
    </p:declare-step>
 
    <p:declare-step type="da:packages-by-tags">

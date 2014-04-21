@@ -9,7 +9,7 @@
    <t:title>The data access facade module.</t:title>
 
    <t:test code="list-pkg-001" step="da:list-packages">
-      <t:title>Simple test of succesful call.</t:title>
+      <t:title>Simple test of succesful call of da:list-packages.</t:title>
       <t:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Call da:list-packages and test the result.</p>
       </t:documentation>
@@ -38,7 +38,7 @@
    </t:test>
 
    <t:test code="by-name-001" step="da:packages-by-name">
-      <t:title>Simple test of succesful call.</t:title>
+      <t:title>Simple test of succesful call of da:packages-by-name.</t:title>
       <t:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Call da:packages-by-name and test the result.</p>
       </t:documentation>
@@ -56,7 +56,7 @@
    </t:test>
 
    <t:test code="details-001" step="da:package-details">
-      <t:title>Simple test of succesful call.</t:title>
+      <t:title>Simple test of succesful call of da:package-details.</t:title>
       <t:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Call da:package-details and test the result.</p>
       </t:documentation>
@@ -72,6 +72,21 @@
                <file name="fxsl-1.0.xar" role="pkg"/>
             </version>
          </pkg>
+      </t:deep-equal>
+   </t:test>
+
+   <t:test code="tags-001" step="da:list-tags">
+      <t:title>Simple test of succesful call of da:list-tags.</t:title>
+      <t:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Call da:list-tags and test the result.</p>
+      </t:documentation>
+      <da:list-tags/>
+      <t:deep-equal comments="ignore" whitespaces="ignore">
+         <tags>
+            <tag>http</tag>
+            <tag>library</tag>
+            <tag>saxon</tag>
+         </tags>
       </t:deep-equal>
    </t:test>
 
