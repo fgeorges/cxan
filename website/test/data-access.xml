@@ -161,4 +161,17 @@
       </t:deep-equal>
    </t:test>
 
+   <t:test code="authors-001" step="da:list-authors">
+      <t:title>Simple test of succesful call of da:list-authors.</t:title>
+      <t:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Call da:list-authors and test the result.</p>
+      </t:documentation>
+      <da:list-authors/>
+      <t:deep-equal comments="ignore" whitespaces="ignore">
+         <authors>
+            <author id="fgeorges">Florent Georges</author>
+         </authors>
+      </t:deep-equal>
+   </t:test>
+
 </t:suite>

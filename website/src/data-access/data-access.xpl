@@ -456,13 +456,44 @@
                ...
             </authors>
          ]]></pre>
+         <p><b>TODO</b>: For now, loads the
+            entire package description list, then filters it. Put in place a denormalization
+            mechanism, that would create a authors.xml file in each dir repo (first managed by hand
+            in the Git repo directly, then maybe automatically generated when updating Git
+            repos).</p>
       </p:documentation>
       <p:output port="result" primary="true"/>
-      <edb:query-exist-with module="list-authors">
+      <dir:get-all-packages/>
+      <p:xslt>
+         <p:input port="stylesheet">
+            <p:inline>
+               <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                               exclude-result-prefixes="#all"
+                               version="2.0">
+                  <xsl:template match="node()" priority="-10">
+                     <xsl:message terminate="yes">
+                        ERROR - Unknown node: <xsl:copy-of select="."/>
+                     </xsl:message>
+                  </xsl:template>
+                  <xsl:variable name="authors" as="element(author)+" select="/repos/repo/pkg/author"/>
+                  <xsl:template match="/repos">
+                     <authors>
+                        <xsl:for-each select="distinct-values($authors/@id)">
+                           <xsl:sort select="."/>
+                           <xsl:variable name="id" select="."/>
+                           <author id="{ $id }">
+                              <xsl:value-of select="( $authors[@id eq $id] )[1]"/>
+                           </author>
+                        </xsl:for-each>
+                     </authors>
+                  </xsl:template>
+               </xsl:stylesheet>
+            </p:inline>
+         </p:input>
          <p:input port="parameters">
             <p:empty/>
          </p:input>
-      </edb:query-exist-with>
+      </p:xslt>
    </p:declare-step>
 
    <p:declare-step type="da:packages-by-author">
