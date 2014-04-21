@@ -1,4 +1,7 @@
 <c:param-set xmlns:c="http://www.w3.org/ns/xproc-step">
+   <!-- where the git-base is located, a dir, so must end with a slash, must be absolute -->
+   <c:param name="git-base"        value="file:/Users/fgeorges/projects/expath/cxan/sandbox/git-base/"/>
+   <!-- webapp general info -->
    <c:param name="home-uri"        value="http://localhost:9070/servlex/cxan/"/>
    <c:param name="context-root"    value="/servlex/cxan"/>
    <c:param name="is-sandbox"      value="true"/>
