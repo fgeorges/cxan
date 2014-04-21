@@ -1,74 +1,60 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:pkg="http://expath.org/ns/pkg"
-                xmlns:cxan="http://cxan.org/ns/package"
-                xmlns:exist="http://exist.sourceforge.net/NS/exist"
                 version="2.0">
 
    <pkg:import-uri>##none</pkg:import-uri>
 
-   <xsl:template match="/">
+   <xsl:template match="/pkg">
 <!-- DEBUG: ... -->
 <xsl:message>
    PKG-GET.XSL: <xsl:copy-of select="."/>
 </xsl:message>
-      <!--
-          TODO: The query can return nothing, if the ID provided does
-          not exist.  Check that and return a 404 in that case.  Check
-          also for multiple packages, in case of inconsistancy.
-      -->
-      <xsl:variable name="pkg" select="exist:result/package/pkg"/>
       <!-- the version elements, sorted descendently -->
       <xsl:variable name="versions" as="element(version)+">
-         <xsl:perform-sort select="$pkg/version">
+         <xsl:perform-sort select="version">
             <xsl:sort select="@id" order="descending"/>
          </xsl:perform-sort>
       </xsl:variable>
-      <xsl:variable name="descriptors" select="exist:result/package/pkg:package"/>
-      <xsl:variable name="cxan-desc"   select="exist:result/package/cxan:package"/>
-      <xsl:variable name="title"       select="
-          ( $cxan-desc/cxan:title, $descriptors/pkg:title )[1]"/>
-      <xsl:variable name="home"        select="
-          ( $cxan-desc/cxan:home, $descriptors/pkg:home )[1]"/>
       <page menu="pkg">
          <title>
-            <xsl:value-of select="$pkg/@id"/>
+            <xsl:value-of select="@id"/>
          </title>
-         <xsl:if test="exists($cxan-desc/cxan:abstract)">
+         <xsl:if test="exists(abstract)">
             <para>
-               <xsl:value-of select="$cxan-desc/cxan:abstract"/>
+               <xsl:value-of select="abstract"/>
             </para>
          </xsl:if>
          <named-info>
             <row>
                <name>ID</name>
                <info>
-                  <xsl:value-of select="$pkg/@id"/>
+                  <xsl:value-of select="@id"/>
                </info>
             </row>
             <row>
                <name>Name</name>
                <info>
-                  <xsl:value-of select="$pkg/name"/>
+                  <xsl:value-of select="name"/>
                </info>
             </row>
             <row>
                <name>Title</name>
                <info>
-                  <xsl:value-of select="$title"/>
+                  <xsl:value-of select="title"/>
                </info>
             </row>
             <row>
                <name>Home</name>
                <info>
-                  <link uri="{ $home }">
-                     <xsl:value-of select="$home"/>
+                  <link uri="{ home }">
+                     <xsl:value-of select="home"/>
                   </link>
                </info>
             </row>
             <row>
                <name>Author</name>
                <info>
-                  <xsl:for-each select="$cxan-desc/cxan:author">
+                  <xsl:for-each select="author">
                      <xsl:choose>
                         <xsl:when test="exists(@id)">
                            <link uri="../author/{ @id }">
@@ -85,11 +71,11 @@
                   </xsl:for-each>
                </info>
             </row>
-            <xsl:if test="exists($cxan-desc/cxan:maintainer)">
+            <xsl:if test="exists(maintainer)">
                <row>
                   <name>Package maintainer</name>
                   <info>
-                     <xsl:for-each select="$cxan-desc/cxan:maintainer">
+                     <xsl:for-each select="maintainer">
                         <xsl:choose>
                            <xsl:when test="exists(@id)">
                               <link uri="../author/{ @id }">
@@ -110,7 +96,7 @@
             <row>
                <name>Categories</name>
                <info>
-                  <xsl:for-each select="$cxan-desc/cxan:category">
+                  <xsl:for-each select="category">
                      <link uri="../cat/{ @id }">
                         <xsl:value-of select="."/>
                      </link>
@@ -123,7 +109,7 @@
             <row>
                <name>Tags</name>
                <info>
-                  <xsl:for-each select="$cxan-desc/cxan:tag">
+                  <xsl:for-each select="tag">
                      <link uri="../tag/{ . }">
                         <xsl:value-of select="."/>
                      </link>
@@ -134,11 +120,10 @@
                </info>
             </row>
          </named-info>
-         <xsl:for-each select="$pkg/version">
+         <xsl:for-each select="version">
             <!-- TODO: Sort not as a string, but as a SemVer instead. -->
             <xsl:sort select="@id" order="descending"/>
-            <xsl:variable name="ver"  select="@id"/>
-            <xsl:variable name="desc" select="$descriptors[@version eq $ver]"/>
+            <xsl:variable name="ver" select="@num"/>
             <subtitle>
                <xsl:value-of select="$ver"/>
             </subtitle>
@@ -151,18 +136,13 @@
                   <row>
                      <name>File</name>
                      <info>
-                        <link uri="../file/{ . }">
-                           <!-- must always contain '/', but just to be on the safe side... -->
-                           <xsl:value-of select="
-                               if ( contains(., '/') ) then
-                                 substring-after(., '/')
-                               else
-                                 ."/>
+                        <link uri="../file/{ ../@id }/{ @name }">
+                           <xsl:value-of select="@name"/>
                         </link>
                      </info>
                   </row>
                </xsl:for-each>
-               <xsl:for-each select="$desc/pkg:dependency">
+               <xsl:for-each select="dependency">
                   <!-- TODO: Handle different kind of dependencies (on processors,
                        with specific versions, etc.) -->
                   <row>
