@@ -88,21 +88,6 @@
       </servlet>
 
       <!--
-          The upload form.
-
-          The REST-like interface uses POST to /pkg/{id}, but HTML pages must use
-          a dedicated upload target (because they cannot POST anything they want,
-          only form/data).  So this URI is both the HTML form (when GET) and the
-          upload form target (when POST).
-
-          TODO: Maybe using XForms can solve this issue?
-      -->
-      <servlet name="upload">
-         <xproc uri="http://cxan.org/website/pages/upload.xproc"/>
-         <url pattern="/upload"/>
-      </servlet>
-
-      <!--
           The author list.
       -->
       <servlet name="author-list">
@@ -163,15 +148,6 @@
          <xproc uri="http://cxan.org/website/pages/search.xproc"/>
          <url pattern="/search"/>
       </servlet>
-
-      <!--
-          Authentication filter for admin pages.
-      -->
-      <filter name="admin-auth">
-         <in>
-            <xslt uri="http://cxan.org/website/filters/admin-auth.xsl"/>
-         </in>
-      </filter>
 
    </group>
 

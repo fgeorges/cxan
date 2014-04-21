@@ -3,13 +3,11 @@
            xmlns:pkg="http://expath.org/ns/pkg"
            xmlns:app="http://cxan.org/ns/website"
            xmlns:da="http://cxan.org/ns/website/data-access"
-           xmlns:edb="http://cxan.org/ns/website/exist-db"
            xmlns:dir="http://cxan.org/ns/website/dir-repos"
            exclude-inline-prefixes="c pkg"
            version="1.0"
            pkg:import-uri="http://cxan.org/ns/website/data-access.xpl">
 
-   <p:import href="exist-db.xpl"/>
    <p:import href="dir-repos.xpl"/>
 
    <!--
