@@ -1,0 +1,73 @@
+This directory is the first attempt at creating a desynchronized,
+Git-based storage for CXAN.  The idea is to have all the storage of
+CXAN on Git repositories (e.g. on GitHub, but not necessarily).  There
+could be several repositories involved, each following a specific
+structure.  So it has to be well-defined, and well-designed to support
+the read and search operations to support typical CXAN operations from
+users.
+
+The key point is to require that each Git repository provides us with
+the relevant information about its content (packages, categories,
+tags, etc.)
+
+The categories probably still have to be centrally defined (only the
+master repositor has a definition of all categories).  It makes sense
+to have tags to be defined in each repo though.
+
+There will be an update process: the CXAN website will have to update
+its Git repositories.  It is even possible to be based only on
+conventions, except for CXAN-specific information (authors, tags,
+etc.)  But the update process can take care of denormalizing the
+information from the different repositories (the packages and tags for
+instance available globally, and from which repository they come
+from).
+
+** repo structure
+
+./master/                       ;; the repo
+   functx/			;; the package CXAN ID
+      cxan.xml			;; the package CXAN descriptor
+      1.0/			;; one package version
+         functx-1.0.xar		;; the package itself (naming scheme enough?)
+         functx-1.0.zip		;; extra file
+
+Open questions:
+
+- can we have a unique CXAN descriptor for each package? (we want only
+  one to be involved in what categories and tags, and even authors, to
+  classify it under, but we want to be able, historically, to display
+  those on a per-version basis: what were the authors and maintainers
+  through time?) -> so last one sounds good enough
+
+- this notion of "last one", and of version ordering in general ,
+  brings the question of ordering of version numbers -> imposing an
+  order consitent with SemVer sounds sensible
+
+- therefore, using:
+
+    * named repositories, the CXAN IDs for packages, and the version
+      numbers, all being directory names, could be enough
+
+    * if we use a strong naming scheme for actual packages (that is,
+      either XAR or XAW files), we do not need any file duplication.
+      We can just rely on the information available in the latest
+      packages (or the other as well for legacy purposes)
+
+    * worst case scenario is we need a descriptor on a per-version
+      basis to describe thhe different files (this one is a library
+      package, this one a web package, this one an application
+      package, this one a release file containing more material, this
+      one is an automatic installer, etc.)
+
+** cxan-repo.xml (old?)
+
+<repo xmlns="http://cxan.org/ns/repo">
+   <packages>
+      <package id="..." name="..."/>
+      <package id="..." name="..."/>
+   </packages>
+   <tags>
+      <tag>...</tag>
+      <tag>...</tag>
+   </tags>
+</repo>
