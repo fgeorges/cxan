@@ -173,42 +173,6 @@
          </in>
       </filter>
 
-      <!--group filters="admin-auth"-->
-
-         <!--
-             The admin console.
-         -->
-         <servlet name="console">
-            <xproc uri="http://cxan.org/website/pages/admin/console.xproc"/>
-            <url pattern="/admin/"/>
-         </servlet>
-
-         <!--
-             The export tool.
-         -->
-         <servlet name="export">
-            <xproc uri="http://cxan.org/website/pages/admin/export.xproc"/>
-            <url pattern="/admin/export"/>
-         </servlet>
-
-         <!--
-             The import tool.
-         -->
-         <servlet name="import">
-            <xproc uri="http://cxan.org/website/pages/admin/import.xproc"/>
-            <url pattern="/admin/import"/>
-         </servlet>
-
-         <!--
-             The consistency check tool.
-         -->
-         <servlet name="check">
-            <xproc uri="http://cxan.org/website/pages/admin/check.xproc"/>
-            <url pattern="/admin/check"/>
-         </servlet>
-
-      <!--/group-->
-
-    </group>
+   </group>
 
 </webapp>
