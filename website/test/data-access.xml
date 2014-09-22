@@ -66,7 +66,7 @@
               "ignore" it in the comparison, then add more tests specifically
               to test them (the xml:base paths, that is they are file:,
               absolute, etc.) -->
-         <pkg id="fxsl" xml:base="file:/Users/fgeorges/projects/expath/cxan/sandbox/git-base/master/fxsl/">
+         <pkg id="fxsl" xml:base="file:/Users/fgeorges/projects/expath/cxan/sandbox/git-base/repos/second/fxsl/">
             <name>http://fxsl.sf.net/</name>
             <version num="1.0">
                <file name="fxsl-1.0.xar" role="pkg"/>
@@ -201,7 +201,7 @@
               "ignore" it in the comparison, then add more tests specifically
               to test them (the xml:base paths, that is they are file:,
               absolute, etc.) -->
-         <file>file:/Users/fgeorges/projects/expath/cxan/sandbox/git-base/master/fxsl/1.0/fxsl-1.0.xar</file>
+         <file>file:/Users/fgeorges/projects/expath/cxan/sandbox/git-base/repos/second/fxsl/1.0/fxsl-1.0.xar</file>
       </t:deep-equal>
    </t:test>
 
@@ -220,7 +220,22 @@
               "ignore" it in the comparison, then add more tests specifically
               to test them (the xml:base paths, that is they are file:,
               absolute, etc.) -->
-         <file>file:/Users/fgeorges/projects/expath/cxan/sandbox/git-base/master/expath-crypto-saxon/0.3.0/expath-crypto-saxon-0.3.0.xar</file>
+         <file>file:/Users/fgeorges/projects/expath/cxan/sandbox/git-base/repos/fgeorges/expath-crypto-saxon/0.3.0/expath-crypto-saxon-0.3.0.xar</file>
+      </t:deep-equal>
+   </t:test>
+
+   <t:test code="file-003" step="da:package-file-by-file">
+      <t:title>Simple test of succesful call of da:package-file-by-file.</t:title>
+      <t:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Call da:package-file-by-file and test the result.</p>
+      </t:documentation>
+      <da:package-file-by-file pkg="fxsl" file="fxsl-1.0.xar"/>
+      <t:deep-equal comments="ignore" whitespaces="ignore">
+         <!-- TODO: How to "configure" the path below? We need to be able to
+              "ignore" it in the comparison, then add more tests specifically
+              to test them (the xml:base paths, that is they are file:,
+              absolute, etc.) -->
+         <file>file:/Users/fgeorges/projects/expath/cxan/sandbox/git-base/repos/second/fxsl/1.0/fxsl-1.0.xar</file>
       </t:deep-equal>
    </t:test>
 
