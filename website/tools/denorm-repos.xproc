@@ -39,6 +39,11 @@
       <p:variable name="dir-name" select="/c:directory/@name"/>
       <p:variable name="relative" select="concat('./', $dir-name, '/'[not(ends-with($dir-name, '/'))])"/>
       <p:variable name="absolute" select="resolve-uri($relative, base-uri(.))"/>
+      <!--
+	  TODO: In addition to load the files, we could resolve some
+	  info furthermore, for instance add an absolute @href to the
+	  elements 'file'...
+      -->
       <p:load name="load">
          <p:with-option name="href" select="resolve-uri('packages.xml', $absolute)"/>
       </p:load>
