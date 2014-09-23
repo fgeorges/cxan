@@ -1,4 +1,4 @@
-<repo>
+<repos xml:base="file:/Users/fgeorges/projects/expath/cxan/sandbox/git-base/repos/"><repo xml:base="./fgeorges/">
    <pkg id="expath-crypto-saxon">
       <name>http://expath.org/lib/crypto</name>
       <version num="0.3.0">
@@ -17,8 +17,10 @@
       <version num="0.11.0dev">
          <dependency processor="http://saxon.sf.net/he"/>
          <file name="expath-http-client-saxon-0.11.0dev.xar" role="pkg"/>
+         <file name="expath-http-client-saxon-0.11.0dev.zip" role="archive"/>
       </version>
    </pkg>
+</repo><repo xml:base="./second/">
    <pkg id="fxsl">
       <name>http://fxsl.sf.net/</name>
       <version num="1.0">
@@ -32,4 +34,4 @@
          <file name="serial-0.4.0pre2.xar" role="pkg"/>
       </version>
    </pkg>
-</repo>
+</repo></repos>
