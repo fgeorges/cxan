@@ -10,7 +10,5 @@ fi
 . "$BASEDIR/functions.sh"
 
 echo "Tomcat port: $TOMCAT_PORT"
-echo "eXist port:  $EXIST_PORT"
 
 stop_tomcat
-stop_exist

@@ -13,8 +13,5 @@ fi
 if tomcat_started; then
     die "Tomcat is running"
 fi
-if exist_started; then
-    die "eXist is running"
-fi
 
 rm -r "$BASEDIR/repo/"

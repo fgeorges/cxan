@@ -48,37 +48,6 @@ stop_tomcat() {
 
 
 ## 
-## eXist functions.
-## 
-
-EXIST_PORT=7070
-
-exist_started() {
-    curl_headers http://localhost:$EXIST_PORT/ >/dev/null
-}
-
-start_exist() {
-    # is it already started?
-    if exist_started; then
-        die "eXist has already been started"
-    fi
-    # start eXist up
-    "${EXIST}/bin/startup.sh" >/dev/null 2>&1 \
-        || die "eXist failed to startup." &
-    # wait for eXist to be up
-    until exist_started; do
-        echo "Waiting for eXist to be up..."
-        sleep 2
-    done
-}
-
-stop_exist() {
-    "${EXIST}/bin/shutdown.sh" -p admin \
-        || die "eXist failed to shutdown."
-}
-
-
-## 
 ## Path variables.
 ## 
 
@@ -89,13 +58,7 @@ if [[ ! -d "${BASEDIR}" ]]; then
 fi
 
 # the Tomcat dir
-TOMCAT=${BASEDIR}/apache-tomcat-7.0.50
+TOMCAT=${BASEDIR}/servlex-0.9.1
 if [[ ! -d "${TOMCAT}" ]]; then
-    die "INTERNAL ERROR: The install directory does not look to be correct?!?";
-fi
-
-# the eXist dir
-EXIST=${BASEDIR}/exist-2.1
-if [[ ! -d "${EXIST}" ]]; then
     die "INTERNAL ERROR: The install directory does not look to be correct?!?";
 fi
