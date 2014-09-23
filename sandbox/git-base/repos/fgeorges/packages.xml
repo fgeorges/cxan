@@ -1,0 +1,23 @@
+<repo>
+   <pkg id="expath-crypto-saxon">
+      <name>http://expath.org/lib/crypto</name>
+      <version num="0.3.0">
+         <file name="expath-crypto-saxon-0.3.0.xar" role="pkg"/>
+      </version>
+   </pkg>
+   <pkg id="expath-http-client-saxon">
+      <name>http://expath.org/lib/http-client</name>
+      <abstract>Implementation for Saxon of the EXPath HTTP Client module.</abstract>
+      <author id="fgeorges">Florent Georges</author>
+      <category id="libs">Libraries</category>
+      <category id="saxon">Saxon extensions</category>
+      <tag>http</tag>
+      <tag>library</tag>
+      <tag>saxon</tag>
+      <version num="0.11.0dev">
+         <dependency processor="http://saxon.sf.net/he"/>
+         <file name="expath-http-client-saxon-0.11.0dev.xar" role="pkg"/>
+         <file name="expath-http-client-saxon-0.11.0dev.zip" role="archive"/>
+      </version>
+   </pkg>
+</repo>
