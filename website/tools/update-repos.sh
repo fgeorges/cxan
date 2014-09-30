@@ -61,7 +61,7 @@ if test -n "$git_add"; then
     log "[**] Push master/packages.xml"
     ( ( cd "$MASTER"; git add packages.xml ) >> "$LOG" 2>&1 ) \
         || die "Error adding master/packages.xml to Git in: $MASTER"
-    ( ( cd "$MASTER"; git commit -m "Updated version..." packages.xml ) >> "$LOG" 2>&1 ) \
+    ( ( cd "$MASTER"; git commit -m "Automatic update..." packages.xml ) >> "$LOG" 2>&1 ) \
         || die "Error committing master/packages.xml to Git in: $MASTER"
     # TODO: Not pushing automatically for now.  To enable later...
     # ( ( cd "$MASTER"; git push ) >> "$LOG" 2>&1 ) \
