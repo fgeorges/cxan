@@ -10,5 +10,6 @@
    <dependency package="http://fgeorges.org/lib/xslt/serial"/>
    <dependency package="http://expath.org/lib/http-client"/>
    <dependency package="http://expath.org/lib/crypto"/>
+   <dependency package="http://pipx.org/"/>
 
 </project>
