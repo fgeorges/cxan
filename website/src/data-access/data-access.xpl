@@ -662,4 +662,57 @@
       </p:xslt>
    </p:declare-step>
 
+   <p:declare-step type="da:package-file-by-file">
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Return a package XAR file from a CXAN ID and filename.</p>
+         <p>The file is returned as a document
+            with a single element, containing the absolute file location:</p>
+         <pre><![CDATA[
+            <file>file:/.../git-base/some-repo/functx/functx-1.0.xar</file>
+         ]]></pre>
+         <p>In the above case, <code>pkg</code> would be <code>functx</code> and <code>file</code>
+            would be <code>functx-1.0.xar</code>. This implies that the file names are different
+            for all versions (the exact same file name cannot be part of 2 different versions,
+            therefore the version number is should really be part of the file naming convention).</p>
+         <p><b>TODO</b>: For now, loads the
+            entire package description list, then filters it. Create a step in the dir:* library to
+            return the one <code>pkg</code> element corresponding to this name (would not need to
+            build the entire list in memory, and could stop iterating in all "dir repositories" as
+            soon as a package match is found).</p>
+         <p><b>TODO</b>: What to do in case no package nor no version matches?</p>
+      </p:documentation>
+      <p:output port="result" primary="true"/>
+      <p:option name="pkg"  required="true"/>
+      <p:option name="file" required="true"/>
+      <dir:get-all-packages/>
+      <p:xslt>
+         <p:with-param name="pkg"  select="$pkg"/>
+         <p:with-param name="file" select="$file"/>
+         <p:input port="stylesheet">
+            <p:inline>
+               <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                               xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                               exclude-result-prefixes="#all"
+                               version="2.0">
+                  <xsl:param name="pkg"  as="xs:string"/>
+                  <xsl:param name="file" as="xs:string"/>
+                  <xsl:template match="node()" priority="-10">
+                     <xsl:message terminate="yes">
+                        ERROR - Unknown node: <xsl:copy-of select="."/>
+                     </xsl:message>
+                  </xsl:template>
+                  <xsl:template match="/repos">
+                     <xsl:variable name="pkg-elem" as="element(pkg)"  select="repo/pkg[@id eq $pkg]"/>
+                     <xsl:variable name="found"    as="element(file)" select="$pkg-elem/version/file[@name eq $file]"/>
+                     <xsl:variable name="path" select="concat($pkg-elem/@id, '/', $found/../@num, '/', $found/@name)"/>
+                     <file>
+                        <xsl:value-of select="resolve-uri($path, base-uri($pkg-elem))"/>
+                     </file>
+                  </xsl:template>
+               </xsl:stylesheet>
+            </p:inline>
+         </p:input>
+      </p:xslt>
+   </p:declare-step>
+
 </p:library>
