@@ -4,7 +4,6 @@
             xmlns:web="http://expath.org/ns/webapp"
             xmlns:app="http://cxan.org/ns/website"
             xmlns:da="http://cxan.org/ns/website/data-access"
-            xmlns:exist="http://exist.sourceforge.net/NS/exist"
             pkg:import-uri="http://cxan.org/website/pages/category-list.xproc"
             name="pipeline"
             version="1.0">
@@ -32,15 +31,15 @@
                      <xsl:template match="/">
                         <page menu="cat">
                            <title>Categories</title>
-                           <xsl:apply-templates select="exist:result"/>
+                           <xsl:if test="empty(categories)">
+                              <para>There is no category at all in the DB?!?  Please report this.</para>
+                           </xsl:if>
+                           <xsl:apply-templates select="*"/>
                         </page>
                      </xsl:template>
-                     <xsl:template match="exist:result[empty(categories)]">
-                        <para>There is no category at all in the DB?!?  Please report this.</para>
-                     </xsl:template>
-                     <xsl:template match="exist:result[exists(categories)]">
+                     <xsl:template match="categories">
                         <list>
-                           <xsl:apply-templates select="categories/cat"/>
+                           <xsl:apply-templates select="cat"/>
                         </list>
                      </xsl:template>
                      <xsl:template match="cat">

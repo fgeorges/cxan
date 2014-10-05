@@ -2,14 +2,13 @@
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:pkg="http://expath.org/ns/pkg"
                 xmlns:web="http://expath.org/ns/webapp"
-                xmlns:exist="http://exist.sourceforge.net/NS/exist"
                 version="2.0">
 
    <pkg:import-uri>##none</pkg:import-uri>
 
    <xsl:param name="base-uri" required="yes" as="xs:string"/>
 
-   <xsl:template match="/exist:result/packages[count(pkg) eq 1]">
+   <xsl:template match="/packages[count(pkg) eq 1]">
       <xsl:variable name="page" select="concat('pkg/', pkg/id)"/>
       <xsl:variable name="uri"  select="resolve-uri($page, $base-uri)"/>
       <web:response status="302" message="Found">
@@ -33,7 +32,7 @@
       </web:response>
    </xsl:template>
 
-   <xsl:template match="/exist:result/packages[empty(pkg)]">
+   <xsl:template match="/packages[empty(pkg)]">
       <page menu="pkg">
          <title>Packages</title>
          <xsl:choose>
@@ -53,7 +52,7 @@
       </page>
    </xsl:template>
 
-   <xsl:template match="/exist:result/packages[count(pkg) gt 1]">
+   <xsl:template match="/packages[count(pkg) gt 1]">
       <page menu="pkg">
          <title>Packages</title>
          <para>Here is the list of all packages in CXAN.</para>

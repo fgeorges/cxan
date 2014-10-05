@@ -5,10 +5,6 @@
    <pkg:import-uri>##none</pkg:import-uri>
 
    <xsl:template match="/pkg">
-<!-- DEBUG: ... -->
-<xsl:message>
-   PKG-GET.XSL: <xsl:copy-of select="."/>
-</xsl:message>
       <!-- the version elements, sorted descendently -->
       <xsl:variable name="versions" as="element(version)+">
          <xsl:perform-sort select="version">
@@ -37,40 +33,46 @@
                   <xsl:value-of select="name"/>
                </info>
             </row>
-            <row>
-               <name>Title</name>
-               <info>
-                  <xsl:value-of select="title"/>
-               </info>
-            </row>
-            <row>
-               <name>Home</name>
-               <info>
-                  <link uri="{ home }">
-                     <xsl:value-of select="home"/>
-                  </link>
-               </info>
-            </row>
-            <row>
-               <name>Author</name>
-               <info>
-                  <xsl:for-each select="author">
-                     <xsl:choose>
-                        <xsl:when test="exists(@id)">
-                           <link uri="../author/{ @id }">
+            <xsl:if test="exists(title)">
+               <row>
+                  <name>Title</name>
+                  <info>
+                     <xsl:value-of select="title"/>
+                  </info>
+               </row>
+            </xsl:if>
+            <xsl:if test="exists(home)">
+               <row>
+                  <name>Home</name>
+                  <info>
+                     <link uri="{ home }">
+                        <xsl:value-of select="home"/>
+                     </link>
+                  </info>
+               </row>
+            </xsl:if>
+            <xsl:if test="exists(author)">
+               <row>
+                  <name>Author</name>
+                  <info>
+                     <xsl:for-each select="author">
+                        <xsl:choose>
+                           <xsl:when test="exists(@id)">
+                              <link uri="../author/{ @id }">
+                                 <xsl:value-of select="."/>
+                              </link>
+                           </xsl:when>
+                           <xsl:otherwise>
                               <xsl:value-of select="."/>
-                           </link>
-                        </xsl:when>
-                        <xsl:otherwise>
-                           <xsl:value-of select="."/>
-                        </xsl:otherwise>
-                     </xsl:choose>
-                     <xsl:if test="position() ne last()">
-                        <xsl:text>, </xsl:text>
-                     </xsl:if>
-                  </xsl:for-each>
-               </info>
-            </row>
+                           </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:if test="position() ne last()">
+                           <xsl:text>, </xsl:text>
+                        </xsl:if>
+                     </xsl:for-each>
+                  </info>
+               </row>
+            </xsl:if>
             <xsl:if test="exists(maintainer)">
                <row>
                   <name>Package maintainer</name>
@@ -93,32 +95,36 @@
                   </info>
                </row>
             </xsl:if>
-            <row>
-               <name>Categories</name>
-               <info>
-                  <xsl:for-each select="category">
-                     <link uri="../cat/{ @id }">
-                        <xsl:value-of select="."/>
-                     </link>
-                     <xsl:if test="position() ne last()">
-                        <xsl:text>, </xsl:text>
-                     </xsl:if>
-                  </xsl:for-each>
-               </info>
-            </row>
-            <row>
-               <name>Tags</name>
-               <info>
-                  <xsl:for-each select="tag">
-                     <link uri="../tag/{ . }">
-                        <xsl:value-of select="."/>
-                     </link>
-                     <xsl:if test="position() ne last()">
-                        <xsl:text>, </xsl:text>
-                     </xsl:if>
-                  </xsl:for-each>
-               </info>
-            </row>
+            <xsl:if test="exists(category)">
+               <row>
+                  <name>Categories</name>
+                  <info>
+                     <xsl:for-each select="category">
+                        <link uri="../cat/{ @id }">
+                           <xsl:value-of select="."/>
+                        </link>
+                        <xsl:if test="position() ne last()">
+                           <xsl:text>, </xsl:text>
+                        </xsl:if>
+                     </xsl:for-each>
+                  </info>
+               </row>
+            </xsl:if>
+            <xsl:if test="exists(tag)">
+               <row>
+                  <name>Tags</name>
+                  <info>
+                     <xsl:for-each select="tag">
+                        <link uri="../tag/{ . }">
+                           <xsl:value-of select="."/>
+                        </link>
+                        <xsl:if test="position() ne last()">
+                           <xsl:text>, </xsl:text>
+                        </xsl:if>
+                     </xsl:for-each>
+                  </info>
+               </row>
+            </xsl:if>
          </named-info>
          <xsl:for-each select="version">
             <!-- TODO: Sort not as a string, but as a SemVer instead. -->
@@ -134,9 +140,15 @@
                -->
                <xsl:for-each select="file">
                   <row>
-                     <name>File</name>
+                     <name>
+                        <xsl:choose>
+                           <xsl:when test="@role eq 'pkg'">Package</xsl:when>
+                           <xsl:when test="@role eq 'archive'">Archive</xsl:when>
+                           <xsl:otherwise>File</xsl:otherwise>
+                        </xsl:choose>
+                     </name>
                      <info>
-                        <link uri="../file/{ ../@id }/{ @name }">
+                        <link uri="../file/{ ../../@id }/{ @name }">
                            <xsl:value-of select="@name"/>
                         </link>
                      </info>
