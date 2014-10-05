@@ -8,8 +8,8 @@
            pkg:import-uri="##none">
 
    <p:import href="../tools.xpl"/>
-   <!--p:import href="http://pipx.org/ns/pipx.xpl"/-->
-   <p:import href="../../../../../xproc/pipx/pipx/src/pipx.xpl"/>
+   <p:import href="http://pipx.org/ns/pipx.xpl"/>
+   <!--p:import href="../../../../../xproc/pipx/pipx/src/pipx.xpl"/-->
 
    <p:declare-step type="dir:get-all-packages">
       <p:documentation xmlns="http://www.w3.org/1999/xhtml">
@@ -66,6 +66,25 @@
       </p:documentation>
       <p:input  port="parameters" primary="true" kind="parameter"/>
       <p:output port="result"     primary="true"/>
+      <pipx:parameter param-name="master-repo" required="true"/>
+      <p:group>
+         <p:variable name="href" select="resolve-uri('packages.xml', /param)"/>
+         <p:load>
+            <p:with-option name="href" select="$href"/>
+         </p:load>
+         <p:add-attribute match="/*" attribute-name="xml:base">
+            <p:with-option name="attribute-value" select="$href"/>
+         </p:add-attribute>
+      </p:group>
+   </p:declare-step>
+
+   <!--p:declare-step type="dir:get-all-packages-impl">
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Implementation step for dir:get-all-packages.</p>
+         <p>The step dir:get-all-packages simply pass the config parameters.</p>
+      </p:documentation>
+      <p:input  port="parameters" primary="true" kind="parameter"/>
+      <p:output port="result"     primary="true"/>
       <pipx:parameter param-name="git-base" required="true"/>
       <p:directory-list>
          <p:with-option name="path" select="string(/param)"/>
@@ -85,7 +104,7 @@
          <p:delete match="/c:directory/@*"/>
          <p:rename match="/c:directory" new-name="repos"/>
       </p:group>
-   </p:declare-step>
+   </p:declare-step-->
 
    <p:declare-step type="dir:list-categories">
       <p:documentation xmlns="http://www.w3.org/1999/xhtml">
@@ -121,7 +140,7 @@
       </p:documentation>
       <p:input  port="parameters" primary="true" kind="parameter"/>
       <p:output port="result"     primary="true"/>
-      <pipx:parameter param-name="git-base" required="true"/>
+      <pipx:parameter param-name="master-repo" required="true"/>
       <p:load>
          <p:with-option name="href" select="resolve-uri('categories.xml', string(/param))"/>
       </p:load>
