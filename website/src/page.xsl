@@ -126,7 +126,7 @@
                   <span class="icon-bar"/>
                   <span class="icon-bar"/>
                </button>
-               <a class="navbar-brand" href="/">CXAN</a>
+               <a class="navbar-brand" href="{ $context-root }/">CXAN</a>
             </div>
             <div class="collapse navbar-collapse">
                <ul class="nav navbar-nav">
@@ -251,7 +251,7 @@
    </xsl:template>
 
    <xsl:template match="table">
-      <table class="table table-hover">
+      <table class="table table-striped table-bordered">
          <xsl:if test="exists(column)">
             <thead>
                <tr>
@@ -281,7 +281,7 @@
    </xsl:template>
 
    <xsl:template match="named-info">
-      <table class="namedinfo">
+      <table class="table table-striped table-bordered">
          <xsl:for-each select="row">
             <tr>
                <td>
