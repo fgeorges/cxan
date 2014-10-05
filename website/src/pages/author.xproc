@@ -4,7 +4,6 @@
             xmlns:web="http://expath.org/ns/webapp"
             xmlns:app="http://cxan.org/ns/website"
             xmlns:da="http://cxan.org/ns/website/data-access"
-            xmlns:exist="http://exist.sourceforge.net/NS/exist"
             pkg:import-uri="http://cxan.org/website/pages/author.xproc"
             name="pipeline"
             version="1.0">
@@ -33,7 +32,7 @@
                             xmlns:xs="http://www.w3.org/2001/XMLSchema"
                             version="2.0">
                <xsl:param name="id" required="yes" as="xs:string"/>
-               <xsl:template match="/exist:result[author/node()]">
+               <xsl:template match="/packages-by-author[author/node()]">
                   <page menu="author">
                      <title>
                         <xsl:value-of select="author"/>
@@ -49,7 +48,7 @@
                      </list>
                   </page>
                </xsl:template>
-               <xsl:template match="/exist:result[empty(author/node())]">
+               <xsl:template match="/packages-by-author[empty(author/node())]">
                   <page menu="author">
                      <title>Author</title>
                      <para>

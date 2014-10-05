@@ -4,7 +4,6 @@
             xmlns:web="http://expath.org/ns/webapp"
             xmlns:app="http://cxan.org/ns/website"
             xmlns:da="http://cxan.org/ns/website/data-access"
-            xmlns:exist="http://exist.sourceforge.net/NS/exist"
             pkg:import-uri="http://cxan.org/website/pages/categories.xproc"
             name="pipeline"
             version="1.0">
@@ -38,32 +37,26 @@
                                   version="2.0">
                      <!-- the cat id passed from the outside (even if no match found) -->
                      <xsl:param name="id" as="xs:string"/>
-                     <xsl:template match="/exist:result">
+                     <xsl:template match="/">
                         <page menu="cat">
                            <title>
-                              <xsl:value-of select="( cat/@name, $id )[1]"/>
+                              <xsl:value-of select="( @name, $id )[1]"/>
                            </title>
-                           <xsl:if test="exists(cat/cat)">
+                           <xsl:if test="exists(cat)">
                               <list>
-                                 <xsl:apply-templates select="cat/cat" mode="menu"/>
+                                 <xsl:apply-templates select="cat" mode="menu"/>
                               </list>
                               <para/>
                            </xsl:if>
                            <xsl:choose>
-                              <xsl:when test="empty(cat)">
-                                 <para>The category does not exist.</para>
-                              </xsl:when>
-                              <xsl:when test="empty(cat//pkg)">
+                              <xsl:when test="empty(.//pkg)">
                                  <para>There is no package in this category.</para>
                               </xsl:when>
                               <xsl:otherwise>
                                  <table>
                                     <column>package</column>
                                     <column>category</column>
-                                    <xsl:apply-templates select="pkg">
-                                       <xsl:sort select="@id"/>
-                                    </xsl:apply-templates>
-                                    <xsl:apply-templates select="cat"/>
+                                    <xsl:next-match/>
                                  </table>
                               </xsl:otherwise>
                            </xsl:choose>

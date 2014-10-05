@@ -4,7 +4,6 @@
             xmlns:web="http://expath.org/ns/webapp"
             xmlns:app="http://cxan.org/ns/website"
             xmlns:da="http://cxan.org/ns/website/data-access"
-            xmlns:exist="http://exist.sourceforge.net/NS/exist"
             pkg:import-uri="http://cxan.org/website/pages/author-list.xproc"
             name="pipeline"
             version="1.0">
@@ -25,15 +24,15 @@
                <xsl:template match="/">
                   <page menu="author">
                      <title>Authors</title>
-                     <xsl:apply-templates select="exist:result"/>
+                     <xsl:apply-templates select="*"/>
                   </page>
                </xsl:template>
-               <xsl:template match="exist:result[empty(authors/author)]">
+               <xsl:template match="authors[empty(author)]">
                   <para>There is no author at all in the DB?!?  Please report this.</para>
                </xsl:template>
-               <xsl:template match="exist:result[exists(authors/author)]">
+               <xsl:template match="authors[exists(author)]">
                   <list>
-                     <xsl:apply-templates select="authors/author"/>
+                     <xsl:apply-templates select="author"/>
                   </list>
                </xsl:template>
                <xsl:template match="author">

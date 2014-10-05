@@ -4,7 +4,6 @@
             xmlns:web="http://expath.org/ns/webapp"
             xmlns:app="http://cxan.org/ns/website"
             xmlns:da="http://cxan.org/ns/website/data-access"
-            xmlns:exist="http://exist.sourceforge.net/NS/exist"
             pkg:import-uri="http://cxan.org/website/pages/tags.xproc"
             name="pipeline"
             version="1.0">
@@ -42,7 +41,7 @@
                                   xmlns:xs="http://www.w3.org/2001/XMLSchema"
                                   version="2.0">
                      <xsl:param name="tags" as="xs:string" required="yes"/>
-                     <xsl:template match="/exist:result/tags">
+                     <xsl:template match="/tags">
                         <page menu="tag">
                            <xsl:choose>
                               <xsl:when test="count(tag) eq 1">

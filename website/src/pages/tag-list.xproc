@@ -4,7 +4,6 @@
             xmlns:web="http://expath.org/ns/webapp"
             xmlns:app="http://cxan.org/ns/website"
             xmlns:da="http://cxan.org/ns/website/data-access"
-            xmlns:exist="http://exist.sourceforge.net/NS/exist"
             pkg:import-uri="http://cxan.org/website/pages/tag-list.xproc"
             name="pipeline"
             version="1.0">
@@ -41,7 +40,7 @@
                <p:inline>
                   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                                   version="2.0">
-                     <xsl:template match="/exist:result">
+                     <xsl:template match="/">
                         <page menu="tag">
                            <title>Tags</title>
                            <xsl:apply-templates select="tags"/>
