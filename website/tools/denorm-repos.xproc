@@ -7,8 +7,8 @@
                 exclude-inline-prefixes="c pxp my">
 
    <!--
-      "investigate.xproc", because it gathers information from the repository
-      and store it in a denormalized file at the root of it: packages.xml.
+      Gather information from the repository and store it in a denormalized file
+      at the root of it: packages.xml.
    -->
 
    <p:option name="repos-dir" required="true">
