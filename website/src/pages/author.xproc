@@ -32,39 +32,7 @@
                             xmlns:xs="http://www.w3.org/2001/XMLSchema"
                             version="2.0">
                <xsl:param name="id" required="yes" as="xs:string"/>
-               <xsl:template match="/packages-by-author[exists(author)]">
-                  <page menu="author">
-                     <title>
-                        <xsl:value-of select="author/name/display"/>
-                     </title>
-                     <list>
-                        <xsl:for-each select="pkg">
-                           <item>
-                              <link uri="../pkg/{ encode-for-uri(@id) }">
-                                 <xsl:value-of select="@id"/>
-                              </link>
-                           </item>
-                        </xsl:for-each>
-                     </list>
-                  </page>
-               </xsl:template>
-               <xsl:template match="/packages-by-author[exists(author)][empty(pkg)]" priority="2">
-                  <page menu="author">
-                     <title>
-                        <xsl:value-of select="author/name/display"/>
-                     </title>
-                     <para>
-                        <xsl:text>The author </xsl:text>
-                        <xsl:value-of select="author/name/display"/>
-                        <xsl:text> (with the ID '</xsl:text>
-                        <code>
-                           <xsl:value-of select="$id"/>
-                        </code>
-                        <xsl:text>') has no package associated in the system.</xsl:text>
-                     </para>
-                  </page>
-               </xsl:template>
-               <xsl:template match="/packages-by-author[empty(author)]">
+               <xsl:template match="/no-author">
                   <page menu="author">
                      <title>Author</title>
                      <para>
@@ -75,6 +43,36 @@
                         <xsl:text>'.</xsl:text>
                      </para>
                   </page>
+               </xsl:template>
+               <xsl:template match="/author">
+                  <page menu="author">
+                     <title>
+                        <xsl:value-of select="name/display"/>
+                     </title>
+                     <xsl:apply-templates select="packages"/>
+                  </page>
+               </xsl:template>
+               <xsl:template match="packages[exists(pkg)]">
+                  <list>
+                     <xsl:for-each select="pkg">
+                        <item>
+                           <link uri="../pkg/{ encode-for-uri(@id) }">
+                              <xsl:value-of select="@id"/>
+                           </link>
+                        </item>
+                     </xsl:for-each>
+                  </list>
+               </xsl:template>
+               <xsl:template match="packages[empty(pkg)]">
+                  <para>
+                     <xsl:text>The author </xsl:text>
+                     <xsl:value-of select="name/display"/>
+                     <xsl:text> (with the ID '</xsl:text>
+                     <code>
+                        <xsl:value-of select="$id"/>
+                     </code>
+                     <xsl:text>') has no package associated in the system.</xsl:text>
+                  </para>
                </xsl:template>
             </xsl:stylesheet>
          </p:inline>

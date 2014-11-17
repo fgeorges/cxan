@@ -11,6 +11,10 @@
    <p:import href="http://pipx.org/ns/pipx.xpl"/>
    <!--p:import href="../../../../../xproc/pipx/pipx/src/pipx.xpl"/-->
 
+   <!--
+      Packages.
+   -->
+
    <p:declare-step type="dir:get-all-packages">
       <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Return all packages from directory repos.</p>
@@ -105,6 +109,10 @@
       </p:group>
    </p:declare-step-->
 
+   <!--
+      Authors.
+   -->
+
    <p:declare-step type="dir:list-authors">
       <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Returns the list of authors known by the system. The authors are stored in the file
@@ -146,6 +154,68 @@
          <p:with-option name="href" select="resolve-uri('authors.xml', string(/param))"/>
       </p:load>
    </p:declare-step>
+
+   <p:declare-step type="dir:author-packages">
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Returns a specific author, with the list of its packages. The author is stored in the
+            file <code>authors/{author}.xml</code> in the directory pointed to by the config
+            parameter <code>git-base</code>, where <code>{author}</code> is the author ID, passed
+            through the option "author". It looks like:</p>
+         <pre><![CDATA[
+            <author id="fgeorges">
+               <name>
+                  <display>Florent Georges</display>
+               </name>
+               <packages>
+                  <pkg id="cxan-website"/>
+                  <pkg id="expath-http-client"/>
+               </packages>
+            </author>
+         ]]></pre>
+      </p:documentation>
+      <p:output port="result" primary="true"/>
+      <p:option name="author" required="true"/>
+      <dir:author-packages-impl>
+         <p:with-option name="author" select="$author"/>
+         <p:input port="parameters">
+            <!-- TODO: Which one? -->
+            <!--p:document href="../../../../config-params.xml"/-->
+            <p:document href="../config-params.xml"/>
+         </p:input>
+      </dir:author-packages-impl>
+   </p:declare-step>
+
+   <p:declare-step type="dir:author-packages-impl">
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Implementation step for dir:author-packages.</p>
+         <p>The step dir:author-packages simply pass the config parameters.</p>
+      </p:documentation>
+      <p:input  port="parameters" primary="true" kind="parameter"/>
+      <p:output port="result"     primary="true"/>
+      <p:option name="author" required="true"/>
+      <pipx:parameter param-name="master-repo" required="true"/>
+      <p:try>
+         <p:group>
+            <p:load>
+               <p:with-option name="href" select="resolve-uri(concat('authors/', $author, '.xml'), string(/param))"/>
+            </p:load>
+         </p:group>
+         <p:catch>
+            <p:identity>
+               <p:input port="source">
+                  <p:inline><no-author/></p:inline>
+               </p:input>
+            </p:identity>
+            <p:add-attribute attribute-name="id" match="/*">
+               <p:with-option name="attribute-value" select="$author"/>
+            </p:add-attribute>
+         </p:catch>
+      </p:try>
+   </p:declare-step>
+
+   <!--
+      Categories.
+   -->
 
    <p:declare-step type="dir:list-categories">
       <p:documentation xmlns="http://www.w3.org/1999/xhtml">

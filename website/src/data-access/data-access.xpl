@@ -509,63 +509,22 @@
          <p>A package can have several authors. The author is passed through the option "author", by
             using the author ID. The returned document is of the following format:</p>
          <pre><![CDATA[
-            <packages-by-author>
-               <author id="fgeorges">
-                  <name>
-                     <display>Florent Georges</display>
-                  </name>
-               </author>
-               <pkg id="cxan-client"/>
-               <pkg id="cxan-website"/>
-               ...
-            </packages-by-author>
+            <author id="fgeorges">
+               <name>
+                  <display>Florent Georges</display>
+               </name>
+               <packages>
+                  <pkg id="cxan-website"/>
+                  <pkg id="expath-http-client"/>
+               </packages>
+            </author>
          ]]></pre>
-         <p><b>TODO</b>: For now, loads the entire package description list, then filters it. Put in
-            place a denormalization mechanism, that would create a authors.xml file in each dir repo
-            (first managed by hand in the Git repo directly, then maybe automatically generated when
-            updating Git repos).</p>
       </p:documentation>
       <p:output port="result" primary="true"/>
       <p:option name="author" required="true"/>
-      <!-- all packages -->
-      <dir:get-all-packages name="packages"/>
-      <!-- the author details -->
-      <da:get-author name="author">
+      <dir:author-packages>
          <p:with-option name="author" select="$author"/>
-      </da:get-author>
-      <!-- mix them together -->
-      <p:xslt>
-         <p:with-param name="auth-id" select="$author"/>
-         <p:input port="source">
-            <p:pipe step="packages" port="result"/>
-            <p:pipe step="author"   port="result"/>
-         </p:input>
-         <p:input port="stylesheet">
-            <p:inline>
-               <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                               xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                               exclude-result-prefixes="#all"
-                               version="2.0">
-                  <xsl:variable name="author" select="collection()[2]/*" as="element(author)?"/>
-                  <xsl:template match="node()" priority="0">
-                     <xsl:message terminate="yes">
-                        ERROR - Unknown node: <xsl:copy-of select="."/>
-                     </xsl:message>
-                  </xsl:template>
-                  <xsl:template match="/repos">
-                     <packages-by-author>
-                        <xsl:variable name="pkgs" as="element(pkg)*" select="repo/pkg[author/@id = $author/@id]"/>
-                        <xsl:copy-of select="$author"/>
-                        <xsl:for-each select="distinct-values($pkgs/@id)">
-                           <xsl:sort select="."/>
-                           <pkg id="{ . }"/>
-                        </xsl:for-each>
-                     </packages-by-author>
-                  </xsl:template>
-               </xsl:stylesheet>
-            </p:inline>
-         </p:input>
-      </p:xslt>
+      </dir:author-packages>
    </p:declare-step>
 
    <!--
