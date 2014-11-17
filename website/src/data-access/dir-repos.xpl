@@ -14,13 +14,12 @@
    <p:declare-step type="dir:get-all-packages">
       <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Return all packages from directory repos.</p>
-         <p>Each directory repo contains a
-            packages.xml file, with a root element "repo", and child elements "pkg". This step
-            returns them all, adding an attribute "@xml:base" on each "repo" element to store the
-            URI of the packages.xml file this particular repo is stored in (an absolute URI using
-            file: scheme). All directory repos are the child directories of the parameter
-            "git-base". The output port of this step returns all such documents, wrapped in a single
-            "repos" element, which looks like:</p>
+         <p>Each directory repo contains a packages.xml file, with a root element "repo", and child
+            elements "pkg". This step returns them all, adding an attribute "@xml:base" on each
+            "repo" element to store the URI of the packages.xml file this particular repo is stored
+            in (an absolute URI using file: scheme). All directory repos are the child directories
+            of the parameter "git-base". The output port of this step returns all such documents,
+            wrapped in a single "repos" element, which looks like:</p>
          <pre><![CDATA[
             <repos>
                <repo xml:base="...">
@@ -106,11 +105,53 @@
       </p:group>
    </p:declare-step-->
 
+   <p:declare-step type="dir:list-authors">
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Returns the list of authors known by the system. The authors are stored in the file
+               <code>authors.xml</code> in the directory pointed to by the config parameter
+               <code>git-base</code>. It looks like:</p>
+         <pre><![CDATA[
+            <authors>
+               <author id="fgeorges">
+                  <name>
+                     <display>Florent Georges</display>
+                  </name>
+               </author>
+               <author id="...">
+                  ...
+               </author>
+               ...
+            </categories>
+         ]]></pre>
+      </p:documentation>
+      <p:output port="result" primary="true"/>
+      <dir:list-authors-impl>
+         <p:input port="parameters">
+            <!-- TODO: Which one? -->
+            <!--p:document href="../../../../config-params.xml"/-->
+            <p:document href="../config-params.xml"/>
+         </p:input>
+      </dir:list-authors-impl>
+   </p:declare-step>
+
+   <p:declare-step type="dir:list-authors-impl">
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Implementation step for dir:list-authors.</p>
+         <p>The step dir:list-authors simply pass the config parameters.</p>
+      </p:documentation>
+      <p:input  port="parameters" primary="true" kind="parameter"/>
+      <p:output port="result"     primary="true"/>
+      <pipx:parameter param-name="master-repo" required="true"/>
+      <p:load>
+         <p:with-option name="href" select="resolve-uri('authors.xml', string(/param))"/>
+      </p:load>
+   </p:declare-step>
+
    <p:declare-step type="dir:list-categories">
       <p:documentation xmlns="http://www.w3.org/1999/xhtml">
-         <p>Returns the category hierarchy known
-            by the system. The hierarchy is stored in the file <code>categories.xml</code> in the
-            directory pointed to by the config parameter <code>git-base</code>. It looks like:</p>
+         <p>Returns the category hierarchy known by the system. The hierarchy is stored in the file
+               <code>categories.xml</code> in the directory pointed to by the config parameter
+               <code>git-base</code>. It looks like:</p>
          <pre><![CDATA[
             <categories>
                <cat id="doctypes" name="Document types"/>

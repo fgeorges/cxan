@@ -32,10 +32,10 @@
                             xmlns:xs="http://www.w3.org/2001/XMLSchema"
                             version="2.0">
                <xsl:param name="id" required="yes" as="xs:string"/>
-               <xsl:template match="/packages-by-author[author/node()]">
+               <xsl:template match="/packages-by-author[exists(author)]">
                   <page menu="author">
                      <title>
-                        <xsl:value-of select="author"/>
+                        <xsl:value-of select="author/name/display"/>
                      </title>
                      <list>
                         <xsl:for-each select="pkg">
@@ -48,7 +48,23 @@
                      </list>
                   </page>
                </xsl:template>
-               <xsl:template match="/packages-by-author[empty(author/node())]">
+               <xsl:template match="/packages-by-author[exists(author)][empty(pkg)]" priority="2">
+                  <page menu="author">
+                     <title>
+                        <xsl:value-of select="author/name/display"/>
+                     </title>
+                     <para>
+                        <xsl:text>The author </xsl:text>
+                        <xsl:value-of select="author/name/display"/>
+                        <xsl:text> (with the ID '</xsl:text>
+                        <code>
+                           <xsl:value-of select="$id"/>
+                        </code>
+                        <xsl:text>') has no package associated in the system.</xsl:text>
+                     </para>
+                  </page>
+               </xsl:template>
+               <xsl:template match="/packages-by-author[empty(author)]">
                   <page menu="author">
                      <title>Author</title>
                      <para>

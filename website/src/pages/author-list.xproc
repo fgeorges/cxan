@@ -38,7 +38,7 @@
                <xsl:template match="author">
                   <item>
                      <link uri="author/{ encode-for-uri(@id) }">
-                        <xsl:value-of select="."/>
+                        <xsl:value-of select="name/display"/>
                      </link>
                   </item>
                </xsl:template>
