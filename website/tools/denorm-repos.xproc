@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <p:declare-step xmlns:p="http://www.w3.org/ns/xproc"
                 xmlns:c="http://www.w3.org/ns/xproc-step"
-                xmlns:pxp="http://exproc.org/proposed/steps"
-                xmlns:my="investigate.xsl#impl"
                 version="1.0"
-                exclude-inline-prefixes="c pxp my">
+                exclude-inline-prefixes="c">
 
    <!--
       Gather information from the repository and store it in a denormalized file
@@ -23,8 +21,6 @@
 
    <p:output port="result"/>
 
-   <p:import href="http://xmlcalabash.com/extension/steps/library-1.0.xpl"/>
-
    <!-- return the package directories -->
    <p:directory-list>
       <p:with-option name="path" select="$repos-dir"/>
@@ -40,9 +36,9 @@
       <p:variable name="relative" select="concat('./', $dir-name, '/'[not(ends-with($dir-name, '/'))])"/>
       <p:variable name="absolute" select="resolve-uri($relative, base-uri(.))"/>
       <!--
-	  TODO: In addition to load the files, we could resolve some
-	  info furthermore, for instance add an absolute @href to the
-	  elements 'file'...
+         TODO: In addition to load the files, we could resolve some
+         info furthermore, for instance add an absolute @href to the
+         elements 'file'...
       -->
       <p:load name="load">
          <p:with-option name="href" select="resolve-uri('packages.xml', $absolute)"/>
