@@ -6,7 +6,13 @@ SCRIPTS=`dirname $0`
 MASTER="$BASE/master"
 REPOS="$BASE/repos"
 LOG="$BASE/update.log"
+
 DENORM_PIPE="$SCRIPTS/denorm-repos.xproc"
+AUTHOR_PIPE="$SCRIPTS/denorm-authors.xproc"
+
+PACKAGES="$MASTER/packages.xml"
+AUTHORS="$MASTER/authors.xml"
+AUTHDIR="$MASTER/authors/"
 
 ## Utility functions
 
@@ -75,18 +81,42 @@ if test 0 -eq $repos_cnt; then
     die "No repo dir in the repos directory: '$REPOS'"
 fi
 
+## Sanity checks
+
+# TODO: Insert here some sanity checks on the updated repos.
+#
+# TODO: Use a kind of blue-green deployments so if some error or
+# inconsistency is detected on the updated repos, the update can stop
+# without affecting the system (waiting for the error to be fixed, or
+# doing something more sophisticated like excluding the guilty repo
+# from the system, until the error is fixed).
+
 ## Denormalize repos
 
 from="file:$REPOS/"
-to="$MASTER/packages.xml"
 log
 log "[**] Denormalize repositories"
 log "from '$from'"
-log "to '$to'"
+log "to '$PACKAGES'"
 calabash "$DENORM_PIPE" repos-dir="$from" \
-    2>> "$LOG" > "$to"
+    2>> "$LOG" > "$PACKAGES"
 
-## Push packages.xml
+## Denormalize authors
+
+to="file:$AUTHDIR"
+log
+log "[**] Denormalize authors"
+log "from '$PACKAGES'"
+log " and '$AUTHORS'"
+log "  to '$to'"
+calabash -i packages="$PACKAGES" -i authors="$AUTHORS" \
+    "$AUTHOR_PIPE" \
+    authors-dir="$to" \
+    >> "$LOG" 2>&1
+
+## Push changes
+
+# TODO: For now, only packages.xml, extend it to others, like authors...
 
 git_add=`(cd "$MASTER"; git add -n packages.xml)`
 if test -n "$git_add"; then
