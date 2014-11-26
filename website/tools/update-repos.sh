@@ -7,8 +7,10 @@ MASTER="$BASE/master"
 REPOS="$BASE/repos"
 LOG="$BASE/update.log"
 
+SANITY_PIPE="$SCRIPTS/check-sanity.xproc"
 DENORM_PIPE="$SCRIPTS/denorm-repos.xproc"
 AUTHOR_PIPE="$SCRIPTS/denorm-authors.xproc"
+VALIDITY_PIPE="$SCRIPTS/check-validity.xproc"
 
 PACKAGES="$MASTER/packages.xml"
 AUTHORS="$MASTER/authors.xml"
@@ -83,13 +85,22 @@ fi
 
 ## Sanity checks
 
-# TODO: Insert here some sanity checks on the updated repos.
-#
 # TODO: Use a kind of blue-green deployments so if some error or
 # inconsistency is detected on the updated repos, the update can stop
 # without affecting the system (waiting for the error to be fixed, or
 # doing something more sophisticated like excluding the guilty repo
 # from the system, until the error is fixed).
+
+log
+log "[**] Check sanity"
+log "from '$REPOS'"
+for f in "$REPOS/*"; do
+    log "sanity of repo 'file:$f/'"
+    calabash "$SANITY_PIPE" repo-dir="file:$f/" \
+        >> "$LOG" 2>&1 \
+        || die "Error checking sanity! - $f";
+    log "OK."
+done
 
 ## Denormalize repos
 
@@ -99,7 +110,8 @@ log "[**] Denormalize repositories"
 log "from '$from'"
 log "to '$PACKAGES'"
 calabash "$DENORM_PIPE" repos-dir="$from" \
-    2>> "$LOG" > "$PACKAGES"
+    2>> "$LOG" > "$PACKAGES" \
+    || die "Error denormalizing repositories!"
 
 ## Denormalize authors
 
@@ -112,7 +124,22 @@ log "  to '$to'"
 calabash -i packages="$PACKAGES" -i authors="$AUTHORS" \
     "$AUTHOR_PIPE" \
     authors-dir="$to" \
-    >> "$LOG" 2>&1
+    >> "$LOG" 2>&1 \
+    || die "Error denormalizing authors!"
+
+## Validity checks
+
+# TODO: Perform some validity checks on the result of the denorm
+# process.  As opposed to sanity checks, this is done after the denorm
+# process took place.
+# 
+# log
+# log "[**] Check validity"
+# log "of '$PACKAGES'"
+# calabash -i packages="$PACKAGES" \
+#     "$VALIDITY_PIPE" \
+#     >> "$LOG" 2>&1 \
+#     || die "Error checking validity!"
 
 ## Push changes
 

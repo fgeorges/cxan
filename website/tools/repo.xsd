@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           version="0.1"
+           elementFormDefault="qualified">
+
+   <xs:element name="repo">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element ref="pkg" maxOccurs="unbounded"/>
+         </xs:sequence>
+      </xs:complexType>
+   </xs:element>
+
+   <xs:element name="pkg">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element ref="name"/>
+            <xs:element ref="abstract"/>
+            <xs:element ref="author"     maxOccurs="unbounded"/>
+            <xs:element ref="maintainer" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element ref="category"   maxOccurs="unbounded"/>
+            <xs:element ref="tag"        maxOccurs="unbounded"/>
+            <xs:element ref="version"    maxOccurs="unbounded"/>
+         </xs:sequence>
+         <xs:attribute name="id" type="id" use="required"/>
+      </xs:complexType>
+   </xs:element>
+
+   <xs:element name="name" type="xs:anyURI"/>
+
+   <xs:element name="abstract" type="xs:string"/>
+
+   <xs:element name="author" type="string-with-id"/>
+
+   <xs:element name="maintainer" type="string-with-id"/>
+
+   <xs:element name="category" type="string-with-id"/>
+
+   <xs:element name="tag" type="id"/>
+
+   <xs:element name="version">
+      <xs:complexType>
+         <xs:sequence>
+            <xs:element ref="file" maxOccurs="unbounded"/>
+         </xs:sequence>
+         <xs:attribute name="num" type="version-id" use="required"/>
+      </xs:complexType>
+   </xs:element>
+
+   <xs:element name="file">
+      <xs:complexType>
+         <xs:sequence/>
+         <xs:attribute name="name" type="xs:string" use="required"/>
+         <xs:attribute name="role" type="role"/>
+      </xs:complexType>
+   </xs:element>
+
+   <xs:complexType name="string-with-id">
+      <xs:simpleContent>
+         <xs:extension base="xs:string">
+            <xs:attribute name="id" type="id" use="required"/>
+         </xs:extension>
+      </xs:simpleContent>
+   </xs:complexType>
+
+   <xs:simpleType name="id">
+      <xs:restriction base="xs:string">
+         <xs:pattern value="[a-z][a-z0-9]*(-[a-z0-9]+)*"/>
+      </xs:restriction>
+   </xs:simpleType>
+
+   <xs:simpleType name="version-id">
+      <xs:restriction base="xs:string">
+         <xs:pattern value="[0-9]+(\.[0-9]+)+"/>
+      </xs:restriction>
+   </xs:simpleType>
+
+   <xs:simpleType name="role">
+      <xs:restriction base="xs:string">
+         <xs:enumeration value="pkg"/>
+         <xs:enumeration value="archive"/>
+      </xs:restriction>
+   </xs:simpleType>
+
+</xs:schema>
