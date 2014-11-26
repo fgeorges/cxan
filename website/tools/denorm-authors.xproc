@@ -73,9 +73,6 @@
             </p:inline>
          </p:input>
       </p:xslt>
-      <!--
-         TODO: Store each author denormalized document in a file authors/myname.xml...
-      -->
       <p:store indent="true">
          <p:with-option name="href" select="$href"/>
       </p:store>

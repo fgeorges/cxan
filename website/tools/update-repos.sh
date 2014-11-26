@@ -94,10 +94,12 @@ fi
 log
 log "[**] Check sanity"
 log "from '$REPOS'"
-for f in "$REPOS/*"; do
+for f in "$REPOS"/*; do
     log "sanity of repo 'file:$f/'"
-    calabash "$SANITY_PIPE" repo-dir="file:$f/" \
-        >> "$LOG" 2>&1 \
+    ( calabash -i categories="$MASTER"/categories.xml -i authors="$MASTER"/authors.xml \
+        "$SANITY_PIPE" repo-dir="file:$f/" \
+        2>> "$LOG" \
+        | xmllint --format - > "$MASTER"/sanity/`basename $f`.xml ) \
         || die "Error checking sanity! - $f";
     log "OK."
 done
