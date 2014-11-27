@@ -21,6 +21,8 @@
 
    <p:output port="result"/>
 
+   <p:serialization port="result" indent="true"/>
+
    <!-- return the package directories -->
    <p:directory-list>
       <p:with-option name="path" select="$repos-dir"/>
