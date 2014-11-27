@@ -20,7 +20,7 @@
    <p:import href="../data-access/data-access.xpl"/>
 
    <p:variable name="accept"   select="/web:request/web:header[@name eq 'accept']/@value"/>
-   <p:variable name="name"     select="/web:request/web:param[@name eq 'name']/@value"/>
+   <p:variable name="repo"     select="/web:request/web:path/web:match[@name eq 'repo']"/>
    <p:variable name="base-uri" select="/c:param-set/c:param[@name eq 'home-uri']/@value">
       <p:document href="../../../../config-params.xml"/>
    </p:variable>
@@ -28,18 +28,9 @@
    <app:ensure-method accepted="get"/>
    <p:sink/>
 
-   <!-- retrieve the packages id and name from eXist -->
-   <p:choose>
-      <!-- Note: I don't know why, but $name[.] does NOT work... -->
-      <p:when test="exists($name) and $name ne ''">
-         <da:packages-by-name>
-            <p:with-option name="name" select="$name"/>
-         </da:packages-by-name>
-      </p:when>
-      <p:otherwise>
-         <da:list-packages/>
-      </p:otherwise>
-   </p:choose>
+   <da:packages-by-repo>
+      <p:with-option name="repo" select="$repo"/>
+   </da:packages-by-repo>
 
    <p:choose>
       <p:when test="$accept eq 'application/xml'">
@@ -53,6 +44,7 @@
                <p:document href="pkg-list.xsl"/>
             </p:input>
             <p:with-param name="base-uri" select="$base-uri"/>
+            <p:with-param name="repo-id"  select="$repo"/>
          </p:xslt>
       </p:otherwise>
    </p:choose>

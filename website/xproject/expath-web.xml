@@ -71,11 +71,21 @@
       </servlet>
 
       <!--
-          The package list.
+          The repository list.
       -->
       <servlet name="pkg-list">
-         <xproc uri="http://cxan.org/website/pages/pkg-list.xproc"/>
+         <xproc uri="http://cxan.org/website/pages/repo-list.xproc"/>
          <url pattern="/pkg"/>
+      </servlet>
+
+      <!--
+          The package list of one repository.
+      -->
+      <servlet name="pkg">
+         <xproc uri="http://cxan.org/website/pages/pkg-list.xproc"/>
+         <url pattern="/pkg/([^/]+)">
+            <match group="1" name="repo"/>
+         </url>
       </servlet>
 
       <!--
@@ -83,8 +93,9 @@
       -->
       <servlet name="pkg">
          <xproc uri="http://cxan.org/website/pages/pkg.xproc"/>
-         <url pattern="/pkg/([^/]+)">
-            <match group="1" name="id"/>
+         <url pattern="/pkg/([^/]+)/([^/]+)">
+            <match group="1" name="repo"/>
+            <match group="2" name="pkg"/>
          </url>
       </servlet>
 

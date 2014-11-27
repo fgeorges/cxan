@@ -12,6 +12,114 @@
    <!--p:import href="../../../../../xproc/pipx/pipx/src/pipx.xpl"/-->
 
    <!--
+      Repositories.
+   -->
+
+   <p:declare-step type="dir:get-all-repositories">
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Return all repositories from the master repo.</p>
+         <p>The output port of this step returns all repositories, wrapped in a single
+            "repositories" element, which looks like:</p>
+         <pre><![CDATA[
+            <repositories>
+               <repo abbrev="fgeorges" href="../repos/fgeorges/">
+                  <desc>Florent Georges's personal repository.</desc>
+                  <packages>../repos/fgeorges/packages.xml</packages>
+                  <git>
+                     <remote>http://fgeorges@git.fgeorges.org/r/~fgeorges/cxan-repo.git</remote>
+                     <branch>master</branch>
+                  </git>
+               </repo>
+               <repo ...>
+                  ...
+               </repo>
+               ...
+            </repositories>
+         ]]></pre>
+      </p:documentation>
+      <p:output port="result" primary="true"/>
+      <dir:get-all-repositories-impl>
+         <p:input port="parameters">
+            <!-- TODO: Which one? -->
+            <!--p:document href="../../../../config-params.xml"/-->
+            <p:document href="../config-params.xml"/>
+         </p:input>
+      </dir:get-all-repositories-impl>
+   </p:declare-step>
+
+   <p:declare-step type="dir:get-all-repositories-impl">
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Implementation step for dir:get-all-repositories.</p>
+         <p>The step dir:get-all-repositories simply pass the config parameters.</p>
+      </p:documentation>
+      <p:input  port="parameters" primary="true" kind="parameter"/>
+      <p:output port="result"     primary="true"/>
+      <pipx:parameter param-name="master-repo" required="true"/>
+      <p:load>
+         <p:with-option name="href" select="resolve-uri('repositories.xml', /param)"/>
+      </p:load>
+   </p:declare-step>
+
+   <p:declare-step type="dir:repo-packages">
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Return all packages from a given directory repo.</p>
+         <p>Each directory repo contains a packages.xml file, with a root element "repo", and child
+            elements "pkg". This step returns the one from the repository passed through the option
+            "repo". The output port of this step returns this documents, which looks like:</p>
+         <pre><![CDATA[
+            <repo abbrev="...">
+               <pkg id="fgeorges/functx" abbrev="functx">
+                  <name>...</name>
+                  <version num="...">
+                     <file name="..." role="pkg"/>
+                  </version>
+                  ...
+               </pkg>
+               <pkg id="fgeorges/fxsl" abbrev="fxsl">
+                  <name>...</name>
+                  <abstract>...</abstract>
+                  <author id="...">...</author>
+                  <category id="...">...</category>
+                  <category id="...">...</category>
+                  <tag>...</tag>
+                  <version num="..">
+                     <dependency processor="..."/>
+                     <file name="..." role="pkg"/>
+                     ...
+                  </version>
+               </pkg>
+               ...
+            </repo>
+         ]]></pre>
+      </p:documentation>
+      <p:option name="repo" required="true"/>
+      <p:output port="result" primary="true"/>
+      <dir:repo-packages-impl>
+         <p:with-option name="repo" select="$repo"/>
+         <p:input port="parameters">
+            <!-- TODO: Which one? -->
+            <!--p:document href="../../../../config-params.xml"/-->
+            <p:document href="../config-params.xml"/>
+         </p:input>
+      </dir:repo-packages-impl>
+   </p:declare-step>
+
+   <p:declare-step type="dir:repo-packages-impl">
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Implementation step for dir:repo-packages.</p>
+         <p>The step dir:repo-packages simply pass the config parameters.</p>
+      </p:documentation>
+      <p:option name="repo" required="true"/>
+      <p:input  port="parameters" primary="true" kind="parameter"/>
+      <p:output port="result"     primary="true"/>
+      <p:variable name="path" select="concat('../repos/', $repo, '/packages.xml')"/>
+      <pipx:parameter param-name="master-repo" required="true"/>
+      <p:load>
+         <p:with-option name="href" select="resolve-uri($path, /param)"/>
+      </p:load>
+   </p:declare-step>
+
+   <!--
       Packages.
    -->
 
@@ -27,14 +135,14 @@
          <pre><![CDATA[
             <repos>
                <repo xml:base="...">
-                  <pkg id="...">
+                  <pkg id="fgeorges/functx" abbrev="functx">
                      <name>...</name>
                      <version num="...">
                         <file name="..." role="pkg"/>
                      </version>
                      ...
                   </pkg>
-                  <pkg id="...">
+                  <pkg id="fgeorges/fxsl" abbrev="fxsl">
                      <name>...</name>
                      <abstract>...</abstract>
                      <author id="...">...</author>
@@ -80,34 +188,6 @@
          </p:add-attribute>
       </p:group>
    </p:declare-step>
-
-   <!--p:declare-step type="dir:get-all-packages-impl">
-      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
-         <p>Implementation step for dir:get-all-packages.</p>
-         <p>The step dir:get-all-packages simply pass the config parameters.</p>
-      </p:documentation>
-      <p:input  port="parameters" primary="true" kind="parameter"/>
-      <p:output port="result"     primary="true"/>
-      <pipx:parameter param-name="git-base" required="true"/>
-      <p:directory-list>
-         <p:with-option name="path" select="string(/param)"/>
-      </p:directory-list>
-      <p:group>
-         <p:variable name="base-dir" select="/c:directory/@xml:base"/>
-         <p:viewport match="/c:directory/c:directory">
-            <p:variable name="href" select="resolve-uri(concat(/*/@name, '/packages.xml'), $base-dir)"/>
-            <p:load>
-               <p:with-option name="href" select="$href"/>
-            </p:load>
-            <p:add-attribute match="/*" attribute-name="xml:base">
-               <p:with-option name="attribute-value" select="$href"/>
-            </p:add-attribute>
-         </p:viewport>
-         <p:delete match="/c:directory/c:*"/>
-         <p:delete match="/c:directory/@*"/>
-         <p:rename match="/c:directory" new-name="repos"/>
-      </p:group>
-   </p:declare-step-->
 
    <!--
       Authors.

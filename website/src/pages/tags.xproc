@@ -29,6 +29,13 @@
       <p:with-option name="tags" select="$tags"/>
    </da:packages-by-tags>
 
+   <!--
+      TODO: FIXME: All the link/@uri below, in the XSLT stylesheet, start with '/'.
+      This is cheating!  Instead, computing the level of depth of tags in the URL,
+      and use the appropriate number of '../' in the links.
+      
+      Well, ahem, they use @absolute="true", make sure it makes what I think it does... 
+   -->
    <p:choose>
       <p:when test="$accept eq 'application/xml'">
          <app:wrap-xml-result/>
@@ -75,18 +82,39 @@
                                  <xsl:text></xsl:text>
                               </para>
                            </xsl:if>
-                           <xsl:if test="empty(pkg)">
-                              <para>There is no package with this (those) tag(s).</para>
-                           </xsl:if>
-                           <list>
-                              <xsl:for-each select="pkg">
-                                 <item>
-                                    <link uri="/pkg/{ encode-for-uri(@id) }" absolute="true">
-                                       <xsl:value-of select="@id"/>
-                                    </link>
-                                 </item>
-                              </xsl:for-each>
-                           </list>
+                           <xsl:choose>
+                              <xsl:when test="empty(pkg)">
+                                 <para>There is no package with this (those) tag(s).</para>
+                              </xsl:when>
+                              <xsl:otherwise>
+                                 <table>
+                                    <column>ID</column>
+                                    <column>Description</column>
+                                    <column>Tags</column>
+                                    <xsl:for-each select="pkg">
+                                       <row>
+                                          <cell>
+                                             <link uri="/pkg/{ @repo }" absolute="true">
+                                                <xsl:value-of select="@repo"/>
+                                             </link>
+                                             <xsl:text>/</xsl:text>
+                                             <link uri="/pkg/{ @repo }/{ @abbrev }" absolute="true">
+                                                <bold>
+                                                   <xsl:value-of select="@abbrev"/>
+                                                </bold>
+                                             </link>
+                                          </cell>
+                                          <cell>
+                                             <xsl:value-of select="desc"/>
+                                          </cell>
+                                          <cell>
+                                             <xsl:value-of select="tag" separator=", "/>
+                                          </cell>
+                                       </row>
+                                    </xsl:for-each>
+                                 </table>
+                              </xsl:otherwise>
+                           </xsl:choose>
                         </page>
                      </xsl:template>
                   </xsl:stylesheet>

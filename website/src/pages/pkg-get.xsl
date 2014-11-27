@@ -33,6 +33,14 @@
                   <xsl:value-of select="name"/>
                </info>
             </row>
+            <row>
+               <name>Repository</name>
+               <info>
+                  <link uri="../{ @repo }">
+                     <xsl:value-of select="@repo"/>
+                  </link>
+               </info>
+            </row>
             <xsl:if test="exists(title)">
                <row>
                   <name>Title</name>
@@ -58,7 +66,7 @@
                      <xsl:for-each select="author">
                         <xsl:choose>
                            <xsl:when test="exists(@id)">
-                              <link uri="../author/{ @id }">
+                              <link uri="../../author/{ @id }">
                                  <xsl:value-of select="."/>
                               </link>
                            </xsl:when>
@@ -80,7 +88,7 @@
                      <xsl:for-each select="maintainer">
                         <xsl:choose>
                            <xsl:when test="exists(@id)">
-                              <link uri="../author/{ @id }">
+                              <link uri="../../author/{ @id }">
                                  <xsl:value-of select="."/>
                               </link>
                            </xsl:when>
@@ -100,7 +108,7 @@
                   <name>Categories</name>
                   <info>
                      <xsl:for-each select="category">
-                        <link uri="../cat/{ @id }">
+                        <link uri="../../cat/{ @id }">
                            <xsl:value-of select="."/>
                         </link>
                         <xsl:if test="position() ne last()">
@@ -115,7 +123,7 @@
                   <name>Tags</name>
                   <info>
                      <xsl:for-each select="tag">
-                        <link uri="../tag/{ . }">
+                        <link uri="../../tag/{ . }">
                            <xsl:value-of select="."/>
                         </link>
                         <xsl:if test="position() ne last()">
@@ -148,7 +156,7 @@
                         </xsl:choose>
                      </name>
                      <info>
-                        <link uri="../file/{ ../../@id }/{ @name }">
+                        <link uri="../../file/{ ../../@id }/{ @name }">
                            <xsl:value-of select="@name"/>
                         </link>
                      </info>
@@ -162,7 +170,7 @@
                      <info>
                         <xsl:choose>
                            <xsl:when test="exists(@package)">
-                              <link uri="../pkg?name={ encode-for-uri(@package) }">
+                              <link uri="../../pkg?name={ encode-for-uri(@package) }">
                                  <xsl:value-of select="@package"/>
                               </link>
                            </xsl:when>

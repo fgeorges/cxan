@@ -11,24 +11,155 @@
    <p:import href="dir-repos.xpl"/>
 
    <!--
-      Packages.
+      Repositories.
    -->
 
-   <p:declare-step type="da:list-packages">
+   <p:declare-step type="da:list-repositories">
       <p:documentation xmlns="http://www.w3.org/1999/xhtml">
-         <p>Return the packages from the database.</p>
-         <p>All the packages are returned database. The returned document is of the
-            following format (a list of "pkg" elements, each with mandatory "id" and "name",
-            and an optional "desc"):</p>
+         <p>Return the repositories.</p>
+         <p>All the repositories. The returned document is of the following format (a list of "repo"
+            elements, each with mandatory "id" and "desc"):</p>
          <pre><![CDATA[
-            <packages>
+            <repositories>
+               <repo>
+                  <id>expath</id>
+                  <desc>The EXPath project's repository.</desc>
+               </repo>
+               <repo>
+                  <id>fgeorges</id>
+                  <desc>Florent Georges's personal repository.</desc>
+               </repo>
+               ...
+            </repositories>
+         ]]></pre>
+         <p><b>TODO</b>: Add support for windowing.</p>
+      </p:documentation>
+      <p:output port="result" primary="true"/>
+      <dir:get-all-repositories/>
+      <p:xslt>
+         <p:input port="parameters">
+            <p:empty/>
+         </p:input>
+         <p:input port="stylesheet">
+            <p:inline>
+               <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+                  <xsl:template match="repositories">
+                     <xsl:copy>
+                        <xsl:apply-templates select="*"/>
+                     </xsl:copy>
+                  </xsl:template>
+                  <xsl:template match="repo">
+                     <xsl:copy>
+                        <id>
+                           <xsl:value-of select="@abbrev"/>
+                        </id>
+                        <xsl:copy-of select="desc"/>
+                     </xsl:copy>
+                  </xsl:template>
+               </xsl:stylesheet>
+            </p:inline>
+         </p:input>
+      </p:xslt>
+   </p:declare-step>
+
+   <p:declare-step type="da:packages-by-repo">
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Return the packages in one repository.</p>
+         <p>All the packages in one given repository, passed through the option "repo". The returned
+            document is of the following format (a list of "pkg" elements, each with mandatory "id"
+            and "name", and an optional "desc"):</p>
+         <pre><![CDATA[
+            <packages repo="fgeorges">
                <pkg>
-                  <id>functx</id>
+                  <id>fgeorges/functx</id>
+                  <abbrev>functx</abbrev>
                   <name>http://www.functx.com</name>
                   <desc>The famous FunctX library.</desc>
                </pkg>
                <pkg>
-                  <id>pipx</id>
+                  <id>fgeorges/pipx</id>
+                  <abbrev>pipx</abbrev>
+                  <name>http://pipx.org/lib/pipx</name>
+               </pkg>
+               ...
+            </packages>
+         ]]></pre>
+         <p><b>TODO</b>: Add support for windowing.</p>
+      </p:documentation>
+      <p:option name="repo" required="true"/>
+      <p:output port="result" primary="true"/>
+      <dir:repo-packages>
+         <p:with-option name="repo" select="$repo"/>
+      </dir:repo-packages>
+      <p:rename match="/repo" new-name="packages"/>
+      <p:add-attribute attribute-name="abbrev" match="/*">
+         <p:with-option name="attribute-value" select="$repo"/>
+      </p:add-attribute>
+      <p:viewport match="/packages/pkg">
+         <p:xslt>
+            <p:with-param name="repo" select="$repo"/>
+            <p:input port="stylesheet">
+               <p:inline>
+                  <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                                  exclude-result-prefixes="#all"
+                                  version="2.0">
+                     <xsl:param name="repo" required="yes"/>
+                     <xsl:template match="node()">
+                        <xsl:message terminate="yes">
+                           ERROR - Unknown node: <xsl:copy-of select="."/>
+                        </xsl:message>
+                     </xsl:template>
+                     <xsl:template match="/pkg">
+                        <xsl:copy>
+                           <id>
+                              <xsl:value-of select="@id"/>
+                           </id>
+                           <repo>
+                              <xsl:value-of select="$repo"/>
+                           </repo>
+                           <abbrev>
+                              <xsl:value-of select="@abbrev"/>
+                           </abbrev>
+                           <name>
+                              <xsl:value-of select="name"/>
+                           </name>
+                           <xsl:if test="exists(abstract)">
+                              <desc>
+                                 <xsl:value-of select="abstract"/>
+                              </desc>
+                           </xsl:if>
+                        </xsl:copy>
+                     </xsl:template>
+                  </xsl:stylesheet>
+               </p:inline>
+            </p:input>
+         </p:xslt>
+      </p:viewport>
+   </p:declare-step>
+
+   <!--
+      Packages.
+   -->
+
+   <!-- TODO: Where is it still used, now? -->
+   <p:declare-step type="da:list-packages">
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Return the packages.</p>
+         <p>All the packages. The returned document is of the following format (a list of "pkg"
+            elements, each with mandatory "id" and "name", and an optional "desc"):</p>
+         <pre><![CDATA[
+            <packages>
+               <pkg>
+                  <id>fgeorges/functx</id>
+                  <repo>fgeorges</repo>
+                  <abbrev>functx</abbrev>
+                  <name>http://www.functx.com</name>
+                  <desc>The famous FunctX library.</desc>
+               </pkg>
+               <pkg>
+                  <id>fgeorges/pipx</id>
+                  <repo>fgeorges</repo>
+                  <abbrev>pipx</abbrev>
                   <name>http://pipx.org/lib/pipx</name>
                </pkg>
                ...
@@ -57,6 +188,12 @@
                            <id>
                               <xsl:value-of select="@id"/>
                            </id>
+                           <repo>
+                              <xsl:value-of select="substring-before(@id, '/')"/>
+                           </repo>
+                           <abbrev>
+                              <xsl:value-of select="@abbrev"/>
+                           </abbrev>
                            <name>
                               <xsl:value-of select="name"/>
                            </name>
@@ -134,10 +271,10 @@
    <p:declare-step type="da:package-details">
       <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Return details of a packages, given its CXAN ID.</p>
-         <p>The details of the package, given its
-            CXAN ID provided through the option "id", include information from its package
-            descriptor and from the CXAN descriptor (as they appear in packages.xml in the directory
-            repos):</p>
+         <p>The details of the package, given its CXAN ID. The CXAN ID is provided through the
+            options "repo" and "pkg" (the CXAN ID itself being "repo/pkg"). Including information
+            from its package descriptor and from the CXAN descriptor (as they appear in packages.xml
+            in the directory repos):</p>
          <pre><![CDATA[
             <pkg id="expath-http-client-saxon" xml:base="...">
                <name>http://expath.org/lib/http-client</name>
@@ -164,28 +301,32 @@
             package list, then filters it. Might be implemented more efficiently.</p>
       </p:documentation>
       <p:output port="result" primary="true"/>
-      <p:option name="id" required="true"/>
+      <p:option name="repo" required="true"/>
+      <p:option name="pkg"  required="true"/>
       <dir:get-all-packages/>
       <p:xslt>
-         <p:with-param name="id" select="$id"/>
+         <p:with-param name="repo" select="$repo"/>
+         <p:with-param name="pkg"  select="$pkg"/>
          <p:input port="stylesheet">
             <p:inline>
                <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                                xmlns:xs="http://www.w3.org/2001/XMLSchema"
                                version="2.0">
-                  <xsl:param name="id" as="xs:string"/>
+                  <xsl:param name="repo" as="xs:string"/>
+                  <xsl:param name="pkg"  as="xs:string"/>
                   <xsl:template match="node()" priority="-10">
                      <xsl:message terminate="yes">
                         ERROR - Unknown node: <xsl:copy-of select="."/>
                      </xsl:message>
                   </xsl:template>
                   <xsl:template match="/repos">
-                     <xsl:apply-templates select="repo/pkg[@id eq $id]"/>
+                     <xsl:apply-templates select="repo/pkg[@id eq concat($repo, '/', $pkg)]"/>
                   </xsl:template>
                   <xsl:template match="pkg">
                      <xsl:copy>
                         <xsl:copy-of select="@*"/>
-                        <xsl:attribute name="xml:base" select="resolve-uri(concat(@id, '/'), base-uri(..))"/>
+                        <xsl:attribute name="repo" select="$repo"/>
+                        <xsl:attribute name="xml:base" select="resolve-uri(concat($pkg, '/'), base-uri(..))"/>
                         <xsl:copy-of select="node()"/>
                      </xsl:copy>
                   </xsl:template>
@@ -264,17 +405,26 @@
                <!-- among all packages matching "foo" and "bar", they also have "baz" -->
                <subtag id="baz"/>
                ...
-               <pkg id="functx"/>
-               <pkg id="pipx"/>
+               <pkg id="functx" repo="..." abbrev="...">
+                  <desc>...</desc>
+                  <tag>foo</tag>
+                  <tag>bar</tag>
+                  <tag>another</tag>
+               </pkg>
+               <pkg id="pipx" repo="..." abbrev="...">
+                  <desc>...</desc>
+                  <tag>foo</tag>
+                  <tag>bar</tag>
+               </pkg>
                ...
             </tags>
          ]]></pre>
-         <p>Each set of elements (that is, all "tag", then all "subtag", then all
-            "pkg") are sorted lexicographically by their ID.</p>
-         <p><b>TODO</b>: For now, loads the
-            entire package description list, then filters it. Put in place a denormalization
-            mechanism, that would create a tags.xml file in each dir repo (first managed by hand in
-            the Git repo directly, then maybe automatically generated when updating Git repos).</p>
+         <p>Each set of elements (that is, all "tag", then all "subtag", then all "pkg") are sorted
+            lexicographically by their ID.</p>
+         <p><b>TODO</b>: For now, loads the entire package description list, then filters it. Put in
+            place a denormalization mechanism, that would create a tags.xml file in each dir repo
+            (first managed by hand in the Git repo directly, then maybe automatically generated when
+            updating Git repos).</p>
       </p:documentation>
       <p:output port="result" primary="true"/>
       <p:option name="tags" required="true"/>
@@ -305,9 +455,14 @@
                            <xsl:sort select="."/>
                            <subtag id="{ . }"/>
                         </xsl:for-each>
-                        <xsl:for-each select="distinct-values($pkgs/@id)">
+                        <xsl:for-each select="$pkgs">
                            <xsl:sort select="."/>
-                           <pkg id="{ . }"/>
+                           <pkg id="{ @id }" abbrev="{ @abbrev }" repo="{ ../@abbrev }">
+                              <desc>
+                                 <xsl:value-of select="abstract"/>
+                              </desc>
+                              <xsl:copy-of select="tag"/>
+                           </pkg>
                         </xsl:for-each>
                      </tags>
                   </xsl:template>
@@ -353,22 +508,28 @@
    <p:declare-step type="da:packages-by-category">
       <p:documentation xmlns="http://www.w3.org/1999/xhtml">
          <p>Return packages within a specific category.</p>
-         <p>The category is passed through the option "category", by using the
-            category ID. The returned document is of the following format (note that categories can
-            be recursive):</p>
+         <p>The category is passed through the option "category", by using the category ID. The
+            returned document is of the following format (note that categories can be
+            recursive):</p>
          <pre><![CDATA[
             <cat id="the-cat" name="The category">
-               <pkg id="..."/>
-               <pkg id="..."/>
+               <pkg id="fgeorges/functx" repo="fgeorges" abbrev="functx">
+                  <desc>...</desc>
+               </pkg>
+               <pkg id="..." repo="..." abbrev="...">
+                  <desc>...</desc>
+               </pkg>
                ...
                <cat id="sub-cat-1" name="A sub-category">
-                  <pkg id="..."/>
-                  <pkg id="..."/>
+                  <pkg id="..." repo="..." abbrev="...">
+                     <desc>...</desc>
+                  </pkg>
                   ...
                </cat>
                <cat id="sub-cat-2" name="Another sub-category">
-                  <pkg id="..."/>
-                  <pkg id="..."/>
+                  <pkg id="..." repo="..." abbrev="...">
+                     <desc>...</desc>
+                  </pkg>
                   ...
                </cat>
                ...
@@ -425,9 +586,13 @@
                         <!-- the packages in this category -->
                         <xsl:variable name="pkgs" select="$all-pkgs[category/@id = $id]"/>
                         <!-- for each distinct of them, create a "pkg" element -->
-                        <xsl:for-each select="distinct-values($pkgs/@id)">
-                           <xsl:sort select="."/>
-                           <pkg id="{ . }"/>
+                        <xsl:for-each select="$pkgs">
+                           <xsl:sort select="@id"/>
+                           <pkg id="{ @id }" abbrev="{ @abbrev }" repo="{ ../@abbrev }">
+                              <desc>
+                                 <xsl:value-of select="abstract"/>
+                              </desc>
+                           </pkg>
                         </xsl:for-each>
                         <!-- recurse categories -->
                         <xsl:apply-templates select="cat"/>
@@ -514,8 +679,9 @@
                   <display>Florent Georges</display>
                </name>
                <packages>
-                  <pkg id="cxan-website"/>
-                  <pkg id="expath-http-client"/>
+                  <pkg id="fgeorges/cxan-website" repo="fgeorges" abbrev="cxan-website" role="maintainer"/>
+                  <pkg id="fgeorges/functx"       repo="fgeorges" abbrev="functx"       role="author"/>
+                  <pkg id="expath/http-client"    repo="expath"   abbrev="http-client"  role="maintainer"/>
                </packages>
             </author>
          ]]></pre>

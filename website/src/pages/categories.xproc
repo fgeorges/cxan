@@ -54,8 +54,9 @@
                               </xsl:when>
                               <xsl:otherwise>
                                  <table>
-                                    <column>package</column>
-                                    <column>category</column>
+                                    <column>ID</column>
+                                    <column>Description</column>
+                                    <column>Category</column>
                                     <xsl:next-match/>
                                  </table>
                               </xsl:otherwise>
@@ -65,9 +66,18 @@
                      <xsl:template match="pkg">
                         <row>
                            <cell>
-                              <link uri="../pkg/{ @id }">
-                                 <xsl:value-of select="@id"/>
+                              <link uri="../pkg/{ @repo }">
+                                 <xsl:value-of select="@repo"/>
                               </link>
+                              <xsl:text>/</xsl:text>
+                              <link uri="../pkg/{ @repo }/{ @abbrev }">
+                                 <bold>
+                                    <xsl:value-of select="@abbrev"/>
+                                 </bold>
+                              </link>
+                           </cell>
+                           <cell>
+                              <xsl:value-of select="desc"/>
                            </cell>
                            <cell>
                               <xsl:value-of select="../@name"/>

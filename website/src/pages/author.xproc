@@ -53,15 +53,46 @@
                   </page>
                </xsl:template>
                <xsl:template match="packages[exists(pkg)]">
-                  <list>
+                  <table>
+                     <column>ID</column>
+                     <column>Description</column>
+                     <column>Role</column>
                      <xsl:for-each select="pkg">
-                        <item>
-                           <link uri="../pkg/{ encode-for-uri(@id) }">
-                              <xsl:value-of select="@id"/>
+                     <row>
+                        <cell>
+                           <link uri="../pkg/{ @repo }">
+                              <xsl:value-of select="@repo"/>
                            </link>
-                        </item>
+                           <xsl:text>/</xsl:text>
+                           <link uri="../pkg/{ @repo }/{ @abbrev }">
+                              <bold>
+                                 <xsl:value-of select="@abbrev"/>
+                              </bold>
+                           </link>
+                        </cell>
+                        <cell>
+                           <xsl:choose>
+                              <xsl:when test="exists(desc)">
+                                 <xsl:value-of select="desc"/>
+                              </xsl:when>
+                              <xsl:when test="exists(name)">
+                                 <xsl:text>Package name: </xsl:text>
+                                 <link uri="../pkg?name={ encode-for-uri(name) }">
+                                    <xsl:value-of select="name"/>
+                                 </link>
+                                 <xsl:text>.</xsl:text>
+                              </xsl:when>
+                           </xsl:choose>
+                        </cell>
+                        <cell>
+                           <xsl:choose>
+                              <xsl:when test="@role eq 'author'">Author</xsl:when>
+                              <xsl:when test="@role eq 'maintainer'">Maintainer</xsl:when>
+                           </xsl:choose>
+                        </cell>
+                     </row>
                      </xsl:for-each>
-                  </list>
+                  </table>
                </xsl:template>
                <xsl:template match="packages[empty(pkg)]">
                   <para>

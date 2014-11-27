@@ -6,9 +6,12 @@
 
    <pkg:import-uri>##none</pkg:import-uri>
 
-   <xsl:param name="base-uri" required="yes" as="xs:string"/>
+   <xsl:param name="base-uri"  as="xs:string"  required="yes"/>
+   <xsl:param name="repo-list" as="xs:boolean" select="false()"/>
+   <xsl:param name="repo-id"   as="xs:string?"/>
 
-   <xsl:template match="/packages[count(pkg) eq 1]">
+   <!-- TODO: Why redirecting, really? -->
+   <!--xsl:template match="/packages[count(pkg) eq 1]">
       <xsl:variable name="page" select="concat('pkg/', pkg/id)"/>
       <xsl:variable name="uri"  select="resolve-uri($page, $base-uri)"/>
       <web:response status="302" message="Found">
@@ -20,7 +23,7 @@
                </head>
                <body>
                   <p>
-                     <xsl:text>You are going to be redirected to </xsl:text>
+                     <xsl:text>You are redirected to </xsl:text>
                      <a href="{ $uri }">
                         <xsl:value-of select="$uri"/>
                      </a>
@@ -30,7 +33,7 @@
             </html>
          </web:body>
       </web:response>
-   </xsl:template>
+   </xsl:template-->
 
    <xsl:template match="/packages[empty(pkg)]">
       <page menu="pkg">
@@ -46,16 +49,29 @@
                </para>
             </xsl:when>
             <xsl:otherwise>
-               <para>There is no package at all in the DB?!?  Please report this.</para>
+               <para>There is no package at all in the system?!?  Please report this.</para>
             </xsl:otherwise>
          </xsl:choose>
       </page>
    </xsl:template>
 
-   <xsl:template match="/packages[count(pkg) gt 1]">
+   <xsl:template match="/packages[exists(pkg)]">
       <page menu="pkg">
          <title>Packages</title>
-         <para>Here is the list of all packages in CXAN.</para>
+         <xsl:choose>
+            <xsl:when test="exists($repo-id)">
+               <para>
+                  <xsl:text>Here is the list of packages in the repo </xsl:text>
+                  <code>
+                     <xsl:value-of select="$repo-id"/>
+                  </code>
+                  <xsl:text>.</xsl:text>
+               </para>
+            </xsl:when>
+            <xsl:otherwise>
+               <para>Here is the list of all packages in CXAN.</para>
+            </xsl:otherwise>
+         </xsl:choose>
          <xsl:if test="exists(name)">
             <named-info>
                <row>
@@ -77,8 +93,14 @@
    <xsl:template match="pkg">
       <row>
          <cell>
-            <link uri="pkg/{ id }">
-               <xsl:value-of select="id"/>
+            <link uri="{ 'pkg/'[$repo-list] }{ repo }">
+               <xsl:value-of select="repo"/>
+            </link>
+            <xsl:text>/</xsl:text>
+            <link uri="{ 'pkg/'[$repo-list] }{ repo }/{ abbrev }">
+               <bold>
+                  <xsl:value-of select="abbrev"/>
+               </bold>
             </link>
          </cell>
          <xsl:choose>
@@ -90,7 +112,7 @@
             <xsl:when test="exists(name)">
                <cell>
                   <xsl:text>Package name: </xsl:text>
-                  <link uri="pkg?name={ encode-for-uri(name) }">
+                  <link uri="{ if ( $repo-list ) then 'pkg' else '.' }?name={ encode-for-uri(name) }">
                      <xsl:value-of select="name"/>
                   </link>
                   <xsl:text>.</xsl:text>

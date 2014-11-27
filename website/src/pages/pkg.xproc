@@ -29,8 +29,10 @@
    <p:split-sequence test=". instance of element(web:request)" name="request"/>
 
    <p:group>
-      <!-- the package id -->
-      <p:variable name="id" select="/web:request/web:path/web:match[@name eq 'id']">
+      <p:variable name="repo" select="/web:request/web:path/web:match[@name eq 'repo']">
+         <p:pipe step="request" port="matched"/>
+      </p:variable>
+      <p:variable name="pkg" select="/web:request/web:path/web:match[@name eq 'pkg']">
          <p:pipe step="request" port="matched"/>
       </p:variable>
       <p:variable name="accept" select="/web:request/web:header[@name eq 'accept']/@value">
@@ -38,14 +40,18 @@
       </p:variable>
 
       <app:ensure-method accepted="get"/>
+      <app:ensure-value desc="repo ID">
+         <p:with-option name="value" select="$repo"/>
+      </app:ensure-value>
       <app:ensure-value desc="package ID">
-         <p:with-option name="value" select="$id"/>
+         <p:with-option name="value" select="$pkg"/>
       </app:ensure-value>
       <p:sink/>
 
       <!-- retrieve the pkg element from the database, given its ID -->
       <da:package-details>
-         <p:with-option name="id" select="$id"/>
+         <p:with-option name="repo" select="$repo"/>
+         <p:with-option name="pkg"  select="$pkg"/>
       </da:package-details>
       <!-- format the data to a page document -->
       <p:choose>
