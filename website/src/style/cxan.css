@@ -9,6 +9,9 @@ body {
   padding: 40px 15px;
   text-align: center;
 }
+h4 {
+   margin-top: 40px;
+}
 
 /* **************************************************
  * From http://getbootstrap.com/examples/sticky-footer-navbar/sticky-footer-navbar.css.
