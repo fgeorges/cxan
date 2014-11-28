@@ -183,9 +183,6 @@
          <p:load>
             <p:with-option name="href" select="$href"/>
          </p:load>
-         <p:add-attribute match="/*" attribute-name="xml:base">
-            <p:with-option name="attribute-value" select="$href"/>
-         </p:add-attribute>
       </p:group>
    </p:declare-step>
 
