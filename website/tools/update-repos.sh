@@ -1,3 +1,17 @@
+#!/bin/bash
+
+# Invoke this script by providing the main Git directory as parameter
+# (the one directory containing a sub-directory 'master', and a sub-
+# directory 'repos' with all the repos).
+# 
+# TODO: Add support for a --nopull option...
+# 
+# TODO: Use a kind of blue-green deployment so if some error or
+# inconsistency is detected on the updated repos, the update can stop
+# without affecting the system (waiting for the error to be fixed, or
+# doing something more sophisticated like excluding the guilty repo
+# from the system, until the error is fixed).
+
 ## Variables
 
 BASE="$1"
@@ -85,23 +99,27 @@ fi
 
 ## Sanity checks
 
-# TODO: Use a kind of blue-green deployments so if some error or
-# inconsistency is detected on the updated repos, the update can stop
-# without affecting the system (waiting for the error to be fixed, or
-# doing something more sophisticated like excluding the guilty repo
-# from the system, until the error is fixed).
-
 log
 log "[**] Check sanity"
 log "from '$REPOS'"
-for f in "$REPOS"/*; do
-    log "sanity of repo 'file:$f/'"
-    ( calabash -i categories="$MASTER"/categories.xml -i authors="$MASTER"/authors.xml \
-        "$SANITY_PIPE" repo-dir="file:$f/" \
-        2>> "$LOG" \
-        | xmllint --format - > "$MASTER"/sanity/`basename $f`.xml ) \
-        || die "Error checking sanity! - $f";
-    log "OK."
+for dir in "$REPOS"/*; do
+    if test -d "$dir"; then
+	report="$MASTER"/sanity/`basename $dir`.xml
+        log "sanity of repo 'file:$dir/'"
+        ( calabash -i categories="$MASTER"/categories.xml -i authors="$MASTER"/authors.xml \
+            "$SANITY_PIPE" repo-dir="file:$dir/" \
+            2>> "$LOG" \
+            | xmllint --format - > "$report" ) \
+            || die "Error checking sanity! - $dir";
+            sane=`xmllint --xpath 'string(/sanity/@pass)' "$report"`
+            if test "$sane" \!= true; then
+                die "Repository $dir is NOT sane! See $report."
+            fi
+        log "OK."
+    else
+        log
+        log "[**] Ignore file '$dir'"
+    fi
 done
 
 ## Denormalize repos
