@@ -57,8 +57,15 @@
                         <xsl:copy-of select="@*"/>
                         <xsl:apply-templates/>
                         <packages>
-                           <xsl:for-each select="$pkg[author/@id = $id]">
-                              <pkg id="{ @id }"/>
+                           <xsl:for-each select="$pkg[(author|maintainer)/@id = $id]">
+                              <xsl:variable name="this" select="."/>
+                              <xsl:variable name="role" select="
+                                 ( 'author'[$this/author/@id = $id], 'maintainer'[$this/maintainer/@id = $id] )[1]"/>
+                              <pkg id="{ @id }" repo="{ ../@abbrev }" abbrev="{ @abbrev }" role="{ $role }">
+                                 <desc>
+                                    <xsl:value-of select="abstract"/>
+                                 </desc>
+                              </pkg>
                            </xsl:for-each>
                         </packages>
                      </xsl:copy>
