@@ -525,7 +525,7 @@
                   <xsl:template match="repo" mode="check">
                      <xsl:param name="dir" as="element(c:directory)"/>
                      <xsl:for-each select="pkg">
-                        <xsl:variable name="p" select="@id"/>
+                        <xsl:variable name="p" select="@abbrev"/>
                         <xsl:variable name="d" select="$dir/c:directory[@name eq $p]"/>
                         <xsl:choose>
                            <xsl:when test="exists($d)">
