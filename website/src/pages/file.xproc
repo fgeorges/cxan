@@ -39,7 +39,7 @@
                <web:response status="200" message="Ok">
                   <web:header name="content-disposition"
                               value='attachment; filename="{ tokenize(., "/")[last()] }"'/>
-                  <web:body content-type="application/octet-stream"
+                  <web:body content-type="{ ( /*/@mime/string(.), 'application/octet-stream' )[1] }"
                             src="{ string(.) }"/>
                </web:response>
             </p:inline>
@@ -51,10 +51,12 @@
        Implementation in case of the file name in the URI.
    -->
    <p:declare-step type="app:page-file-file">
+      <p:option name="repo" required="true"/>
       <p:option name="pkg"  required="true"/>
       <p:option name="file" required="true"/>
       <p:output port="result" primary="true"/>
       <da:package-file-by-file>
+         <p:with-option name="repo" select="$repo"/>
          <p:with-option name="pkg"  select="$pkg"/>
          <p:with-option name="file" select="$file"/>
       </da:package-file-by-file>
@@ -92,7 +94,9 @@
       <app:page-file-impl/>
    </p:declare-step>
 
-   <!-- the pkg-->
+   <!-- the repo -->
+   <p:variable name="repo" select="/web:request/web:path/web:match[@name eq 'repo']"/>
+   <!-- the pkg -->
    <p:variable name="pkg"  select="/web:request/web:path/web:match[@name eq 'pkg']"/>
    <!-- the file -->
    <p:variable name="file" select="/web:request/web:path/web:match[@name eq 'file']"/>
@@ -107,16 +111,18 @@
    <app:ensure-method accepted="get"/>
 
    <p:choose>
-      <p:when test="count(($pkg[.], $file[.])) eq 1">
-         <app:error code="invalid-rest-params" title="Params pkg and file must both be there"
-                    message="If params pkg or file are given, both must be there, got: '{ $p }' and '{ $f }' resp.">
+      <p:when test="count(($repo[.], $pkg[.], $file[.])) = (1, 2)">
+         <app:error code="invalid-rest-params" title="Params repo, pkg and file must all be there together"
+                    message="If params repo, pkg or file are given, all must be there, got: '{$r}', '{$p}' and '{$f}' resp.">
+            <p:with-param name="r" select="$repo"/>
             <p:with-param name="p" select="$pkg"/>
             <p:with-param name="f" select="$file"/>
          </app:error>         
       </p:when>
       <p:when test="$file[.] and ($id, $name, $version)[.][1]">
          <app:error code="invalid-rest-params" title="Cannot have pkg and file params on a file endpoint"
-                    message="Endpoint for '{ $p }'/'{ $f }' has params id: '{ $i }', name: '{ $n }' and version: '{ $v }'.">
+                    message="Endpoint for '{$r}'/'{$p}'/'{$f}' has params id: '{$i}', name: '{$n}' and version: '{$v}'.">
+            <p:with-param name="r" select="$repo"/>
             <p:with-param name="p" select="$pkg"/>
             <p:with-param name="f" select="$file"/>
             <p:with-param name="i" select="$id"/>
@@ -126,13 +132,14 @@
       </p:when>
       <p:when test="$file[.]">
          <app:page-file-file>
+            <p:with-option name="repo" select="$repo"/>
             <p:with-option name="pkg"  select="$pkg"/>
             <p:with-option name="file" select="$file"/>
          </app:page-file-file>
       </p:when>
       <p:when test="$id[.] and $name[.]">
          <app:error code="invalid-rest-params" title="Cannot have both id and name params"
-                    message="File service has both params id: '{ $i }' and name: '{ $n }'.">
+                    message="File service has both params id: '{$i}' and name: '{$n}'.">
             <p:with-param name="i" select="$id"/>
             <p:with-param name="n" select="$name"/>
          </app:error>         
