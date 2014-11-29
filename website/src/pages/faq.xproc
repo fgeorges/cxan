@@ -43,7 +43,7 @@
                   new version of an existing package, the change becomes available on the CXAN
                   website.</para>
                <subtitle>Why using Git?</subtitle>
-               <para>By using Git, there is no need to implement a secutiry mechanism, or a form to
+               <para>By using Git, there is no need to implement a security mechanism, or a form to
                   upload new packages. Maintainers can use all Git tools, as they are used to,
                   possibly entire teams collaborating, or using several branches to map their
                   development and release process, as they do for any other piece of
@@ -64,25 +64,29 @@
                <para>Either you contact a maintainer and convince him/her to add your package (e.g.
                   if the package is related to the maintainer activity). Or you volunteer to become
                   a maintainer yourself. In that case the first step is to create a remote Git
-                  repository with the format CXAN expectes. Then contact Florent Georges on the
-                     <link uri="http://expath.org/lists">EXPath mailing list</link> (or directly to
-                  me if you don't want to write to the mailing list for whatever reason) in order to
-                  add your repository to CXAN.</para>
+                  repository with the format CXAN expects. Then contact Florent Georges on the <link
+                     uri="http://expath.org/lists">EXPath mailing list</link> (or in private if you
+                  don't want to write to the mailing list for whatever reason) in order to add your
+                  repository to CXAN.</para>
                <subtitle>What is the structure of a CXAN repository?</subtitle>
                <para>The format is quite simple. If you prefer to learn by example, you can have a
-                  look at my <link uri="http://git.fgeorges.org/summary/~fgeorges:cxan-repo.git">own
-                     repository</link>.</para>
+                  look at Florent's personnal <link
+                     uri="http://git.fgeorges.org/tree/~fgeorges:cxan-repo.git">repository</link>,
+                  or at the EXPath <link uri="http://git.fgeorges.org/tree/expath:cxan-repo.git"
+                     >repository</link>.</para>
                <para>The root directory must contain a file called <code>packages.xml</code>, with
                   the following format (there must be one element <code>pkg</code> for each package
                   in the repository):</para>
-               <code><![CDATA[<repo>
-   <pkg id="my-library">
+               <code><![CDATA[<repo abbrev="my-repo">
+
+   <pkg abbrev="my-library" id="my-repo/my-library">
       <name>http://example.org/lib/super-tools</name>
       <version num="0.1.0">
          <file name="my-library-0.1.0.xar" role="pkg"/>
       </version>
    </pkg>
-   <pkg id="web-app-uno">
+
+   <pkg abbrev="web-app-uno" id="my-repo/web-app-uno">
       <name>http://example.org/app/web-app-uno</name>
       <abstract>...</abstract>
       <author id="fgeorges">Florent Georges</author>
@@ -97,6 +101,7 @@
          <file name="expath-http-client-saxon-0.11.0dev.zip" role="archive"/>
       </version>
    </pkg>
+
 </repo>]]></code>
             </page>
          </p:inline>
