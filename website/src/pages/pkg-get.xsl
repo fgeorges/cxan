@@ -4,6 +4,25 @@
 
    <pkg:import-uri>##none</pkg:import-uri>
 
+   <xsl:template match="/no-such-package">
+      <page menu="pkg" http-code="404" http-message="Not Found">
+         <title>Not found</title>
+         <para>
+            <xsl:text>Package not found, with ID = </xsl:text>
+            <link uri="../{ repo }">
+               <xsl:value-of select="repo"/>
+            </link>
+            <xsl:text>/</xsl:text>
+            <bold>
+               <link uri="../{ repo }/{ abbrev }">
+                  <xsl:value-of select="abbrev"/>
+               </link>
+            </bold>
+            <xsl:text>.</xsl:text>
+         </para>
+      </page>
+   </xsl:template>
+
    <xsl:template match="/pkg">
       <!-- the version elements, sorted descendently -->
       <xsl:variable name="versions" as="element(version)+">

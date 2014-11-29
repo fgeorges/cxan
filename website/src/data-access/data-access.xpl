@@ -276,7 +276,7 @@
             from its package descriptor and from the CXAN descriptor (as they appear in packages.xml
             in the directory repos):</p>
          <pre><![CDATA[
-            <pkg id="expath-http-client-saxon" xml:base="...">
+            <pkg id="expath/http-client-saxon" abbrev="http-client-saxon" repo="expath" xml:base="...">
                <name>http://expath.org/lib/http-client</name>
                <abstract>Implementation for Saxon of the EXPath HTTP Client module.</abstract>
                <author id="fgeorges">Florent Georges</author>
@@ -297,8 +297,17 @@
                ...
             </pkg>
          ]]></pre>
-         <p><b>TODO</b>: For now, loads the full
-            package list, then filters it. Might be implemented more efficiently.</p>
+         <p>In case there is no package corresponding to the options <code>repo</code> and
+               <code>pkg</code>, the step returns the following document:</p>
+         <pre><![CDATA[
+            <no-such-package>
+               <id>fgeorges/time-travel</id>
+               <repo>fgeorges</repo>
+               <abbrev>time-travel</abbrev>
+            </no-such-package>
+         ]]></pre>
+         <p><b>TODO</b>: For now, loads the full package list, then filters it. Might be implemented
+            more efficiently.  At least by resolving only the specific repo...</p>
       </p:documentation>
       <p:output port="result" primary="true"/>
       <p:option name="repo" required="true"/>
@@ -320,7 +329,22 @@
                      </xsl:message>
                   </xsl:template>
                   <xsl:template match="/repos">
-                     <xsl:apply-templates select="repo/pkg[@id eq concat($repo, '/', $pkg)]"/>
+                     <xsl:variable name="id"    select="concat($repo, '/', $pkg)"/>
+                     <xsl:variable name="found" select="repo/pkg[@id eq $id]"/>
+                     <xsl:if test="empty($found)">
+                        <no-such-package>
+                           <id>
+                              <xsl:value-of select="$id"/>
+                           </id>
+                           <repo>
+                              <xsl:value-of select="$repo"/>
+                           </repo>
+                           <abbrev>
+                              <xsl:value-of select="$pkg"/>
+                           </abbrev>
+                        </no-such-package>
+                     </xsl:if>
+                     <xsl:apply-templates select="$found"/>
                   </xsl:template>
                   <xsl:template match="pkg">
                      <xsl:copy>
