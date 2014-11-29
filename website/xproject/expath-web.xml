@@ -60,9 +60,10 @@
       -->
       <servlet name="file">
          <xproc uri="http://cxan.org/website/pages/file.xproc"/>
-         <url pattern="/file/([^/]+)/([^/]+)">
-            <match group="1" name="pkg"/>
-            <match group="2" name="file"/>
+         <url pattern="/file/([^/]+)/([^/]+)/([^/]+)">
+            <match group="1" name="repo"/>
+            <match group="2" name="pkg"/>
+            <match group="3" name="file"/>
          </url>
       </servlet>
       <servlet name="file-srv">
