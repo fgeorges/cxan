@@ -109,11 +109,11 @@
    <xsl:template name="navbar">
       <xsl:param name="active" as="xs:string?"/>
       <xsl:variable name="items" as="element()+">
-         <item name="news"   href="{ $context-root }/news"   title="CXAN News">News</item>
          <item name="pkg"    href="{ $context-root }/pkg"    title="Packages by name">Packages</item>
          <item name="author" href="{ $context-root }/author" title="Packages by author">Authors</item>
          <item name="cat"    href="{ $context-root }/cat"    title="Packages by category">Categories</item>
          <item name="tag"    href="{ $context-root }/tag"    title="Packages by tag">Tags</item>
+         <item name="news"   href="{ $context-root }/news"   title="CXAN News">News</item>
          <item name="faq"    href="{ $context-root }/faq"    title="CXAN FAQ">FAQ</item>
          <item name="about"  href="{ $context-root }/about"  title="About CXAN">About</item>
       </xsl:variable>
