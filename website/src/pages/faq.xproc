@@ -103,6 +103,11 @@
    </pkg>
 
 </repo>]]></code>
+               <subtitle>Where is the REST API?</subtitle>
+               <para>You can access CXAN information using a read-only REST-like API.
+                  Just use the same URLs as for the website, but add the HTTP header
+                  <code>Accept: application/xml</code>.  You will get back a simple XML
+                  representation of the information shown on the corresponding webpage.</para>
             </page>
          </p:inline>
       </p:input>
