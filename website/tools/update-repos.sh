@@ -104,7 +104,7 @@ log "[**] Check sanity"
 log "from '$REPOS'"
 for dir in "$REPOS"/*; do
     if test -d "$dir"; then
-	report="$MASTER"/sanity/`basename $dir`.xml
+        report="$MASTER"/sanity/`basename $dir`.xml
         log "sanity of repo 'file:$dir/'"
         ( calabash -i categories="$MASTER"/categories.xml -i authors="$MASTER"/authors.xml \
             "$SANITY_PIPE" repo-dir="file:$dir/" \

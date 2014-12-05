@@ -96,7 +96,7 @@
             <link uri="{ 'pkg/'[$repo-list] }{ repo }">
                <xsl:value-of select="repo"/>
             </link>
-            <xsl:text>/</xsl:text>
+            <xsl:text> / </xsl:text>
             <link uri="{ 'pkg/'[$repo-list] }{ repo }/{ abbrev }">
                <bold>
                   <xsl:value-of select="abbrev"/>

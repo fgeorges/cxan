@@ -12,7 +12,7 @@
             <link uri="../{ repo }">
                <xsl:value-of select="repo"/>
             </link>
-            <xsl:text>/</xsl:text>
+            <xsl:text> / </xsl:text>
             <bold>
                <link uri="../{ repo }/{ abbrev }">
                   <xsl:value-of select="abbrev"/>
