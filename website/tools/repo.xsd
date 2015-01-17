@@ -17,8 +17,9 @@
          <xs:sequence>
             <xs:element ref="name"/>
             <xs:element ref="abstract"/>
+            <xs:element ref="home"       minOccurs="0"/>
             <xs:element ref="author"     maxOccurs="unbounded"/>
-            <xs:element ref="maintainer" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element ref="maintainer" minOccurs="0" maxOccurs="unbounded"/>
             <xs:element ref="category"   maxOccurs="unbounded"/>
             <xs:element ref="tag"        maxOccurs="unbounded"/>
             <xs:element ref="version"    maxOccurs="unbounded"/>
@@ -31,6 +32,8 @@
    <xs:element name="name" type="xs:anyURI"/>
 
    <xs:element name="abstract" type="xs:string"/>
+
+   <xs:element name="home" type="xs:anyURI"/>
 
    <xs:element name="author" type="string-with-id"/>
 
