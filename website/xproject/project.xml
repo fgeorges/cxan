@@ -1,7 +1,7 @@
 <project xmlns="http://expath.org/ns/project"
          name="http://cxan.org/website"
          abbrev="cxan-website"
-         version="0.6.0dev">
+         version="0.7.0">
 
    <title>CXAN website</title>
 
