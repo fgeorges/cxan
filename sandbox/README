@@ -27,11 +27,6 @@
    be there.  And the Servlex manager webapp has to be installed manually if
    we do not use the installer.  So for now the sandbox is broken.
 
-     TODO: Both files config-params.xml and config-users.xml have to be moved
-   (or copied) over to just outside the repo, that is in this sandbox/
-   directory.  They could actually be checked in in Git?  Ports and users have
-   to be adapted.
-
 1. Tomcat config
 
  1.1 conf/catalina.properties
