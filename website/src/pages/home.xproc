@@ -24,10 +24,6 @@
             <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                             xmlns:xs="http://www.w3.org/2001/XMLSchema"
                             version="2.0">
-               <xsl:function name="app:is-sandbox" as="xs:boolean">
-                  <xsl:variable name="params" select="doc('../../../../config-params.xml')/c:param-set"/>
-                  <xsl:sequence select="$params/c:param[@name eq 'is-sandbox']/xs:boolean(@value)"/>
-               </xsl:function>
                <xsl:template name="main">
                   <page menu="home">
                      <starter>
