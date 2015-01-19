@@ -4,9 +4,6 @@
    <!-- webapp general info -->
    <c:param name="home-uri"        value="http://localhost:9070/servlex/cxan/"/>
    <c:param name="context-root"    value="/servlex/cxan"/>
-   <!-- both dirs, so must end with a slash -->
-   <c:param name="staging-area"    value="file:/tmp/cxan-staging/"/>
-   <c:param name="files-area"      value="file:/usr/local/cxan/files/"/>
    <!-- no Twitter credentials -->
    <!--c:param name="user-token"   value=""/>
    <c:param name="user-secret"     value=""/>
