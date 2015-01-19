@@ -4,13 +4,45 @@
 # (the one directory containing a sub-directory 'master', and a sub-
 # directory 'repos' with all the repos).
 # 
-# TODO: Add support for a --nopull option...
-# 
 # TODO: Use a kind of blue-green deployment so if some error or
 # inconsistency is detected on the updated repos, the update can stop
 # without affecting the system (waiting for the error to be fixed, or
 # doing something more sophisticated like excluding the guilty repo
 # from the system, until the error is fixed).
+
+## Utility functions
+
+die() {
+    echo
+    echo "*** $@" 1>&2;
+    log "*** $@";
+    exit 1;
+}
+
+log() {
+    # has LOG been initialized yet?
+    if test -n "$LOG"; then
+        echo "$@" >> "$LOG";
+    else
+        echo "$@";
+    fi
+}
+
+## Parse the options
+
+NO_PULL=false
+
+while echo "$1" | grep -- ^-- >/dev/null 2>&1 && test "$1" != --; do
+    case "$1" in
+        # no pull
+        --no-pull)
+            NO_PULL=true;;
+        # Unknown option!
+        --*)
+            die "Unknown option: $1"
+    esac
+    shift;
+done
 
 ## Variables
 
@@ -30,26 +62,17 @@ PACKAGES="$MASTER/packages.xml"
 AUTHORS="$MASTER/authors.xml"
 AUTHDIR="$MASTER/authors/"
 
-## Utility functions
-
-die() {
-    echo
-    echo "*** $@" 1>&2;
-    log "*** $@";
-    exit 1;
-}
-
-log() {
-    echo "$@" >> "$LOG";
-}
-
 ## Checks on the variables
 
-if test -z "$BASE"; then
-    # do not log, as we do not know where $LOG would point to
+if test -n "$2"; then
+    # do not log, as we do not know if we can trust where $LOG would point to
     echo
-    echo "*** The base directory is a mandatory option" 1>&2;
+    echo "*** Too many options: '$2'" 1>&2;
     exit 1;
+fi
+
+if test -z "$BASE"; then
+    die "The base directory is mandatory: update-repos.sh [--no-pull] git-base"
 fi
 
 if test \! -d "$BASE"; then
@@ -86,8 +109,12 @@ for dir in "$REPOS"/*; do
         repos_cnt=`expr $repos_cnt + 1`;
         log
         log "[**] Pull repo '$dir'"
-        ( ( cd "$dir"; git pull ) >> "$LOG" 2>&1 ) \
-            || die "Error pulling from Git in: '$dir'"
+        if "$NO_PULL" = true; then
+            log "(pull disabled)"
+        else
+            ( ( cd "$dir"; git pull ) >> "$LOG" 2>&1 ) \
+                || die "Error pulling from Git in: '$dir'"
+        fi
     else
         log
         log "[**] Ignore file '$dir'"
