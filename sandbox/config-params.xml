@@ -1,0 +1,12 @@
+<c:param-set xmlns:c="http://www.w3.org/ns/xproc-step">
+   <!-- where the git-base is located, a dir, so must end with a slash, must be absolute -->
+   <c:param name="master-repo"     value="file:/Users/fgeorges/projects/expath/cxan/sandbox/git-base/master/"/>
+   <!-- webapp general info -->
+   <c:param name="home-uri"        value="http://localhost:9070/cxan/"/>
+   <c:param name="context-root"    value="/cxan"/>
+   <!-- no Twitter credentials -->
+   <!--c:param name="user-token"   value=""/>
+   <c:param name="user-secret"     value=""/>
+   <c:param name="consumer-key"    value=""/>
+   <c:param name="consumer-secret" value=""/-->
+</c:param-set>
