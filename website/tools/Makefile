@@ -22,6 +22,14 @@ EXIST_PWD=xxx
 # where to backup?
 BCK_DIR=client-bck
 
+cxan-website-tools-0.7.0.zip: check-sanity.xproc \
+                              denorm-authors.xproc \
+                              denorm-repos.xproc \
+                              repo.xsd \
+                              calabash.sh \
+                              update-repos.sh
+	zip $@ $^
+
 client:
 	rm -rf $(BCK_DIR).OLD
 	mv $(BCK_DIR) $(BCK_DIR).OLD
