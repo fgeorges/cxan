@@ -1,8 +1,8 @@
 <c:param-set xmlns:c="http://www.w3.org/ns/xproc-step">
    <!-- where the git-base is located, a dir, so must end with a slash, must be absolute -->
-   <c:param name="master-repo"     value="file:/Users/fgeorges/projects/expath/cxan/sandbox/git-base/master/"/>
+   <c:param name="master-repo"     value="file:/cxan.home/git-base/master/"/>
    <!-- webapp general info -->
-   <c:param name="home-uri"        value="http://localhost:9070/servlex/cxan/"/>
+   <c:param name="home-uri"        value="http://localhost:19757/servlex/cxan/"/>
    <c:param name="context-root"    value="/servlex/cxan"/>
    <!-- no Twitter credentials -->
    <!--c:param name="user-token"   value=""/>
