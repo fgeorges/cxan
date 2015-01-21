@@ -48,6 +48,7 @@ done
 
 BASE="$1"
 SCRIPTS=`dirname $0`
+CALABASH="$SCRIPTS/calabash.sh"
 
 MASTER="$BASE/master"
 REPOS="$BASE/repos"
@@ -133,7 +134,7 @@ for dir in "$REPOS"/*; do
     if test -d "$dir"; then
         report="$MASTER"/sanity/`basename $dir`.xml
         log "sanity of repo 'file:$dir/'"
-        ( calabash -i categories="$MASTER"/categories.xml -i authors="$MASTER"/authors.xml \
+        ( "$CALABASH" -i categories="$MASTER"/categories.xml -i authors="$MASTER"/authors.xml \
             "$SANITY_PIPE" repo-dir="file:$dir/" \
             2>> "$LOG" \
             | xmllint --format - > "$report" ) \
@@ -156,7 +157,7 @@ log
 log "[**] Denormalize repositories"
 log "from '$from'"
 log "to '$PACKAGES'"
-calabash "$DENORM_PIPE" repos-dir="$from" \
+"$CALABASH" "$DENORM_PIPE" repos-dir="$from" \
     2>> "$LOG" > "$PACKAGES" \
     || die "Error denormalizing repositories!"
 
@@ -168,7 +169,7 @@ log "[**] Denormalize authors"
 log "from '$PACKAGES'"
 log " and '$AUTHORS'"
 log "  to '$to'"
-calabash -i packages="$PACKAGES" -i authors="$AUTHORS" \
+"$CALABASH" -i packages="$PACKAGES" -i authors="$AUTHORS" \
     "$AUTHOR_PIPE" \
     authors-dir="$to" \
     >> "$LOG" 2>&1 \
@@ -183,7 +184,7 @@ calabash -i packages="$PACKAGES" -i authors="$AUTHORS" \
 # log
 # log "[**] Check validity"
 # log "of '$PACKAGES'"
-# calabash -i packages="$PACKAGES" \
+# "$CALABASH" -i packages="$PACKAGES" \
 #     "$VALIDITY_PIPE" \
 #     >> "$LOG" 2>&1 \
 #     || die "Error checking validity!"
@@ -192,18 +193,22 @@ calabash -i packages="$PACKAGES" -i authors="$AUTHORS" \
 
 # TODO: For now, only packages.xml, extend it to others, like authors...
 
-git_add=`(cd "$MASTER"; git add -n packages.xml)`
-if test -n "$git_add"; then
-    log
-    log "[**] Push master/packages.xml"
-    ( ( cd "$MASTER"; git add packages.xml ) >> "$LOG" 2>&1 ) \
-        || die "Error adding master/packages.xml to Git in: '$MASTER'"
-    ( ( cd "$MASTER"; git commit -m "Automatic update..." packages.xml ) >> "$LOG" 2>&1 ) \
-        || die "Error committing master/packages.xml to Git in: '$MASTER'"
-    # TODO: Not pushing automatically for now.  To enable later...
-    # ( ( cd "$MASTER"; git push ) >> "$LOG" 2>&1 ) \
-    #     || die "Error pushing to Git in: '$MASTER'"
+if test \! -d "$MASTER/.git"; then
+    log "[**] master/.git/ does not exist, assume must not commit packages.xml"
 else
-    log
-    log "[**] master/packages.xml not modified"
+    git_add=`(cd "$MASTER"; git add -n packages.xml)`
+    if test -n "$git_add"; then
+        log
+        log "[**] Push master/packages.xml"
+        ( ( cd "$MASTER"; git add packages.xml ) >> "$LOG" 2>&1 ) \
+            || die "Error adding master/packages.xml to Git in: '$MASTER'"
+        ( ( cd "$MASTER"; git commit -m "Automatic update..." packages.xml ) >> "$LOG" 2>&1 ) \
+            || die "Error committing master/packages.xml to Git in: '$MASTER'"
+        # TODO: Not pushing automatically for now.  To enable later...
+        # ( ( cd "$MASTER"; git push ) >> "$LOG" 2>&1 ) \
+        #     || die "Error pushing to Git in: '$MASTER'"
+    else
+        log
+        log "[**] master/packages.xml not modified"
+    fi
 fi
