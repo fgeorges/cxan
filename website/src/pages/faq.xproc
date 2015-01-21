@@ -25,6 +25,11 @@
                <para>Each package has its own package page on the website, containing more
                   information about it. The website can be searched for packages, or simply
                   browsed.</para>
+               <subtitle>Where is the REST API?</subtitle>
+               <para>You can access CXAN information using a read-only REST-like API.
+                  Just use the same URLs as for the website, but add the HTTP header
+                  <code>Accept: application/xml</code>.  You will get back a simple XML
+                  representation of the information shown on the corresponding webpage.</para>
                <subtitle>Who maintain packages?</subtitle>
                <para>The packages on CXAN are maintained by a community of volunteers. Each package
                   is assigned to one maintainer. Each package page contains more information about
@@ -103,11 +108,143 @@
    </pkg>
 
 </repo>]]></code>
-               <subtitle>Where is the REST API?</subtitle>
-               <para>You can access CXAN information using a read-only REST-like API.
-                  Just use the same URLs as for the website, but add the HTTP header
-                  <code>Accept: application/xml</code>.  You will get back a simple XML
-                  representation of the information shown on the corresponding webpage.</para>
+               <subtitle>How do I install a local CXAN?</subtitle>
+               <para>You can install your own CXAN locally, either to deploy your own local system,
+                  or as a package repository maintainer, to double-check your packages before
+                  pushing them to http://cxan.org/. In a nutshell, you need to install the
+                  following:</para>
+               <list>
+                  <item><link uri="http://servlex.net/">Servlex</link></item>
+                  <item>the <link uri="http://cxan.org/pkg/fgeorges/cxan-website">CXAN
+                        website</link> package</item>
+                  <item>the repositories you want to be part of your deployment</item>
+                  <item>your own master repository</item>
+               </list>
+               <para>First, create a directory which will contain your installation. It will contain
+                  Servlex as a sub-directpry, another one will be its application repository, yet
+                  another one will be the Git base for the package repositories, and so on. Let us
+                  call that directory <code>cxan.home</code>.</para>
+               <para>To install Servlex, just go to <link uri="http://servlex.net/"
+                     >http://servlex.net/</link>, and follow the instructions. The easiest way is to
+                  download the installer, and execute it (that is a JAR file, either with a
+                  graphical installer, or text-based if your system is text-only). Adapt the
+                  directory to <code>cxan.home/servlex</code>. Once it is installed, move the
+                  directory <code>cxan.home/servlex/repo</code> to <code>cxan.home/repo</code>
+                  and adapt the value of <code>org.expath.servlex.repo.dir</code> accordingly in
+                  <code>cxan.home/servlex/conf/catalina.properties</code>.</para>
+               <para>Adapt the port 19757 to the port number you want to use, in
+                     <code>cxan.home/servlex/conf/server.xml</code>. Now you can start Servlex by
+                  executing <code>cxan.home/servlex/bin/startup.sh</code> (you might need to set the
+                  exec bit on the shell scripts first: <code>chmod u+x *.sh</code>). Go to the
+                  Servlex Manager on <link uri="http://localhost:19757/manager/"
+                     >http://localhost:19757/manager/</link> (adapt the port number if you changed
+                  it in Servlex configuration) to validate it has been installed correctly.</para>
+               <para>Go to the "Deploy" page of the Servlex Manager, and write down
+                     <code>fgeorges/fxsl</code> in the CXAN ID field. Press "Deploy" in order to
+                  install the first dependency of the CXAN website application directly from CXAN
+                  itself. Confirm the installation. Then go back to the "Deploy' page and repeat
+                  this process for the packages <code>fgeorges/pipx</code>,
+                     <code>fgeorges/serial</code> and finally the CXAN Website itself:
+                     <code>fgeorges/cxan-website</code>. But before testing it, we need to create
+                  the Git base directory.</para>
+               <para>Create the directory <code>cxan.home/git-base/master/</code>. Copy the file
+                     <code>cxan.home/repo/cxan-website-0.7.0/content/config-params.xml</code> to
+                     <code>cxan.home/repo/config-params.xml</code>, and edit the value of the
+                     <code>git-base</code> parameter (make sure that all references to
+                     <code>config-params.xml</code> in
+                     <code>cxan.home/repo/cxan-website-0.7.0/content/data-access/dir-repos.xpl</code>
+                  are pointing to the file (they should all be exactly
+                     <code>../../../../config-params.xml</code>). The value must be an absolute path
+                  on your system, starting with <code>file:/</code>, and pointing to the directory
+                     <code>cxan.home/git-base/master/</code> you have just created. Create the file
+                     <code>cxan.home/git-base/master/repositories.xml</code> with the following
+                  content:</para>
+               <code><![CDATA[<repositories>
+
+   <repo abbrev="expath" href="../repos/expath/">
+      <desc>The EXPath project repository.</desc>
+      <packages>../repos/expath/packages.xml</packages>
+      <git>
+         <remote>http://git.fgeorges.org/r/expath/cxan-repo.git</remote>
+         <branch>master</branch>
+      </git>
+   </repo>
+
+</repositories>]]></code>
+               <para>Adapt the values to the package repositories you want to add to your own CXAN
+                  deployment, and create a new element <code>repo</code> well, for each such repo.
+                  Do not forget to actually clone each of the repositories at the given
+                  place.</para>
+               <para>Create both directpries <code>cxan.home/git-base/master/sanity/</code> and
+                     <code>cxan.home/git-base/master/authors/</code>. And create the file
+                     <code>cxan.home/git-base/master/authors.xml</code> with the following content
+                  (adapt the content, all author codes in your repositories must exist in this
+                  file):</para>
+               <code><![CDATA[<authors>
+
+   <author id="dnovatchev">
+      <name>
+         <display>Dimitre Novatchev</display>
+      </name>
+   </author>
+
+   <author id="fgeorges">
+      <name>
+         <display>Florent Georges</display>
+      </name>
+   </author>
+
+   <author id="jkosek">
+      <name>
+         <display>Jirka Kosek</display>
+      </name>
+   </author>
+
+   <author id="nwalsh">
+      <name>
+         <display>Norman Walsh</display>
+      </name>
+   </author>
+
+   <author id="oasis">
+      <name>
+         <display>OASIS</display>
+      </name>
+   </author>
+
+   <author id="pwalmsley">
+      <name>
+         <display>Priscilla Walmsley</display>
+      </name>
+   </author>
+
+</authors>]]></code>
+               <para>Create <code>cxan.home/git-base/master/categories.xml</code>, with the
+                  following content (like for authors, adapt the content, as all category codes in
+                  your repositories must exist in this file):</para>
+               <code><![CDATA[<categories>
+   <cat id="applications" name="Applications"/>
+   <cat id="databases" name="Databases"/>
+   <cat id="doctypes" name="Document types"/>
+   <cat id="libs" name="Libraries"/>
+   <cat id="pkg" name="Packaging"/>
+   <cat id="tools" name="Tools"/>
+   <cat id="web-api" name="Web APIs"/>
+   <cat id="webapps" name="Webapps"/>
+   <cat id="processor" name="Processor-related">
+      <cat id="saxon" name="Saxon"/>
+      <cat id="exist" name="eXist"/>
+      <cat id="calabash" name="Calabash"/>
+      <cat id="basex" name="BaseX"/>
+   </cat>
+</categories>]]></code>
+               <para>Now, the last step is to download the CXAN tools. Create the directory
+                     <code>cxan.home/tools/</code>, and unzip there the content of the latest file
+                     <code>cxan-website-tools-*.zip</code> that you can find on the CXAN page of the
+                     <link uri="http://cxan.org/pkg/fgeorges/cxan-website">CXAN website</link>
+                  package. You can then invoke the shell script, with the git-base directory as an
+                  option (use an absolute path): <code>./update-repos.sh
+                  cxan.hom/git-base</code>.</para>
             </page>
          </p:inline>
       </p:input>
