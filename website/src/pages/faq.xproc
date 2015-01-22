@@ -17,7 +17,19 @@
          <p:inline>
             <page menu="faq">
                <title>FAQ</title>
-               <subtitle>What does CXAN contain?</subtitle>
+               <subtitle>Questions</subtitle>
+               <list>
+                  <item><link uri="#what">What does CXAN contain?</link></item>
+                  <item><link uri="#rest">Where is the REST API?</link></item>
+                  <item><link uri="#who">Who maintain packages?</link></item>
+                  <item><link uri="#how">How are packages maintained?</link></item>
+                  <item><link uri="#why-git">Why using Git?</link></item>
+                  <item><link uri="#bin-github">GitHub does not allow binaries!</link></item>
+                  <item><link uri="#add-pkg">How can I add a new package to CXAN?</link></item>
+                  <item><link uri="#repo-struct">What is the structure of a CXAN repository?</link></item>
+                  <item><link uri="#install-local">How do I install a local CXAN?</link></item>
+               </list>
+               <subtitle id="what">What does CXAN contain?</subtitle>
                <para>CXAN offers a variety of packages, from simple tool libraries to entire web
                   applications. It is based on the EXPath packaging system. The package format
                   supports technologies such as XQuery, Javascript, XSLT, RDF, XML Schema, SPARQL,
@@ -25,16 +37,16 @@
                <para>Each package has its own package page on the website, containing more
                   information about it. The website can be searched for packages, or simply
                   browsed.</para>
-               <subtitle>Where is the REST API?</subtitle>
+               <subtitle id="rest">Where is the REST API?</subtitle>
                <para>You can access CXAN information using a read-only REST-like API.
                   Just use the same URLs as for the website, but add the HTTP header
                   <code>Accept: application/xml</code>.  You will get back a simple XML
                   representation of the information shown on the corresponding webpage.</para>
-               <subtitle>Who maintain packages?</subtitle>
+               <subtitle id="who">Who maintain packages?</subtitle>
                <para>The packages on CXAN are maintained by a community of volunteers. Each package
                   is assigned to one maintainer. Each package page contains more information about
                   its maintainer.</para>
-               <subtitle>How are packages maintained?</subtitle>
+               <subtitle id="how">How are packages maintained?</subtitle>
                <para>Technically, packages are maintained in Git repositories. CXAN monitors some
                   specific repositories. Each maintainer has his/her own repository, containing all
                   the packages he/she maintains. Each Git repository has a specific structure,
@@ -47,7 +59,7 @@
                   the remote repository (well, as soon as CXAN pull these changes), like adding a
                   new version of an existing package, the change becomes available on the CXAN
                   website.</para>
-               <subtitle>Why using Git?</subtitle>
+               <subtitle id="why-git">Why using Git?</subtitle>
                <para>By using Git, there is no need to implement a security mechanism, or a form to
                   upload new packages. Maintainers can use all Git tools, as they are used to,
                   possibly entire teams collaborating, or using several branches to map their
@@ -60,12 +72,12 @@
                   are transmitted by following the chain of Git pushes. The risk of loosing anything
                   is very low (virtually inexistant), without even having to write any backup
                   strategy.</para>
-               <subtitle>GitHub does not allow binaries!</subtitle>
+               <subtitle id="bin-github">GitHub does not allow binaries!</subtitle>
                <para>CXAN does not use GitHub (except for its own source code). It uses Git. If a
                   maintainer wants to use GitHub, that is its responsibility (I do not think that a
                   couple of small packages, typically less than 100 Ko, is a real problem). I
                   personally use my own server of remote Git repositories.</para>
-               <subtitle>How can I add a new package to CXAN?</subtitle>
+               <subtitle id="add-pkg">How can I add a new package to CXAN?</subtitle>
                <para>Either you contact a maintainer and convince him/her to add your package (e.g.
                   if the package is related to the maintainer activity). Or you volunteer to become
                   a maintainer yourself. In that case the first step is to create a remote Git
@@ -73,7 +85,7 @@
                      uri="http://expath.org/lists">EXPath mailing list</link> (or in private if you
                   don't want to write to the mailing list for whatever reason) in order to add your
                   repository to CXAN.</para>
-               <subtitle>What is the structure of a CXAN repository?</subtitle>
+               <subtitle id="repo-struct">What is the structure of a CXAN repository?</subtitle>
                <para>The format is quite simple. If you prefer to learn by example, you can have a
                   look at Florent's personnal <link
                      uri="http://git.fgeorges.org/tree/~fgeorges:cxan-repo.git">repository</link>,
@@ -108,7 +120,7 @@
    </pkg>
 
 </repo>]]></code>
-               <subtitle>How do I install a local CXAN?</subtitle>
+               <subtitle id="install-local">How do I install a local CXAN?</subtitle>
                <para>You can install your own CXAN locally, either to deploy your own local system,
                   or as a package repository maintainer, to double-check your packages before
                   pushing them to http://cxan.org/. In a nutshell, you need to install the
