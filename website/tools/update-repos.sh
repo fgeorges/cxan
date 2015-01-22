@@ -113,7 +113,7 @@ for dir in "$REPOS"/*; do
         if "$NO_PULL" = true; then
             log "(pull disabled)"
         else
-            ( ( cd "$dir"; git pull ) >> "$LOG" 2>&1 ) \
+            ( ( cd "$dir"; git pull origin master ) >> "$LOG" 2>&1 ) \
                 || die "Error pulling from Git in: '$dir'"
         fi
     else
