@@ -61,6 +61,8 @@
       <link rel="stylesheet" type="text/css" href="{ $context-root }/style/bootstrap.css"/>
       <link rel="stylesheet" type="text/css" href="{ $context-root }/style/cxan.css"/>
       <link rel="stylesheet" type="text/css" href="{ $context-root }/style/serial.css"/>
+      <script src="{ $context-root }/js/jquery.js"    type="text/javascript"/>
+      <script src="{ $context-root }/js/bootstrap.js" type="text/javascript"/>
    </xsl:template>
 
    <xsl:template name="body">
@@ -176,12 +178,14 @@
 
    <xsl:template match="title">
       <h2>
+         <xsl:copy-of select="@id"/>
          <xsl:apply-templates/>
       </h2>
    </xsl:template>
 
    <xsl:template match="subtitle">
       <h4>
+         <xsl:copy-of select="@id"/>
          <xsl:apply-templates/>
       </h4>
    </xsl:template>
