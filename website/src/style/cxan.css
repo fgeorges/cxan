@@ -1,3 +1,12 @@
+.repo {
+  color: rgb(120, 120, 120);
+  font-size: 75%;
+}
+
+.abstract {
+  font-size: 125%;
+}
+
 /* **************************************************
  * From http://getbootstrap.com/examples/starter-template/starter-template.css.
  */
@@ -10,7 +19,7 @@ body {
   text-align: center;
 }
 h4 {
-   margin-top: 40px;
+  margin-top: 40px;
 }
 
 /* **************************************************

@@ -24,21 +24,26 @@
    </xsl:template>
 
    <xsl:template match="/pkg">
-      <!-- the version elements, sorted descendently -->
-      <xsl:variable name="versions" as="element(version)+">
-         <xsl:perform-sort select="version">
-            <xsl:sort select="@id" order="descending"/>
-         </xsl:perform-sort>
-      </xsl:variable>
       <page menu="pkg">
          <title>
-            <xsl:value-of select="@id"/>
+            <span class="repo">
+               <xsl:value-of select="@repo"/>
+               <xsl:text> / </xsl:text>
+            </span>
+            <span class="abbrev">
+               <xsl:value-of select="@abbrev"/>
+            </span>
          </title>
-         <xsl:if test="exists(abstract)">
-            <para>
-               <xsl:value-of select="abstract"/>
-            </para>
-         </xsl:if>
+         <xsl:copy-of select="abstract"/>
+         <para>
+            <xsl:variable name="latest" select="version[1]/file[@role eq 'pkg']"/>
+            <button type="download" href="../../file/{ @id }/{ $latest/@name }"/>
+            <xsl:text> </xsl:text>
+            <xsl:if test="exists(home)">
+               <button type="home" href="{ home }"/>
+               <xsl:text> </xsl:text>
+            </xsl:if>
+         </para>
          <named-info>
             <row>
                <name>ID</name>
@@ -154,11 +159,9 @@
             </xsl:if>
          </named-info>
          <xsl:for-each select="version">
-            <!-- TODO: Sort not as a string, but as a SemVer instead. -->
-            <xsl:sort select="@id" order="descending"/>
-            <xsl:variable name="ver" select="@num"/>
+            <!-- Do not sort the versions, they have to be sorted in Git. -->
             <subtitle>
-               <xsl:value-of select="$ver"/>
+               <xsl:value-of select="@num"/>
             </subtitle>
             <named-info>
                <!--

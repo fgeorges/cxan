@@ -111,7 +111,7 @@
    <app:ensure-method accepted="get"/>
 
    <p:choose>
-      <p:when test="count(($repo[.], $pkg[.], $file[.])) = (1, 2)">
+      <p:when test="count(($repo, $pkg, $file)[.]) = (1, 2)">
          <app:error code="invalid-rest-params" title="Params repo, pkg and file must all be there together"
                     message="If params repo, pkg or file are given, all must be there, got: '{$r}', '{$p}' and '{$f}' resp.">
             <p:with-param name="r" select="$repo"/>

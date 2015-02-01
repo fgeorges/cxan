@@ -8,6 +8,7 @@
 
    <resource pattern="/style/.+\.css"  media-type="text/css"/>
    <resource pattern="/js/.+\.js"      media-type="text/javascript"/>
+   <resource pattern="/fonts/.+\.woff" media-type="application/font-woff"/>
    <resource pattern="/images/.+\.gif" media-type="image/gif"/>
    <resource pattern="/images/.+\.jpg" media-type="image/jpg"/>
    <resource pattern="/images/.+\.png" media-type="image/png"/>

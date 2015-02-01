@@ -176,11 +176,47 @@
       </div>
    </xsl:template>
 
+   <xsl:template match="span">
+      <span>
+         <xsl:copy-of select="@*"/>
+         <xsl:apply-templates/>
+      </span>
+   </xsl:template>
+
    <xsl:template match="title">
       <h2>
          <xsl:copy-of select="@id"/>
          <xsl:apply-templates/>
       </h2>
+   </xsl:template>
+
+   <xsl:template match="abstract">
+      <p class="abstract">
+         <xsl:apply-templates/>
+      </p>
+   </xsl:template>
+
+   <xsl:template match="button">
+      <a class="btn btn-default">
+         <xsl:copy-of select="@href"/>
+         <xsl:choose>
+            <xsl:when test="@type eq 'download'">
+               <span class="glyphicon glyphicon-download"/>
+               <xsl:text> Download</xsl:text>
+            </xsl:when>
+            <xsl:when test="@type eq 'home'">
+               <span class="glyphicon glyphicon-home"/>
+               <xsl:text> Homepage</xsl:text>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:text>&lt;ERROR: Unkown button type: </xsl:text>
+               <code>
+                  <xsl:value-of select="@type"/>
+               </code>
+               <xsl:text>&gt;</xsl:text>
+            </xsl:otherwise>
+         </xsl:choose>
+      </a>
    </xsl:template>
 
    <xsl:template match="subtitle">

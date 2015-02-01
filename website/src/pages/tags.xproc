@@ -97,7 +97,7 @@
                                              <link uri="/pkg/{ @repo }" absolute="true">
                                                 <xsl:value-of select="@repo"/>
                                              </link>
-                                             <xsl:text>/</xsl:text>
+                                             <xsl:text> / </xsl:text>
                                              <link uri="/pkg/{ @repo }/{ @abbrev }" absolute="true">
                                                 <bold>
                                                    <xsl:value-of select="@abbrev"/>
