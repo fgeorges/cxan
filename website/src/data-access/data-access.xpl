@@ -759,9 +759,15 @@
                   </xsl:template>
                   <xsl:template match="/repos">
                      <xsl:variable name="pkg"  as="element(pkg)"     select="repo/pkg[@id eq $pkg-id]"/>
-                     <xsl:variable name="ver"  as="element(version)" select="$pkg/version[@num eq $pkg-ver]"/>
+                     <xsl:variable name="ver"  as="element(version)" select="
+                         if ( $pkg-ver[.] ) then
+                            (: TODO: Handle the case where no version match (so @as won't match.) :)
+                            $pkg/version[@num eq $pkg-ver]
+                         else
+                            (: by definition, the 1st version is the newest one:)
+                            $pkg/version[1]"/>
                      <xsl:variable name="file" as="element(file)"    select="$ver/file[@role eq 'pkg']"/>
-                     <xsl:variable name="path" select="concat($pkg/@abbrev, '/', $pkg-ver, '/', $file/@name)"/>
+                     <xsl:variable name="path" select="concat($pkg/@abbrev, '/', $ver/@num, '/', $file/@name)"/>
                      <file mime="{ ( $file/@mime, 'application/zip'[$file/@role = ('pkg', 'archive')], 'application/octet-stream' )[1] }">
                         <xsl:value-of select="resolve-uri($path, base-uri($pkg))"/>
                      </file>
