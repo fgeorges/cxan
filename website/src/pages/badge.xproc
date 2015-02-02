@@ -4,7 +4,7 @@
             xmlns:web="http://expath.org/ns/webapp"
             xmlns:app="http://cxan.org/ns/website"
             xmlns:da="http://cxan.org/ns/website/data-access"
-            pkg:import-uri="http://cxan.org/website/pages/file.xproc"
+            pkg:import-uri="http://cxan.org/website/pages/badge.xproc"
             name="pipeline"
             version="1.0">
 
