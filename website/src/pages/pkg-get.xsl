@@ -1,8 +1,18 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                xmlns:c="http://www.w3.org/ns/xproc-step"
                 xmlns:pkg="http://expath.org/ns/pkg"
+                xmlns:ser="http://fgeorges.org/xslt/serial"
+                exclude-result-prefixes="xs c pkg ser"
                 version="2.0">
 
+   <xsl:import href="http://fgeorges.org/ns/xslt/serial.xsl"/>
+   <xsl:import href="http://fgeorges.org/ns/xslt/serial-html.xsl"/>
+
    <pkg:import-uri>##none</pkg:import-uri>
+
+   <xsl:variable name="home" as="xs:string" select="
+       doc('../../../../config-params.xml')/c:param-set/c:param[@name eq 'home-uri']/@value"/>
 
    <xsl:template match="/no-such-package">
       <page menu="pkg" http-code="404" http-message="Not Found">
@@ -25,6 +35,7 @@
 
    <xsl:template match="/pkg">
       <page menu="pkg">
+
          <title>
             <span class="repo">
                <xsl:value-of select="@repo"/>
@@ -44,6 +55,7 @@
                <xsl:text> </xsl:text>
             </xsl:if>
          </para>
+
          <named-info>
             <row>
                <name>ID</name>
@@ -158,6 +170,7 @@
                </row>
             </xsl:if>
          </named-info>
+
          <xsl:for-each select="version">
             <!-- Do not sort the versions, they have to be sorted in Git. -->
             <subtitle>
@@ -205,6 +218,32 @@
                </xsl:for-each>
             </named-info>
          </xsl:for-each>
+
+         <subtitle>Badge</subtitle>
+         <link href="../{ @id }"><image alt="CXAN" src="../../badge/{ @id }"/></link>
+         <para/>
+         <para>HTML:</para>
+         <xsl:variable name="code" as="element()">
+            <a href="{ $home }pkg/{ @id }">
+               <img alt="CXAN" src="{ $home }badge/{ @id }"/>
+            </a>
+         </xsl:variable>
+         <code>
+            <xsl:sequence select="ser:serialize-to-html($code)"/>
+         </code>
+         <para>Markdown:</para>
+         <code>
+            <xsl:text>[![CXAN](</xsl:text>
+            <xsl:value-of select="$home"/>
+            <xsl:text>badge/</xsl:text>
+            <xsl:value-of select="@id"/>
+            <xsl:text>)](</xsl:text>
+            <xsl:value-of select="$home"/>
+            <xsl:text>pkg/</xsl:text>
+            <xsl:value-of select="@id"/>
+            <xsl:text>)</xsl:text>
+         </code>
+
       </page>
    </xsl:template>
 

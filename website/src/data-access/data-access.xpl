@@ -835,7 +835,7 @@
          <p>The file is returned as a document with a single element, containing the absolute file
             location:</p>
          <pre><![CDATA[
-            <file>file:/.../git-base/repos/some-repo/functx/functx-1.0.xar</file>
+            <file mime="some/type">file:/.../git-base/repos/some-repo/functx/functx-1.0.xar</file>
          ]]></pre>
          <p>In the above case, <code>repo</code> would be <code>some-repo</code>, <code>pkg</code>
             would be <code>functx</code> and <code>file</code> would be <code>functx-1.0.xar</code>.
@@ -884,6 +884,30 @@
             </p:inline>
          </p:input>
       </p:xslt>
+   </p:declare-step>
+
+   <!--
+      Package badges.
+   -->
+
+   <p:declare-step type="da:package-badge">
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Return a badge file from a CXAN ID.</p>
+         <p>The file is returned as a document with a single element, containing the absolute file
+            location:</p>
+         <pre><![CDATA[
+            <badge mime="some/type">file:/.../git-base/master/badges/some-repo/functx.svg</file>
+         ]]></pre>
+         <p>In the above case, <code>repo</code> would be <code>some-repo</code> and
+            <code>pkg</code> would be <code>functx</code>.</p>
+      </p:documentation>
+      <p:output port="result" primary="true"/>
+      <p:option name="repo" required="true"/>
+      <p:option name="pkg"  required="true"/>
+      <dir:package-badge>
+         <p:with-option name="repo" select="$repo"/>
+         <p:with-option name="pkg"  select="$pkg"/>
+      </dir:package-badge>
    </p:declare-step>
 
 </p:library>

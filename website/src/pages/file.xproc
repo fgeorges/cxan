@@ -30,7 +30,7 @@
    <p:declare-step type="app:page-file-impl">
       <p:input  port="source" primary="true"/>
       <p:output port="result" primary="true"/>
-      <p:template name="attrs">
+      <p:template>
          <p:input port="parameters">
             <p:empty/>
          </p:input>

@@ -74,6 +74,24 @@
       </servlet>
 
       <!--
+          The badge service.
+      -->
+      <servlet name="badge-repo">
+         <xproc uri="http://cxan.org/website/pages/badge.xproc"/>
+         <url pattern="/badge/([^/]+)">
+            <match group="1" name="repo"/>
+         </url>
+      </servlet>
+
+      <servlet name="badge-pkg">
+         <xproc uri="http://cxan.org/website/pages/badge.xproc"/>
+         <url pattern="/badge/([^/]+)/([^/]+)">
+            <match group="1" name="repo"/>
+            <match group="2" name="pkg"/>
+         </url>
+      </servlet>
+
+      <!--
           The repository list.
       -->
       <servlet name="pkg-list">

@@ -334,4 +334,55 @@
       </p:load>
    </p:declare-step>
 
+   <!--
+      Badges.
+   -->
+
+   <p:declare-step type="dir:package-badge">
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <pre><![CDATA[
+            <badge mime="some/type">.../some/badge.svg</badge>
+         ]]></pre>
+      </p:documentation>
+      <p:output port="result" primary="true"/>
+      <p:option name="repo" required="true"/>
+      <p:option name="pkg"  required="true"/>
+      <dir:package-badge-impl>
+         <p:with-option name="repo" select="$repo"/>
+         <p:with-option name="pkg"  select="$pkg"/>
+         <p:input port="parameters">
+            <!-- TODO: Which one? -->
+            <!--p:document href="../../../../config-params.xml"/-->
+            <p:document href="../config-params.xml"/>
+         </p:input>
+      </dir:package-badge-impl>
+   </p:declare-step>
+
+   <p:declare-step type="dir:package-badge-impl">
+      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
+         <p>Implementation step for dir:package-badge.</p>
+         <p>The step dir:package-badge simply pass the config parameters.</p>
+      </p:documentation>
+      <p:input  port="parameters" primary="true" kind="parameter"/>
+      <p:output port="result"     primary="true"/>
+      <p:option name="repo" required="true"/>
+      <p:option name="pkg"  required="true"/>
+      <pipx:parameter param-name="master-repo" required="true"/>
+      <p:group>
+         <p:variable name="path" select="
+            if ( empty($pkg[.]) ) then
+              concat('badges/', $repo, '.svg')
+            else
+              concat('badges/', $repo, '/', $pkg, '.svg')"/>
+         <p:variable name="uri"  select="resolve-uri($path, string(/param))"/>
+         <p:sink/>
+         <p:string-replace match="/badge/text()">
+            <p:with-option name="replace" select="concat('''', $uri, '''')"/>
+            <p:input port="source">
+               <p:inline><badge mime="image/svg+xml">to-replace</badge></p:inline>
+            </p:input>
+         </p:string-replace>
+      </p:group>
+   </p:declare-step>
+
 </p:library>

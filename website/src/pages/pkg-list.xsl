@@ -1,8 +1,14 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                xmlns:c="http://www.w3.org/ns/xproc-step"
                 xmlns:pkg="http://expath.org/ns/pkg"
                 xmlns:web="http://expath.org/ns/webapp"
+                xmlns:ser="http://fgeorges.org/xslt/serial"
+                exclude-result-prefixes="xs c pkg web ser"
                 version="2.0">
+
+   <xsl:import href="http://fgeorges.org/ns/xslt/serial.xsl"/>
+   <xsl:import href="http://fgeorges.org/ns/xslt/serial-html.xsl"/>
 
    <pkg:import-uri>##none</pkg:import-uri>
 
@@ -10,30 +16,8 @@
    <xsl:param name="repo-list" as="xs:boolean" select="false()"/>
    <xsl:param name="repo-id"   as="xs:string?"/>
 
-   <!-- TODO: Why redirecting, really? -->
-   <!--xsl:template match="/packages[count(pkg) eq 1]">
-      <xsl:variable name="page" select="concat('pkg/', pkg/id)"/>
-      <xsl:variable name="uri"  select="resolve-uri($page, $base-uri)"/>
-      <web:response status="302" message="Found">
-         <web:header name="Location" value="{ $uri }"/>
-         <web:body content-type="text/html">
-            <html xmlns="http://www.w3.org/1999/xhtml">
-               <head>
-                  <title>Redirect</title>
-               </head>
-               <body>
-                  <p>
-                     <xsl:text>You are redirected to </xsl:text>
-                     <a href="{ $uri }">
-                        <xsl:value-of select="$uri"/>
-                     </a>
-                     <xsl:text>.</xsl:text>
-                  </p>
-               </body>
-            </html>
-         </web:body>
-      </web:response>
-   </xsl:template-->
+   <xsl:variable name="home" as="xs:string" select="
+       doc('../../../../config-params.xml')/c:param-set/c:param[@name eq 'home-uri']/@value"/>
 
    <xsl:template match="/packages[empty(pkg)]">
       <page menu="pkg">
@@ -57,6 +41,7 @@
 
    <xsl:template match="/packages[exists(pkg)]">
       <page menu="pkg">
+
          <title>Packages</title>
          <xsl:choose>
             <xsl:when test="exists($repo-id)">
@@ -87,6 +72,32 @@
             <column>Description</column>
             <xsl:apply-templates select="pkg"/>
          </table>
+
+         <subtitle>Badge</subtitle>
+         <link href="{ $repo-id }"><image alt="CXAN" src="../badge/{ $repo-id }"/></link>
+         <para/>
+         <para>HTML:</para>
+         <xsl:variable name="code" as="element()">
+            <a href="{ $home }pkg/{ $repo-id }">
+               <img alt="CXAN" src="{ $home }badge/{ $repo-id }"/>
+            </a>
+         </xsl:variable>
+         <code>
+            <xsl:sequence select="ser:serialize-to-html($code)"/>
+         </code>
+         <para>Markdown:</para>
+         <code>
+            <xsl:text>[![CXAN](</xsl:text>
+            <xsl:value-of select="$home"/>
+            <xsl:text>badge/</xsl:text>
+            <xsl:value-of select="$repo-id"/>
+            <xsl:text>)](</xsl:text>
+            <xsl:value-of select="$home"/>
+            <xsl:text>pkg/</xsl:text>
+            <xsl:value-of select="$repo-id"/>
+            <xsl:text>)</xsl:text>
+         </code>
+
       </page>
    </xsl:template>
 
