@@ -15,6 +15,8 @@
       - there is a file with role=pkg for each version
       - all authors in /packages.xml exist in authors.xml
       - all categories in /packages.xml exist in categories.xml
+      - all repos in /packages.xml have a badges/{repo}.svg
+      - all packages in /packages.xml have a badges/{repo}/{pkg}.svg
       - there is a dir /{id}/ for each pkg
       - there is a dir /{id}/{num}/ for each version
       - there is a file /{id}/{num}/{name} for each file
@@ -24,7 +26,7 @@
       
       Example of the result XML report:
       
-      <sanity pass="true">
+      <sanity pass="false">
          <rule name="repo-dir" pass="true">
             <title>Repo dir exist</title>
             <msg>The directory /.../myrepo/ exists.</msg>
@@ -48,19 +50,36 @@
                <file name="foobar-2.4.0.zip" role="pkg"/>
             </pkg>
          </rule>
-         ...
+         <rule name="author" pass="true">
+            <title>Authors must exist</title>
+            <msg>The file packages.xml contains only existing authors.</msg>
+         </rule>
+         <rule name="categories" pass="true">
+            <title>Categories must exist</title>
+            <msg>The file packages.xml contains only existing categories.</msg>
+         </rule>
+         <rule name="files" pass="true">
+            <title>Directories and files must exist</title>
+            <msg>All directories (corresponding to pkg/@id and version/@num) and files referenced from packages.xml exist.</msg>
+         </rule>
+         <rule name="badges" pass="true">
+            <title>Badges must exist</title>
+            <msg>There is a badge for the repository and every package.</msg>
+            <warning>
+               <msg>Some badges are not used.</msg>
+               <badge>repo/unused.svg</badge>
+            </warning>
+            <badges>
+               <badge>repo.svg</badge>
+               <badge>repo/pkg-one.svg</badge>
+               <badge>repo/pkg-deux.svg</badge>
+               <badge>repo/pkg-tres.svg</badge>
+            </badges>
+         </rule>
       </sanity>
    -->
 
-   <p:option name="repo-dir" required="true">
-      <p:documentation xmlns="http://www.w3.org/1999/xhtml">
-         <p>The directory for the repository to check.</p>
-         <p>It must be an absolute URI, must starts with "file:/" and must ends with a slash. So for
-            a human being to invoke this pipeline, the best solution is to use a wrapper shell
-            script.</p>
-      </p:documentation>
-   </p:option>
-
+   <p:input port="packages"/>
    <p:input port="authors"/>
    <p:input port="categories"/>
    <p:output port="result"/>
@@ -94,14 +113,14 @@
    </p:declare-step>
 
    <p:declare-step type="my:repo-exists" name="this">
-      <p:option name="dir" required="true"/>
+      <p:option name="repo" required="true"/>
       <p:input  port="source" primary="true"/>
       <p:output port="result" primary="true"/>
-      <!-- trying to list dir content -->
+      <!-- trying to list repo dir content -->
       <p:try>
          <p:group>
             <p:directory-list exclude-filter=".+">
-               <p:with-option name="path" select="$dir"/>
+               <p:with-option name="path" select="$repo"/>
             </p:directory-list>
          </p:group>
          <p:catch>
@@ -116,14 +135,14 @@
       </p:try>
       <!-- the rule itself -->
       <p:template name="rule">
-         <p:with-param name="dir"  select="$dir"/>
+         <p:with-param name="repo"  select="$repo"/>
          <p:with-param name="pass" select="empty(/does-not-exist)"/>
          <p:input port="template">
             <p:inline>
                <rule name="repo-dir" pass="{ $pass }">
                   <title>Repo dir exist</title>
-                  <msg>The directory { $dir } { if ( xs:boolean($pass) ) then 'exists' else 'does not exist' }.</msg>
-                  <repo>{ $dir }</repo>
+                  <msg>The directory { $repo } { if ( xs:boolean($pass) ) then 'exists' else 'does not exist' }.</msg>
+                  <repo>{ $repo }</repo>
                </rule>
             </p:inline>
          </p:input>
@@ -137,7 +156,7 @@
    </p:declare-step>
 
    <p:declare-step type="my:contains-packages-xml" name="this">
-      <p:option name="dir"  required="true"/>
+      <p:option name="repo" required="true"/>
       <p:option name="file" required="true"/>
       <p:input  port="source" primary="true"/>
       <p:output port="result" primary="true"/>
@@ -145,7 +164,7 @@
          <p:when test="/sanity/xs:boolean(@pass)">
             <!-- the rule itself -->
             <p:template name="rule">
-               <p:with-param name="dir"  select="$dir"/>
+               <p:with-param name="repo" select="$repo"/>
                <p:with-param name="file" select="$file"/>
                <p:with-param name="pass" select="doc-available($file)"/>
                <p:input port="source">
@@ -155,8 +174,8 @@
                   <p:inline>
                      <rule name="descriptor" pass="{ $pass }">
                         <title>Contains packages.xml</title>
-                        <msg>The repository { $dir } { if ( xs:boolean($pass) ) then 'contains' else 'does not contain' } { $file }.</msg>
-                        <repo>{ $dir }</repo>
+                        <msg>The repository { $repo } { if ( xs:boolean($pass) ) then 'contains' else 'does not contain' } { $file }.</msg>
+                        <repo>{ $repo }</repo>
                         <packages>{ $file }</packages>
                      </rule>
                   </p:inline>
@@ -479,13 +498,13 @@
    </p:declare-step>
 
    <p:declare-step type="my:files-exist" name="this">
-      <p:option name="dir" required="true"/>
+      <p:option name="repo" required="true"/>
       <p:input  port="source" primary="true"/>
       <p:input  port="packages"/>
       <p:output port="result" primary="true"/>
       <!-- listing the entire repo structure -->
       <p:directory-list include-filter="[a-z][a-z0-9]*(-[a-z0-9]+)*">
-         <p:with-option name="path" select="$dir"/>
+         <p:with-option name="path" select="$repo"/>
       </p:directory-list>
       <p:delete match="/c:directory/c:file"/>
       <p:viewport match="/c:directory/c:directory" name="dirs">
@@ -636,12 +655,128 @@
       </my:insert-rule>
    </p:declare-step-->
 
+   <p:declare-step type="my:badges-exist" name="this">
+      <p:option name="master" required="true"/>
+      <p:input  port="source" primary="true"/>
+      <p:input  port="packages"/>
+      <p:output port="result" primary="true"/>
+      <!-- listing the badges -->
+      <p:variable name="badges" select="resolve-uri('badges/', $master)"/>
+      <p:variable name="abbrev" select="/repo/@abbrev">
+         <p:pipe step="this" port="packages"/>
+      </p:variable>
+      <p:directory-list>
+         <p:with-option name="path" select="$badges"/>
+         <p:with-option name="include-filter" select="
+            concat('(', $abbrev, ')|(', $abbrev, '.svg)')"/>
+      </p:directory-list>
+      <p:viewport match="/c:directory/c:directory" name="dirs">
+         <my:expand-directory/>
+      </p:viewport>
+      <!-- the checks and the rule generation all in one stylesheet -->
+      <p:xslt>
+         <p:input port="parameters">
+            <p:empty/>
+         </p:input>
+         <p:input port="source">
+            <p:pipe port="packages" step="this"/>
+            <p:pipe port="result"   step="dirs"/>
+         </p:input>
+         <p:input port="stylesheet">
+            <p:inline>
+               <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="2.0">
+                  <xsl:variable name="packages"  as="element(repo)"        select="collection()[1]/*"/>
+                  <xsl:variable name="directory" as="element(c:directory)" select="collection()[2]/*"/>
+                  <xsl:template match="/">
+                     <xsl:variable name="expected" as="element(badge)+">
+                        <badge>
+                           <xsl:value-of select="repo/@abbrev"/>
+                           <xsl:text>.svg</xsl:text>
+                        </badge>
+                        <xsl:for-each select="repo/pkg">
+                           <badge>
+                              <xsl:value-of select="@id"/>
+                              <xsl:text>.svg</xsl:text>
+                           </badge>
+                        </xsl:for-each>
+                     </xsl:variable>
+                     <xsl:variable name="actual" as="element(badge)+">
+                        <xsl:for-each select="$directory/c:file">
+                           <badge>
+                              <xsl:value-of select="@name"/>
+                           </badge>
+                        </xsl:for-each>
+                        <xsl:for-each select="$directory/c:directory/c:file">
+                           <badge>
+                              <xsl:value-of select="../@name"/>
+                              <xsl:text>/</xsl:text>
+                              <xsl:value-of select="@name"/>
+                           </badge>
+                        </xsl:for-each>
+                        <xsl:for-each select="$directory/c:directory/c:directory">
+                           <unexpected-subdir>
+                              <xsl:value-of select="../@name"/>
+                              <xsl:text>/</xsl:text>
+                              <xsl:value-of select="@name"/>
+                              <xsl:text>/</xsl:text>
+                           </unexpected-subdir>
+                        </xsl:for-each>
+                     </xsl:variable>
+                     <xsl:variable name="missing" select="$expected[not(. = $actual)]"/>
+                     <xsl:variable name="unused"  select="$actual[not(. = $expected)]"/>
+                     <rule name="badges" pass="{ empty($missing) }">
+                        <title>Badges must exist</title>
+                        <xsl:choose>
+                           <xsl:when test="empty($missing)">
+                              <msg>There is a badge for the repository and every package.</msg>
+                           </xsl:when>
+                           <xsl:otherwise>
+                              <msg>There are missing badges.</msg>
+                              <xsl:copy-of select="$missing"/>
+                           </xsl:otherwise>
+                        </xsl:choose>
+                        <xsl:if test="exists($unused)">
+                           <warning>
+                              <msg>Some badges are not used.</msg>
+                              <xsl:copy-of select="$unused"/>
+                           </warning>
+                        </xsl:if>
+                        <badges>
+                           <xsl:copy-of select="$actual"/>
+                        </badges>
+                     </rule>
+                  </xsl:template>
+               </xsl:stylesheet>
+            </p:inline>
+         </p:input>
+      </p:xslt>
+      <!-- insert the resulting rule in the report -->
+      <my:insert-rule>
+         <p:input port="report">
+            <p:pipe port="source" step="this"/>
+         </p:input>
+      </my:insert-rule>
+   </p:declare-step>
+
+   <!--
+       Rules applied from here:
+
+       - my:repo-exists
+       - my:contains-packages-xml
+       - my:packages-xml-valid
+       - my:pkg-for-each-version
+       - my:authors-exist
+       - my:categories-exist
+       - my:files-exist
+       - my:badges-exist
+   -->
    <p:declare-step type="my:main" name="this">
-      <p:option name="dir" required="true"/>
+      <p:option name="repo"   required="true"/>
+      <p:option name="master" required="true"/>
       <p:input  port="authors"/>
       <p:input  port="categories"/>
       <p:output port="result" primary="true"/>
-      <p:variable name="file" select="resolve-uri('packages.xml', $dir)"/>
+      <p:variable name="file" select="resolve-uri('packages.xml', $repo)"/>
       <!-- packages.xml, for steps needing it -->
       <p:load name="packages">
          <p:with-option name="href" select="$file"/>
@@ -656,10 +791,10 @@
       </p:identity>
       <!-- call the 3 stopper rules, they check for passing internally -->
       <my:repo-exists>
-         <p:with-option name="dir" select="$dir"/>
+         <p:with-option name="repo" select="$repo"/>
       </my:repo-exists>
       <my:contains-packages-xml>
-         <p:with-option name="dir"  select="$dir"/>
+         <p:with-option name="repo" select="$repo"/>
          <p:with-option name="file" select="$file"/>
       </my:contains-packages-xml>
       <my:packages-xml-valid>
@@ -692,7 +827,7 @@
                </p:input>
             </my:categories-exist>
             <my:files-exist>
-               <p:with-option name="dir" select="$dir"/>
+               <p:with-option name="repo" select="$repo"/>
                <p:input port="packages">
                   <p:pipe port="result" step="packages"/>
                </p:input>
@@ -702,6 +837,12 @@
                   <p:pipe port="result" step="packages"/>
                </p:input>
             </my:files-naming-scheme-->
+            <my:badges-exist>
+               <p:with-option name="master" select="$master"/>
+               <p:input port="packages">
+                  <p:pipe port="result" step="packages"/>
+               </p:input>
+            </my:badges-exist>
          </p:when>
          <p:otherwise>
             <p:identity/>
@@ -709,13 +850,22 @@
       </p:choose>
    </p:declare-step>
 
+   <p:variable name="repo-dir" select="resolve-uri('./', base-uri(/))">
+      <p:pipe step="pipeline" port="packages"/>
+   </p:variable>
+
+   <p:variable name="master-dir" select="resolve-uri('./', base-uri(/))">
+      <p:pipe step="pipeline" port="authors"/>
+   </p:variable>
+
    <my:main>
-      <p:with-option name="dir" select="$repo-dir"/>
+      <p:with-option name="repo"   select="$repo-dir"/>
+      <p:with-option name="master" select="$master-dir"/>
       <p:input port="authors">
-         <p:pipe port="authors" step="pipeline"/>
+         <p:pipe step="pipeline" port="authors"/>
       </p:input>
       <p:input port="categories">
-         <p:pipe port="categories" step="pipeline"/>
+         <p:pipe step="pipeline" port="categories"/>
       </p:input>
    </my:main>
 

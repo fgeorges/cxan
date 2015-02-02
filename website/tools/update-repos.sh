@@ -48,6 +48,7 @@ done
 
 BASE="$1"
 SCRIPTS=`dirname $0`
+#CALABASH="calabash"
 CALABASH="$SCRIPTS/calabash.sh"
 
 MASTER="$BASE/master"
@@ -133,9 +134,12 @@ log "from '$REPOS'"
 for dir in "$REPOS"/*; do
     if test -d "$dir"; then
         report="$MASTER"/sanity/`basename $dir`.xml
-        log "sanity of repo 'file:$dir/'"
-        ( "$CALABASH" -i categories="$MASTER"/categories.xml -i authors="$MASTER"/authors.xml \
-            "$SANITY_PIPE" repo-dir="file:$dir/" \
+        log "sanity of repo '$dir/'"
+        ( "$CALABASH" \
+            -i packages="$dir"/packages.xml \
+            -i authors="$MASTER"/authors.xml \
+            -i categories="$MASTER"/categories.xml \
+            "$SANITY_PIPE" \
             2>> "$LOG" \
             | xmllint --format - > "$report" ) \
             || die "Error checking sanity! - $dir";
