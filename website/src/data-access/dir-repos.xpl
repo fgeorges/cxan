@@ -9,7 +9,6 @@
 
    <p:import href="../tools.xpl"/>
    <p:import href="http://pipx.org/ns/pipx.xpl"/>
-   <!--p:import href="../../../../../xproc/pipx/pipx/src/pipx.xpl"/-->
 
    <!--
       Repositories.
@@ -40,9 +39,7 @@
       <p:output port="result" primary="true"/>
       <dir:get-all-repositories-impl>
          <p:input port="parameters">
-            <!-- TODO: Which one? -->
-            <!--p:document href="../../../../config-params.xml"/-->
-            <p:document href="../config-params.xml"/>
+            <p:document href="../../../../config-params.xml"/>
          </p:input>
       </dir:get-all-repositories-impl>
    </p:declare-step>
@@ -97,9 +94,7 @@
       <dir:repo-packages-impl>
          <p:with-option name="repo" select="$repo"/>
          <p:input port="parameters">
-            <!-- TODO: Which one? -->
-            <!--p:document href="../../../../config-params.xml"/-->
-            <p:document href="../config-params.xml"/>
+            <p:document href="../../../../config-params.xml"/>
          </p:input>
       </dir:repo-packages-impl>
    </p:declare-step>
@@ -163,9 +158,7 @@
       <p:output port="result" primary="true"/>
       <dir:get-all-packages-impl>
          <p:input port="parameters">
-            <!-- TODO: Which one? -->
-            <!--p:document href="../../../../config-params.xml"/-->
-            <p:document href="../config-params.xml"/>
+            <p:document href="../../../../config-params.xml"/>
          </p:input>
       </dir:get-all-packages-impl>
    </p:declare-step>
@@ -212,9 +205,7 @@
       <p:output port="result" primary="true"/>
       <dir:list-authors-impl>
          <p:input port="parameters">
-            <!-- TODO: Which one? -->
-            <!--p:document href="../../../../config-params.xml"/-->
-            <p:document href="../config-params.xml"/>
+            <p:document href="../../../../config-params.xml"/>
          </p:input>
       </dir:list-authors-impl>
    </p:declare-step>
@@ -255,9 +246,7 @@
       <dir:author-packages-impl>
          <p:with-option name="author" select="$author"/>
          <p:input port="parameters">
-            <!-- TODO: Which one? -->
-            <!--p:document href="../../../../config-params.xml"/-->
-            <p:document href="../config-params.xml"/>
+            <p:document href="../../../../config-params.xml"/>
          </p:input>
       </dir:author-packages-impl>
    </p:declare-step>
@@ -314,9 +303,7 @@
       <p:output port="result" primary="true"/>
       <dir:list-categories-impl>
          <p:input port="parameters">
-            <!-- TODO: Which one? -->
-            <!--p:document href="../../../../config-params.xml"/-->
-            <p:document href="../config-params.xml"/>
+            <p:document href="../../../../config-params.xml"/>
          </p:input>
       </dir:list-categories-impl>
    </p:declare-step>
@@ -351,9 +338,7 @@
          <p:with-option name="repo" select="$repo"/>
          <p:with-option name="pkg"  select="$pkg"/>
          <p:input port="parameters">
-            <!-- TODO: Which one? -->
-            <!--p:document href="../../../../config-params.xml"/-->
-            <p:document href="../config-params.xml"/>
+            <p:document href="../../../../config-params.xml"/>
          </p:input>
       </dir:package-badge-impl>
    </p:declare-step>
