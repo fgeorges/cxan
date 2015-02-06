@@ -67,9 +67,7 @@
 
          <xsl:if test="exists(desc)">
             <subtitle>Description</subtitle>
-            <code>
-               <xsl:copy-of select="desc"/>
-            </code>
+            <xsl:apply-templates select="desc"/>
          </xsl:if>
 
          <subtitle>Details</subtitle>
@@ -194,6 +192,7 @@
                <xsl:text>Version </xsl:text>
                <xsl:value-of select="@num"/>
             </subtitle>
+            <xsl:apply-templates select="desc"/>
             <named-info>
                <!--
                    TODO: Give files a name ('package' for the XAR/XAW, 'release'
@@ -263,6 +262,20 @@
          </code>
 
       </page>
+   </xsl:template>
+
+   <xsl:template match="desc[@format eq 'text']">
+      <code>
+         <xsl:copy-of select="."/>
+      </code>
+   </xsl:template>
+
+   <xsl:template match="desc">
+      <xsl:message terminate="yes">
+         <xsl:text>Description element with unsupported format: "</xsl:text>
+         <xsl:value-of select="@format"/>
+         <xsl:text>"</xsl:text>
+      </xsl:message>
    </xsl:template>
 
 </xsl:stylesheet>
