@@ -45,7 +45,10 @@
                <xsl:value-of select="@abbrev"/>
             </span>
          </title>
-         <xsl:copy-of select="abstract"/>
+
+         <subtitle>
+            <xsl:value-of select="abstract"/>
+         </subtitle>
          <para>
             <xsl:variable name="latest" select="version[1]/file[@role eq 'pkg']"/>
             <xsl:if test="exists(home)">
@@ -62,6 +65,14 @@
             </xsl:if>
          </para>
 
+         <xsl:if test="exists(desc)">
+            <subtitle>Description</subtitle>
+            <code>
+               <xsl:copy-of select="desc"/>
+            </code>
+         </xsl:if>
+
+         <subtitle>Details</subtitle>
          <named-info>
             <row>
                <name>ID</name>
@@ -180,6 +191,7 @@
          <xsl:for-each select="version">
             <!-- Do not sort the versions, they have to be sorted in Git. -->
             <subtitle>
+               <xsl:text>Version </xsl:text>
                <xsl:value-of select="@num"/>
             </subtitle>
             <named-info>
