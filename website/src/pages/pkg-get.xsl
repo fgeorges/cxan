@@ -48,10 +48,16 @@
          <xsl:copy-of select="abstract"/>
          <para>
             <xsl:variable name="latest" select="version[1]/file[@role eq 'pkg']"/>
-            <button type="download" href="../../file/{ @id }/{ $latest/@name }"/>
-            <xsl:text> </xsl:text>
             <xsl:if test="exists(home)">
-               <button type="home" href="{ home }"/>
+               <button type="home" href="{ home }" info="Go to the homepage."/>
+               <xsl:text> </xsl:text>
+            </xsl:if>
+            <button type="download"
+                    href="../../file/{ @id }/{ $latest/@name }"
+                    info="Download the latest XAR package, version { $latest/../@num }."/>
+            <xsl:text> </xsl:text>
+            <xsl:if test="exists(code)">
+               <button type="code" href="{ code }" info="Go to the code repository."/>
                <xsl:text> </xsl:text>
             </xsl:if>
          </para>

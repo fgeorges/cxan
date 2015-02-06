@@ -199,14 +199,21 @@
    <xsl:template match="button">
       <a class="btn btn-default">
          <xsl:copy-of select="@href"/>
+         <xsl:if test="@info">
+            <xsl:attribute name="title" select="@info"/>
+         </xsl:if>
          <xsl:choose>
+            <xsl:when test="@type eq 'home'">
+               <span class="glyphicon glyphicon-home"/>
+               <xsl:text> Homepage</xsl:text>
+            </xsl:when>
             <xsl:when test="@type eq 'download'">
                <span class="glyphicon glyphicon-download"/>
                <xsl:text> Download</xsl:text>
             </xsl:when>
-            <xsl:when test="@type eq 'home'">
-               <span class="glyphicon glyphicon-home"/>
-               <xsl:text> Homepage</xsl:text>
+            <xsl:when test="@type eq 'code'">
+               <span class="glyphicon glyphicon-wrench"/>
+               <xsl:text> Code</xsl:text>
             </xsl:when>
             <xsl:otherwise>
                <xsl:text>&lt;ERROR: Unkown button type: </xsl:text>
