@@ -35,7 +35,20 @@
 
    <xs:element name="abstract" type="xs:string"/>
 
-   <xs:element name="desc" type="xs:anyURI"/>
+   <xs:element name="desc">
+      <xs:complexType mixed="true">
+         <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:any/>
+         </xs:sequence>
+         <xs:attribute name="format" use="required">
+            <xs:simpleType>
+               <xs:restriction base="xs:string">
+                  <xs:enumeration value="text"/>
+               </xs:restriction>
+            </xs:simpleType>
+         </xs:attribute>
+      </xs:complexType>
+   </xs:element>
 
    <xs:element name="home" type="xs:anyURI"/>
 
