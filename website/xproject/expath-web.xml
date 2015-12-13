@@ -6,6 +6,13 @@
 
    <title>CXAN website</title>
 
+   <config-param id="config-params">
+      <name>Configuration parameters document URI</name>
+      <desc>The URI of the document with the configuration parameters, an XProc
+         `params-set` document in namespace `http://www.w3.org/ns/xproc-step`.</desc>
+      <uri>../../../config-params.xml</uri>
+   </config-param>
+
    <resource pattern="/style/.+\.css"  media-type="text/css"/>
    <resource pattern="/js/.+\.js"      media-type="text/javascript"/>
    <resource pattern="/fonts/.+\.woff" media-type="application/font-woff"/>

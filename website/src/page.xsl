@@ -11,8 +11,11 @@
 
    <xsl:param name="analytics-id" as="xs:string?" select="'UA-5463082-6'"/>
 
+   <xsl:variable name="config" as="element(c:param-set)" select="
+       doc(web:config-param('config-params'))/*"/>
+
    <xsl:variable name="context-root" as="xs:string" select="
-       doc('../../../config-params.xml')/c:param-set/c:param[@name eq 'context-root']/@value"/>
+       $config/c:param[@name eq 'context-root']/@value"/>
 
    <xsl:variable name="version"  select="'@@VERSION@@'"/>
    <xsl:variable name="revision" select="'@@REVISION@@'"/>

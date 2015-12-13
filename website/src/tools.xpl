@@ -24,6 +24,16 @@
    </p:declare-step>
 
    <!--
+       Return the config-params document.
+   -->
+   <p:declare-step type="app:config-params">
+      <p:output port="result" primary="true"/>
+      <p:load>
+         <p:with-option name="href" select="web:config-param('config-params')"/>
+      </p:load>
+   </p:declare-step>
+
+   <!--
        Throws an error, with a proper title, message, and other infos.
        
        This is the central piece in the error handling machanism, still to

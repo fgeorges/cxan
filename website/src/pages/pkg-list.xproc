@@ -21,32 +21,38 @@
 
    <p:variable name="accept"   select="/web:request/web:header[@name eq 'accept']/@value"/>
    <p:variable name="repo"     select="/web:request/web:path/web:match[@name eq 'repo']"/>
-   <p:variable name="base-uri" select="/c:param-set/c:param[@name eq 'home-uri']/@value">
-      <p:document href="../../../../config-params.xml"/>
-   </p:variable>
 
    <app:ensure-method accepted="get"/>
    <p:sink/>
 
-   <da:packages-by-repo>
-      <p:with-option name="repo" select="$repo"/>
-   </da:packages-by-repo>
+   <app:config-params name="config"/>
 
-   <p:choose>
-      <p:when test="$accept eq 'application/xml'">
-         <!-- return the raw XML -->
-         <app:wrap-xml-result/>
-      </p:when>
-      <p:otherwise>
-         <!-- format the data to a page document -->
-         <p:xslt name="result">
-            <p:input port="stylesheet">
-               <p:document href="pkg-list.xsl"/>
-            </p:input>
-            <p:with-param name="base-uri" select="$base-uri"/>
-            <p:with-param name="repo-id"  select="$repo"/>
-         </p:xslt>
-      </p:otherwise>
-   </p:choose>
+   <p:group>
+
+      <p:variable name="base-uri" select="/c:param-set/c:param[@name eq 'home-uri']/@value"/>
+      <p:sink/>
+
+      <da:packages-by-repo>
+         <p:with-option name="repo" select="$repo"/>
+      </da:packages-by-repo>
+
+      <p:choose>
+         <p:when test="$accept eq 'application/xml'">
+            <!-- return the raw XML -->
+            <app:wrap-xml-result/>
+         </p:when>
+         <p:otherwise>
+            <!-- format the data to a page document -->
+            <p:xslt name="result">
+               <p:input port="stylesheet">
+                  <p:document href="pkg-list.xsl"/>
+               </p:input>
+               <p:with-param name="base-uri" select="$base-uri"/>
+               <p:with-param name="repo-id"  select="$repo"/>
+            </p:xslt>
+         </p:otherwise>
+      </p:choose>
+
+   </p:group>
 
 </p:pipeline>

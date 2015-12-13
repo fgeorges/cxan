@@ -44,40 +44,46 @@
       </p:choose>
    </p:declare-step>
 
-   <p:variable name="accept"   select="/web:request/web:header[@name eq 'accept']/@value"/>
-   <p:variable name="name"     select="/web:request/web:param[@name eq 'name']/@value"/>
-   <p:variable name="base-uri" select="/c:param-set/c:param[@name eq 'home-uri']/@value">
-      <p:document href="../../../../config-params.xml"/>
-   </p:variable>
+   <p:variable name="accept" select="/web:request/web:header[@name eq 'accept']/@value"/>
+   <p:variable name="name"   select="/web:request/web:param[@name eq 'name']/@value"/>
 
    <app:ensure-method accepted="get"/>
    <p:sink/>
 
-   <!-- retrieve the repositories id and name -->
-   <p:choose>
-      <!-- Note: I don't know why, but $name[.] does NOT work... -->
-      <p:when test="exists($name) and $name ne ''">
-         <da:packages-by-name>
-            <p:with-option name="name" select="$name"/>
-         </da:packages-by-name>
-         <local:wrap-it-up>
-            <p:with-option name="accept"   select="$accept"/>
-            <p:with-option name="base-uri" select="$base-uri"/>
-            <p:input port="stylesheet">
-               <p:document href="pkg-list.xsl"/>
-            </p:input>
-         </local:wrap-it-up>
-      </p:when>
-      <p:otherwise>
-         <da:list-repositories/>
-         <local:wrap-it-up>
-            <p:with-option name="accept"   select="$accept"/>
-            <p:with-option name="base-uri" select="$base-uri"/>
-            <p:input port="stylesheet">
-               <p:document href="repo-list.xsl"/>
-            </p:input>
-         </local:wrap-it-up>
-      </p:otherwise>
-   </p:choose>
+   <app:config-params name="config"/>
+
+   <p:group>
+
+      <p:variable name="base-uri" select="/c:param-set/c:param[@name eq 'home-uri']/@value"/>
+      <p:sink/>
+
+      <!-- retrieve the repositories id and name -->
+      <p:choose>
+         <!-- Note: I don't know why, but $name[.] does NOT work... -->
+         <p:when test="exists($name) and $name ne ''">
+            <da:packages-by-name>
+               <p:with-option name="name" select="$name"/>
+            </da:packages-by-name>
+            <local:wrap-it-up>
+               <p:with-option name="accept"   select="$accept"/>
+               <p:with-option name="base-uri" select="$base-uri"/>
+               <p:input port="stylesheet">
+                  <p:document href="pkg-list.xsl"/>
+               </p:input>
+            </local:wrap-it-up>
+         </p:when>
+         <p:otherwise>
+            <da:list-repositories/>
+            <local:wrap-it-up>
+               <p:with-option name="accept"   select="$accept"/>
+               <p:with-option name="base-uri" select="$base-uri"/>
+               <p:input port="stylesheet">
+                  <p:document href="repo-list.xsl"/>
+               </p:input>
+            </local:wrap-it-up>
+         </p:otherwise>
+      </p:choose>
+
+   </p:group>
 
 </p:pipeline>

@@ -3,7 +3,8 @@
                 xmlns:c="http://www.w3.org/ns/xproc-step"
                 xmlns:pkg="http://expath.org/ns/pkg"
                 xmlns:ser="http://fgeorges.org/xslt/serial"
-                exclude-result-prefixes="xs c pkg ser"
+                xmlns:web="http://expath.org/ns/webapp"
+                exclude-result-prefixes="xs c pkg ser web"
                 version="2.0">
 
    <xsl:import href="http://fgeorges.org/ns/xslt/serial.xsl"/>
@@ -11,8 +12,11 @@
 
    <pkg:import-uri>##none</pkg:import-uri>
 
+   <xsl:variable name="config" as="element(c:param-set)" select="
+       doc(web:config-param('config-params'))/*"/>
+
    <xsl:variable name="home" as="xs:string" select="
-       doc('../../../../config-params.xml')/c:param-set/c:param[@name eq 'home-uri']/@value"/>
+       $config/c:param[@name eq 'home-uri']/@value"/>
 
    <xsl:template match="/no-such-package">
       <page menu="pkg" http-code="404" http-message="Not Found">

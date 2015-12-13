@@ -37,9 +37,10 @@
          ]]></pre>
       </p:documentation>
       <p:output port="result" primary="true"/>
+      <app:config-params name="config"/>
       <dir:get-all-repositories-impl>
          <p:input port="parameters">
-            <p:document href="../../../../config-params.xml"/>
+            <p:pipe step="config" port="result"/>
          </p:input>
       </dir:get-all-repositories-impl>
    </p:declare-step>
@@ -91,10 +92,11 @@
       </p:documentation>
       <p:option name="repo" required="true"/>
       <p:output port="result" primary="true"/>
+      <app:config-params name="config"/>
       <dir:repo-packages-impl>
          <p:with-option name="repo" select="$repo"/>
          <p:input port="parameters">
-            <p:document href="../../../../config-params.xml"/>
+            <p:pipe step="config" port="result"/>
          </p:input>
       </dir:repo-packages-impl>
    </p:declare-step>
@@ -156,9 +158,10 @@
          ]]></pre>
       </p:documentation>
       <p:output port="result" primary="true"/>
+      <app:config-params name="config"/>
       <dir:get-all-packages-impl>
          <p:input port="parameters">
-            <p:document href="../../../../config-params.xml"/>
+            <p:pipe step="config" port="result"/>
          </p:input>
       </dir:get-all-packages-impl>
    </p:declare-step>
@@ -203,9 +206,10 @@
          ]]></pre>
       </p:documentation>
       <p:output port="result" primary="true"/>
+      <app:config-params name="config"/>
       <dir:list-authors-impl>
          <p:input port="parameters">
-            <p:document href="../../../../config-params.xml"/>
+            <p:pipe step="config" port="result"/>
          </p:input>
       </dir:list-authors-impl>
    </p:declare-step>
@@ -243,10 +247,11 @@
       </p:documentation>
       <p:output port="result" primary="true"/>
       <p:option name="author" required="true"/>
+      <app:config-params name="config"/>
       <dir:author-packages-impl>
          <p:with-option name="author" select="$author"/>
          <p:input port="parameters">
-            <p:document href="../../../../config-params.xml"/>
+            <p:pipe step="config" port="result"/>
          </p:input>
       </dir:author-packages-impl>
    </p:declare-step>
@@ -301,9 +306,10 @@
          ]]></pre>
       </p:documentation>
       <p:output port="result" primary="true"/>
+      <app:config-params name="config"/>
       <dir:list-categories-impl>
          <p:input port="parameters">
-            <p:document href="../../../../config-params.xml"/>
+            <p:pipe step="config" port="result"/>
          </p:input>
       </dir:list-categories-impl>
    </p:declare-step>
@@ -334,11 +340,12 @@
       <p:output port="result" primary="true"/>
       <p:option name="repo" required="true"/>
       <p:option name="pkg"  required="true"/>
+      <app:config-params name="config"/>
       <dir:package-badge-impl>
          <p:with-option name="repo" select="$repo"/>
          <p:with-option name="pkg"  select="$pkg"/>
          <p:input port="parameters">
-            <p:document href="../../../../config-params.xml"/>
+            <p:pipe step="config" port="result"/>
          </p:input>
       </dir:package-badge-impl>
    </p:declare-step>

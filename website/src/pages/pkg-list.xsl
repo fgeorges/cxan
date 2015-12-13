@@ -7,6 +7,11 @@
                 exclude-result-prefixes="xs c pkg web ser"
                 version="2.0">
 
+   <!--
+      TODO: Lot of duplicated code with `pkg-get.xsl`.
+      Use a common library...
+   -->
+
    <xsl:import href="http://fgeorges.org/ns/xslt/serial.xsl"/>
    <xsl:import href="http://fgeorges.org/ns/xslt/serial-html.xsl"/>
 
@@ -16,8 +21,11 @@
    <xsl:param name="repo-list" as="xs:boolean" select="false()"/>
    <xsl:param name="repo-id"   as="xs:string?"/>
 
+   <xsl:variable name="config" as="element(c:param-set)" select="
+       doc(web:config-param('config-params'))/*"/>
+
    <xsl:variable name="home" as="xs:string" select="
-       doc('../../../../config-params.xml')/c:param-set/c:param[@name eq 'home-uri']/@value"/>
+       $config/c:param[@name eq 'home-uri']/@value"/>
 
    <xsl:template match="/packages[empty(pkg)]">
       <page menu="pkg">
