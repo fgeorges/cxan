@@ -138,12 +138,15 @@
             <p:inline>
                <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                                xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                               xmlns:ser="http://fgeorges.org/xslt/serial"
-                               version="2.0">
-                  <xsl:import href="http://fgeorges.org/ns/xslt/serial.xsl"/>
-                  <xsl:import href="http://fgeorges.org/ns/xslt/serial-html.xsl"/>
+                               xmlns:output="http://www.w3.org/2010/xslt-xquery-serialization"
+                               version="3.0">
                   <xsl:param name="msg"  as="xs:string"/>
                   <xsl:param name="code" as="xs:string"/>
+                  <xsl:variable name="serialize-params" as="element()">
+                     <output:serialization-parameters>
+                        <output:indent value="yes"/>
+                     </output:serialization-parameters>
+                  </xsl:variable>
                   <xsl:template name="main">
                      <page http-code="{ $code }" http-message="{ $msg }">
                         <title>Error</title>
@@ -151,7 +154,7 @@
                            <xsl:value-of select="$msg"/>
                         </para>
                         <code>
-                           <xsl:sequence select="ser:serialize-to-html(.)"/>
+                           <xsl:sequence select="serialize($input, $serialize-params)"/>
                         </code>
                      </page>
                   </xsl:template>

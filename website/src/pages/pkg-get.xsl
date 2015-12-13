@@ -2,13 +2,9 @@
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:c="http://www.w3.org/ns/xproc-step"
                 xmlns:pkg="http://expath.org/ns/pkg"
-                xmlns:ser="http://fgeorges.org/xslt/serial"
                 xmlns:web="http://expath.org/ns/webapp"
-                exclude-result-prefixes="xs c pkg ser web"
-                version="2.0">
-
-   <xsl:import href="http://fgeorges.org/ns/xslt/serial.xsl"/>
-   <xsl:import href="http://fgeorges.org/ns/xslt/serial-html.xsl"/>
+                exclude-result-prefixes="xs c pkg web"
+                version="3.0">
 
    <pkg:import-uri>##none</pkg:import-uri>
 
@@ -244,13 +240,18 @@
          <link href="../{ @id }"><image alt="CXAN" src="../../badge/{ @id }"/></link>
          <para/>
          <para>HTML:</para>
-         <xsl:variable name="code" as="element()">
-            <a href="{ $home }pkg/{ @id }">
-               <img alt="CXAN" src="{ $home }badge/{ @id }"/>
-            </a>
-         </xsl:variable>
          <code>
-            <xsl:sequence select="ser:serialize-to-html($code)"/>
+            <xsl:text>&lt;a href="</xsl:text>
+            <xsl:value-of select="$home"/>
+            <xsl:text>pkg/</xsl:text>
+            <xsl:value-of select="@id"/>
+            <xsl:text>">&#10;</xsl:text>
+            <xsl:text>   &lt;img alt="CXAN" src="</xsl:text>
+            <xsl:value-of select="$home"/>
+            <xsl:text>badge/</xsl:text>
+            <xsl:value-of select="@id"/>
+            <xsl:text>">&lt;img>&#10;</xsl:text>
+            <xsl:text>&lt;/a></xsl:text>
          </code>
          <para>Markdown:</para>
          <code>

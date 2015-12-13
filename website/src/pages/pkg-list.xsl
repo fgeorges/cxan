@@ -3,17 +3,13 @@
                 xmlns:c="http://www.w3.org/ns/xproc-step"
                 xmlns:pkg="http://expath.org/ns/pkg"
                 xmlns:web="http://expath.org/ns/webapp"
-                xmlns:ser="http://fgeorges.org/xslt/serial"
-                exclude-result-prefixes="xs c pkg web ser"
+                exclude-result-prefixes="xs c pkg web"
                 version="2.0">
 
    <!--
       TODO: Lot of duplicated code with `pkg-get.xsl`.
       Use a common library...
    -->
-
-   <xsl:import href="http://fgeorges.org/ns/xslt/serial.xsl"/>
-   <xsl:import href="http://fgeorges.org/ns/xslt/serial-html.xsl"/>
 
    <pkg:import-uri>##none</pkg:import-uri>
 
@@ -85,13 +81,18 @@
          <link href="{ $repo-id }"><image alt="CXAN" src="../badge/{ $repo-id }"/></link>
          <para/>
          <para>HTML:</para>
-         <xsl:variable name="code" as="element()">
-            <a href="{ $home }pkg/{ $repo-id }">
-               <img alt="CXAN" src="{ $home }badge/{ $repo-id }"/>
-            </a>
-         </xsl:variable>
          <code>
-            <xsl:sequence select="ser:serialize-to-html($code)"/>
+            <xsl:text>&lt;a href="</xsl:text>
+            <xsl:value-of select="$home"/>
+            <xsl:text>pkg/</xsl:text>
+            <xsl:value-of select="$repo-id"/>
+            <xsl:text>">&#10;</xsl:text>
+            <xsl:text>   &lt;img alt="CXAN" src="</xsl:text>
+            <xsl:value-of select="$home"/>
+            <xsl:text>badge/</xsl:text>
+            <xsl:value-of select="$repo-id"/>
+            <xsl:text>">&lt;img>&#10;</xsl:text>
+            <xsl:text>&lt;/a></xsl:text>
          </code>
          <para>Markdown:</para>
          <code>

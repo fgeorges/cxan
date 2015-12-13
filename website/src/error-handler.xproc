@@ -90,10 +90,13 @@
                   <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                                   xmlns:xs="http://www.w3.org/2001/XMLSchema"
                                   xmlns:app="http://cxan.org/ns/website"
-                                  xmlns:ser="http://fgeorges.org/xslt/serial"
-                                  version="2.0">
-                     <xsl:import href="http://fgeorges.org/ns/xslt/serial.xsl"/>
-                     <xsl:import href="http://fgeorges.org/ns/xslt/serial-html.xsl"/>
+                                  xmlns:output="http://www.w3.org/2010/xslt-xquery-serialization"
+                                  version="3.0">
+                     <xsl:variable name="serialize-params" as="element()">
+                        <output:serialization-parameters>
+                           <output:indent value="yes"/>
+                        </output:serialization-parameters>
+                     </xsl:variable>
                      <xsl:template match="/web:error">
                         <page http-code="400" http-message="Bad Request">
                            <title>Oops</title>
@@ -130,7 +133,7 @@
                            </named-info>
                            <xsl:if test="exists(web:user-data)">
                               <code>
-                                 <xsl:sequence select="ser:serialize-to-html(web:user-data)"/>
+                                 <xsl:sequence select="serialize($input, $serialize-params)"/>
                               </code>
                            </xsl:if>
                         </page>
